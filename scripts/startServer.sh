@@ -1,1 +1,0 @@
-poetry run python src/run_server.py

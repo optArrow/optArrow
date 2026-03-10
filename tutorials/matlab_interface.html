@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="Python, Julia" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MATLAB interface for OptArrow &mdash; OptArrow  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=d7d12e2f" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e0c6dc42"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contributing to Arrow Gateway Engine" href="../intros/contributing.html" />
+    <link rel="prev" title="Arrow table dict conversion" href="conversion_dictionary_arrow_table.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/architecture.html">Architecture Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intros/installation.html">Overall Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/julia_setup.html">OptimizationServer (Julia)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/python_engine_setup.html">OptimizationServer (Python)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/benchmarking.html">Benchmark testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lp_problem.html">Linear Programming (LP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lp_example1.html">LP Example: Production Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lp_example2.html">LP Example: FBA analysis for ecoli model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qp_problem.html">Quadratic Programming (QP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qp_example.html">QP Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MATLAB interface for OptArrow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#call-python-code-directly">1. Call Python code directly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#call-http-web-service">2. Call HTTP web service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-matlabs-matlab-net-http-interface-to-send-application-vnd-apache-arrow-stream-data">Using MATLAB’s <code class="docutils literal notranslate"><span class="pre">matlab.net.http</span></code> Interface to send <code class="docutils literal notranslate"><span class="pre">application/vnd.apache.arrow.stream</span></code> data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alternative-older-approach-urlreadpost">Alternative (Older) Approach: <code class="docutils literal notranslate"><span class="pre">urlreadpost</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#call-socket-service-for-julia-directly">3. Call socket service for Julia directly</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Maintainance and Contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intros/contributing.html">Contributing to Arrow Gateway Engine</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OptArrow</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">MATLAB interface for OptArrow</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/matlab_interface.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="matlab-interface-for-optarrow">
+<h1>MATLAB interface for OptArrow<a class="headerlink" href="#matlab-interface-for-optarrow" title="Link to this heading"></a></h1>
+<p>To use MATLAB for OptArrow Service, there are 3 options:</p>
+<section id="call-python-code-directly">
+<h2>1. Call Python code directly<a class="headerlink" href="#call-python-code-directly" title="Link to this heading"></a></h2>
+<p>This requires the service of Julia and Python engine to be running. Use MATLAB code to call <code class="docutils literal notranslate"><span class="pre">src/compute.py</span></code> directly, you can refer to the sample code below:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="c">% Call when the python/julia service is up.</span>
+
+<span class="c">%% ==== Set Python Virtual Environment ====</span>
+<span class="c">% ⚠️ Change this to your venv python absolute path (recommend absolute path for clarity)</span>
+<span class="n">venvPython</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;path/to/your/python/executable/file&quot;</span><span class="p">;</span>
+
+<span class="c">% Example (Linux/Mac):</span>
+<span class="c">% venvPython = fullfile(pwd, &quot;.venv&quot;, &quot;bin&quot;, &quot;python&quot;);</span>
+<span class="c">% Example (Windows):</span>
+<span class="c">% venvPython = fullfile(pwd, &quot;.venv&quot;, &quot;Scripts&quot;, &quot;python.exe&quot;);</span>
+
+<span class="c">% Restart Python at every session</span><br>
+<span class="k">if</span><span class="w"> </span><span class="o">~</span><span class="nb">isempty</span><span class="p">(</span><span class="nb">pyenv</span><span class="p">().</span><span class="n">Version</span><span class="p">)</span><br>
+<span class="w">    </span><span class="nb">terminate</span><span class="p">(</span><span class="nb">pyenv</span><span class="p">);</span><br>
+<span class="k">end</span>
+
+<span class="nb">pyenv</span><span class="p">(</span><span class="s">&quot;Version&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">venvPython</span><span class="p">,</span><span class="s">&quot;ExecutionMode&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;OutOfProcess&quot;</span><span class="p">);</span>
+
+<span class="c">%% ==== Add project src path ====</span>
+<span class="c">% ⚠️ Change this to your project src path</span>
+<span class="n">insert</span><span class="p">(</span><span class="n">py</span><span class="p">.</span><span class="n">sys</span><span class="p">.</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="nb">int32</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;path/to/optarrow/src&quot;</span><span class="p">);</span>
+
+<span class="c">% Example (Linux/Mac):</span>
+<span class="c">% insert(py.sys.path, int32(0), fullfile(pwd, &quot;src&quot;));</span>
+<span class="c">% Example (Windows):</span>
+<span class="c">% insert(py.sys.path, int32(0), &quot;D:\Work\arrow_gateway_engine\src&quot;);</span>
+
+<span class="c">%% ==== Prepare Data ====</span>
+<span class="c">% Solver configuration</span>
+<span class="n">solver</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="s">&quot;solver_name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;glpk&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;solver_type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;solver_params&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">struct</span><span class="p">());</span>
+
+<span class="c">% Model data file</span>
+<span class="n">matFile</span><span class="w">   </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;path/to/your/model/data/file&quot;</span><span class="p">;</span>
+<span class="c">% Example (Linux/Mac):</span>
+<span class="c">% matFile = fullfile(pwd, &quot;testdata&quot;, &quot;e_coli_core.mat&quot;);</span>
+
+<span class="c">% Python compute script</span>
+<span class="n">computePy</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&quot;path/to/optarrow/src/compute.py&quot;</span><span class="p">;</span>
+<span class="c">% Example (Linux/Mac):</span>
+<span class="c">% computePy = fullfile(pwd, &quot;src&quot;, &quot;compute.py&quot;);</span>
+
+<span class="c">%% ==== Run Python ====</span>
+<span class="n">result_py</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="w"> </span><span class="n">pyrunfile</span><span class="p">(</span><span class="n">computePy</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;result&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mat_file</span><span class="p">=</span><span class="n">matFile</span><span class="p">,</span><span class="w"> </span><span class="n">engine</span><span class="p">=</span><span class="s">&quot;python&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">solver</span><span class="p">=</span><span class="n">solver</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+
+<span class="c">%% ==== Run Julia ====</span>
+<span class="n">result_jl</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="w"> </span><span class="n">pyrunfile</span><span class="p">(</span><span class="n">computePy</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;result&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mat_file</span><span class="p">=</span><span class="n">matFile</span><span class="p">,</span><span class="w"> </span><span class="n">engine</span><span class="p">=</span><span class="s">&quot;julia&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">solver</span><span class="p">=</span><span class="n">solver</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This method allows using .mat file directly as long as it follows the same file structure as the featured <code class="docutils literal notranslate"><span class="pre">e_coli_core.mat</span></code> model.</p>
+</section>
+<section id="call-http-web-service">
+<h2>2. Call HTTP web service<a class="headerlink" href="#call-http-web-service" title="Link to this heading"></a></h2>
+<p>Send request to address <code class="docutils literal notranslate"><span class="pre">https://your_FastAPI_service_ip:port/compute</span></code>. This requires sending a POST request with content type of <code class="docutils literal notranslate"><span class="pre">application/vnd.apache.arrow.stream</span></code>. This can be achieved by using MATLAB’s <strong>HTTP Interface</strong>, not the simpler <code class="docutils literal notranslate"><span class="pre">webwrite</span></code> function as stated below. Alternatively you can use <code class="docutils literal notranslate"><span class="pre">/computeJSON</span></code> to send and receive JSON data, but this would be slower than using Arrow (0.01 seconds slower than <code class="docutils literal notranslate"><span class="pre">/compute</span></code> using the <code class="docutils literal notranslate"><span class="pre">e_coli_core</span></code> model, performance difference would be much greater when using a larger model).</p>
+<section id="using-matlabs-matlab-net-http-interface-to-send-application-vnd-apache-arrow-stream-data">
+<h3>Using MATLAB’s <code class="docutils literal notranslate"><span class="pre">matlab.net.http</span></code> Interface to send <code class="docutils literal notranslate"><span class="pre">application/vnd.apache.arrow.stream</span></code> data<a class="headerlink" href="#using-matlabs-matlab-net-http-interface-to-send-application-vnd-apache-arrow-stream-data" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Read your Arrow file into a <code class="docutils literal notranslate"><span class="pre">uint8</span></code> array</strong>, for example using:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">fid</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">fopen</span><span class="p">(</span><span class="s">&#39;data.arrow&#39;</span><span class="p">,</span><span class="s">&#39;rb&#39;</span><span class="p">);</span>
+<span class="n">data</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">fread</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span><span class="w"> </span><span class="nb">Inf</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;*uint8&#39;</span><span class="p">);</span>
+<span class="nb">fclose</span><span class="p">(</span><span class="n">fid</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Construct a POST request using <code class="docutils literal notranslate"><span class="pre">RequestMessage</span></code></strong>, explicitly setting the header and sending raw bytes without conversion:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">import</span><span class="w"> </span><span class="n">matlab</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">http</span><span class="o">.*</span>
+<span class="nb">import</span><span class="w"> </span><span class="n">matlab</span><span class="p">.</span><span class="n">net</span><span class="p">.</span><span class="n">http</span><span class="p">.</span><span class="n">field</span><span class="o">.*</span>
+
+<span class="c">% Create the request with custom header</span>
+<span class="n">headers</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="n">GenericField</span><span class="p">(</span><span class="s">&#39;Content-Type&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;application/vnd.apache.arrow.stream&#39;</span><span class="p">)];</span>
+<span class="n">body</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">MessageBody</span><span class="p">();</span>
+<span class="n">body</span><span class="p">.</span><span class="n">Payload</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w">  </span><span class="c">% Ensures MATLAB sends raw bytes without conversion</span>
+<span class="n">request</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">RequestMessage</span><span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">headers</span><span class="p">,</span><span class="w"> </span><span class="n">body</span><span class="p">);</span>
+
+<span class="c">% Optionally suppress default header alterations</span>
+<span class="n">request</span><span class="p">.</span><span class="n">Completed</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+
+<span class="c">% Send the request</span>
+<span class="n">uri</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;https://your.endpoint.url/upload&#39;</span><span class="p">;</span>
+<span class="n">response</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">request</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">uri</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="alternative-older-approach-urlreadpost">
+<h3>Alternative (Older) Approach: <code class="docutils literal notranslate"><span class="pre">urlreadpost</span></code><a class="headerlink" href="#alternative-older-approach-urlreadpost" title="Link to this heading"></a></h3>
+<p>You might also come across a community-contributed utility, <strong><code class="docutils literal notranslate"><span class="pre">urlreadpost</span></code></strong>, designed to upload binary data via HTTP using <code class="docutils literal notranslate"><span class="pre">multipart/form-data</span></code>. However, this approach is limited:</p>
+<ul class="simple">
+<li><p>It wraps files in a multipart form, not suitable for sending raw Arrow IPC streams.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">urlreadpost</span></code> isn't part of MATLAB's core and works via a more old-school <code class="docutils literal notranslate"><span class="pre">urlread</span></code> replacement (<a class="reference external" href="https://www.mathworks.com/matlabcentral/fileexchange/27189-urlreadpost-url-post-method-with-binary-file-uploading?utm_source=chatgpt.com" title="urlreadpost - url POST method with binary file uploading">MathWorks</a>, <a class="reference external" href="https://ww2.mathworks.cn/matlabcentral/fileexchange/27189-urlreadpost-url-post-method-with-binary-file-uploading?utm_source=chatgpt.com" title="urlreadpost - url POST method with binary file uploading">ww2.mathworks.cn</a>).</p></li>
+</ul>
+<p>Therefore, while interesting historically, it's not ideal for the Arrow streaming case.</p>
+</section>
+<hr class="docutils" />
+<section id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Requirement</p></th>
+<th class="head"><p>Recommended Solution</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Send Arrow binary over HTTP</p></td>
+<td><p>Use <code class="docutils literal notranslate"><span class="pre">matlab.net.http.RequestMessage</span></code> + <code class="docutils literal notranslate"><span class="pre">body.Payload</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Set Content-Type to Arrow stream</p></td>
+<td><p>Use <code class="docutils literal notranslate"><span class="pre">GenericField('Content-Type',</span> <span class="pre">'application/vnd.apache.arrow.stream')</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Avoid MATLAB data conversion</p></td>
+<td><p>Assign to <code class="docutils literal notranslate"><span class="pre">body.Payload</span></code> (not <code class="docutils literal notranslate"><span class="pre">.Data</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Old methods available</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">urlreadpost</span></code> (multipart only, not raw streaming)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="call-socket-service-for-julia-directly">
+<h2>3. Call socket service for Julia directly<a class="headerlink" href="#call-socket-service-for-julia-directly" title="Link to this heading"></a></h2>
+<p>As MATLAB natively support sockets, it's possible to call julia service directly as it's exposed using sockets. This is not recommended however as this is a non-standard way of using this service and more data processing is required on the MATLAB side.</p>
+<p>It's not possible to call gRPC service in MATLAB directly, to use Python engine, please use the other 2 methods.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="conversion_dictionary_arrow_table.html" class="btn btn-neutral float-left" title="Arrow table dict conversion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../intros/contributing.html" class="btn btn-neutral float-right" title="Contributing to Arrow Gateway Engine" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Digital Metabolic Twin Centre.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

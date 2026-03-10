@@ -1,1 +1,0 @@
-PYTHONPATH=. python run_all.py

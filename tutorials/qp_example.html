@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="Python, Julia" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QP Example &mdash; OptArrow  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=d7d12e2f" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e0c6dc42"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Arrow table dict conversion" href="conversion_dictionary_arrow_table.html" />
+    <link rel="prev" title="Quadratic Programming (QP) Problems in OptArrow" href="qp_problem.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/architecture.html">Architecture Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intros/installation.html">Overall Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/julia_setup.html">OptimizationServer (Julia)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/python_engine_setup.html">OptimizationServer (Python)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/benchmarking.html">Benchmark testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lp_problem.html">Linear Programming (LP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lp_example1.html">LP Example: Production Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lp_example2.html">LP Example: FBA analysis for ecoli model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qp_problem.html">Quadratic Programming (QP) Problems in OptArrow</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">QP Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#objective">Objective:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#subject-to-constraints">Subject to constraints:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general-qp-formulation">General QP Formulation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matlab_interface.html">MATLAB interface for OptArrow</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Maintainance and Contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intros/contributing.html">Contributing to Arrow Gateway Engine</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OptArrow</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">QP Example</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/qp_example.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="qp-example">
+<h1>QP Example<a class="headerlink" href="#qp-example" title="Link to this heading"></a></h1>
+<p>Consider solving the following <strong>Quadratic Programming (QP)</strong> problem:</p>
+<section id="objective">
+<h2>Objective:<a class="headerlink" href="#objective" title="Link to this heading"></a></h2>
+<p>Minimize the quadratic function:</p>
+<div class="math notranslate nohighlight">
+\[
+z = x_1 - 2x_2 + 4x_3 + x_1^2 + 2x_2^2 + 3x_3^2 + x_1 x_3
+\]</div>
+</section>
+<section id="subject-to-constraints">
+<h2>Subject to constraints:<a class="headerlink" href="#subject-to-constraints" title="Link to this heading"></a></h2>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+3x_1 + 4x_2 - 2x_3 &amp;\leq 10 \\
+-3x_1 + 2x_2 + x_3 &amp;\geq 2 \\
+2x_1 + 3x_2 + 4x_3 &amp;= 5 \\
+0 \leq x_1 &amp;\leq 5 \\
+1 \leq x_2 &amp;\leq 5 \\
+0 \leq x_3 &amp;\leq 5
+\end{aligned}
+\end{split}\]</div>
+</section>
+<section id="general-qp-formulation">
+<h2>General QP Formulation<a class="headerlink" href="#general-qp-formulation" title="Link to this heading"></a></h2>
+<p>The general form of a Quadratic Programming (QP) problem can be expressed as:</p>
+<p><strong>Objective</strong>: Minimize</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{2} x^T Q x + c^T x
+\]</div>
+<p><strong>Subject to</strong>:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}
+Ax = b,\\Gx \leq h,\\lb \leq x \leq ub
+\end{aligned}\end{align} \]</div>
+<p>So:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+x = \begin{bmatrix}
+x_1 \\
+x_2 \\
+x_3
+\end{bmatrix},
+\quad
+Q = \begin{bmatrix}
+2 &amp; 0 &amp; 1 \\
+0 &amp; 4 &amp; 0 \\
+1 &amp; 0 &amp; 6
+\end{bmatrix},
+\quad
+c = \begin{bmatrix}
+1 \\
+-2 \\
+4
+\end{bmatrix}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[
+A = \begin{bmatrix}
+2 &amp; 3 &amp; 4
+\end{bmatrix},
+\quad
+b = \begin{bmatrix}
+5
+\end{bmatrix}
+\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+G = \begin{bmatrix}
+3 &amp; 4 &amp; -2 \\
+3 &amp; -2 &amp; -1
+\end{bmatrix},
+h = \begin{bmatrix}
+10 \\
+-2
+\end{bmatrix}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+lb = \begin{bmatrix}
+0 \\
+1 \\
+0
+\end{bmatrix},
+ub = \begin{bmatrix}
+5 \\
+5 \\
+5
+\end{bmatrix}
+\end{split}\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(Q\)</span> is a symmetric matrix representing the quadratic coefficients.</p></li>
+<li><p><span class="math notranslate nohighlight">\(c\)</span> is a vector representing the linear coefficients.</p></li>
+<li><p><span class="math notranslate nohighlight">\(A\)</span>, <span class="math notranslate nohighlight">\(G\)</span>, <span class="math notranslate nohighlight">\(lb\)</span>, and <span class="math notranslate nohighlight">\(ub\)</span> are defined as per the problem constraints.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Q&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+        <span class="s2">&quot;G&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+        <span class="s2">&quot;lb&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;ub&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+        <span class="s2">&quot;osense&quot;</span><span class="p">:</span> <span class="s2">&quot;min&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="s2">&quot;QP-tutorial&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;julia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;solver_name&quot;</span><span class="p">:</span> <span class="s2">&quot;HiGHS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;solver_type&quot;</span><span class="p">:</span> <span class="s2">&quot;QP&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;solver_params&quot;</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="c1"># Convert the dictionary to an Arrow table for IPC serialization</span>
+<span class="n">pa_arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ipc_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">pa_arrays</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">ipc_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+<span class="c1"># Serialize the table to IPC stream bytes</span>
+<span class="n">sink</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">BufferOutputStream</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">new_stream</span><span class="p">(</span><span class="n">sink</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<span class="n">ipc_bytes</span> <span class="o">=</span> <span class="n">sink</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">to_pybytes</span><span class="p">()</span>
+
+<span class="c1"># Send the IPC stream bytes to the server</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/vnd.apache.arrow.stream&quot;</span><span class="p">}</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/compute&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ipc_bytes</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+<span class="c1"># Check if the response is successful</span>
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># response is ipc stream</span>
+<span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+<span class="n">result_table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
+<span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">result_table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">to_pylist</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">result_table</span><span class="o">.</span><span class="n">column_names</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;success&#39;: [True], &#39;status&#39;: [&#39;OPTIMAL&#39;], &#39;obj_val&#39;: [1.7412689173457534], &#39;solution&#39;: [[0.2904540102865504, 1.4132712288023412, 0.04481957325496911]]}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/computeJSON&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">ipc_dict</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;success&#39;: True, &#39;status&#39;: &#39;OPTIMAL&#39;, &#39;obj_val&#39;: 1.7412689173457534, &#39;solution&#39;: [0.2904540102865504, 1.4132712288023412, 0.04481957325496911]}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="qp_problem.html" class="btn btn-neutral float-left" title="Quadratic Programming (QP) Problems in OptArrow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="conversion_dictionary_arrow_table.html" class="btn btn-neutral float-right" title="Arrow table dict conversion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Digital Metabolic Twin Centre.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

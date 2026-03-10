@@ -1,0 +1,100 @@
+# Introduction
+
+```{figure} _static/logo.png
+:align: center
+:width: 20%
+<span style="font-style: normal; font-weight: bold; font-size: 1.5em;">OptArrow</span><br>
+Solve optimization problems anywhere, in any language, with any solver.
+```
+
+
+**OptArrow** is an optimization integration engine designed to seamlessly connect the Python and Julia ecosystems. It addresses the technical and structural challenges of building scalable, high-performance optimization pipelines across languages.
+
+## Motivation
+
+Modern optimization workflows often involve multiple components:
+- **Python** is widely used for data preparation, orchestration, and web service development.
+- **Julia**, on the other hand, offers state-of-the-art numerical solvers with exceptional performance for mathematical programming.
+
+However, bridging these two environments remains challenging. Users frequently encounter issues with data format inconsistencies, communication overhead, and the lack of a unified interface for optimization models.
+
+**OptArrow** was developed to close this gap.
+
+## What Problem Does OptArrow Solve?
+
+1. **Cross-language communication bottlenecks**
+   Passing large-scale optimization models between Python and Julia often involves serialization overhead, format mismatches, and maintenance burdens.
+
+2. **Inconsistent model representations**
+   Different solvers have their own modeling APIs (e.g., Pyomo, JuMP), making solver-switching difficult and error-prone.
+
+3. **Scalability and memory inefficiency**
+   Traditional formats like JSON or `.mat` files struggle with large sparse matrices and high-dimensional data.
+
+## OptArrow’s Solution
+
+OptArrow introduces a streamlined, interoperable architecture with the following features:
+
+* **Unified in-memory model representation**
+   Based on the Apache Arrow columnar format, OptArrow enables zero-copy data exchange between Python and Julia.
+
+* **Protocol-based model definitions** 
+   Optimization problems (e.g., Linear Programming, Quadratic Programming) are described using well-defined schemas, independent of any solver-specific syntax.
+
+* **Multi-backend support** 
+   Users can run the same model through solvers like HiGHS, Gurobi, Mosek, or GLPK — simply by switching a backend configuration.
+
+* **Efficient communication channels**
+   OptArrow supports HTTP and Arrow Flight RPC, offering flexibility for both local and distributed deployments.
+
+## Learn More
+
+* 📘 [How to Define an LP Problem](tutorials/lp_problem)
+* 📘 [How to Use OptArrow to solve an LP Problem](tutorials/lp_example1)
+
+
+---
+
+```{toctree}
+:hidden:
+:maxdepth: 1
+:caption: Introduction
+
+self
+intros/architecture
+```
+
+```{toctree}
+:hidden:
+:maxdepth: 1
+:caption: Setup and Installation
+
+intros/installation
+intros/julia_setup
+intros/python_engine_setup
+intros/benchmarking
+```
+
+```{toctree}
+:hidden:
+:maxdepth: 1
+:caption: Tutorials
+
+tutorials/lp_problem
+tutorials/lp_example1
+tutorials/lp_example2
+
+tutorials/qp_problem
+tutorials/qp_example
+
+tutorials/conversion_dictionary_arrow_table
+tutorials/matlab_interface
+```
+
+```{toctree}
+:hidden:
+:maxdepth: 1
+:caption: Maintainance and Contribution
+
+intros/contributing
+```

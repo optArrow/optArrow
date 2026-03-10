@@ -1,4 +1,0 @@
-requests
-pyarrow
-arrow_table_dict_conversion
-scipy

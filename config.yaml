@@ -1,9 +1,0 @@
-grpc:
-  ip: 127.0.0.1
-  port: 8101
-http:
-  ip: 127.0.0.1
-  port: 8000
-julia:
-  ip: 127.0.0.1
-  port: 65432

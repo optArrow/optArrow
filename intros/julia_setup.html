@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="Python, Julia" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OptimizationServer (Julia) &mdash; OptArrow  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=d7d12e2f" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e0c6dc42"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="OptimizationServer (Python)" href="python_engine_setup.html" />
+    <link rel="prev" title="Overall Setup" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Overall Setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OptimizationServer (Julia)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#project-structure">📁 Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">🚀 Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">0. Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launch-julia-in-project-mode">1.  Launch Julia in project mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-dependencies-only-needed-the-first-time">2. Install dependencies (only needed the first time)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#start-the-server-directly-from-terminal">3. Start the server directly from terminal:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="python_engine_setup.html">OptimizationServer (Python)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarking.html">Benchmark testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/lp_problem.html">Linear Programming (LP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/lp_example1.html">LP Example: Production Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/lp_example2.html">LP Example: FBA analysis for ecoli model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_problem.html">Quadratic Programming (QP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_example.html">QP Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB interface for OptArrow</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Maintainance and Contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to Arrow Gateway Engine</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OptArrow</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">OptimizationServer (Julia)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/intros/julia_setup.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="optimizationserver-julia">
+<h1>OptimizationServer (Julia)<a class="headerlink" href="#optimizationserver-julia" title="Link to this heading"></a></h1>
+<p>This project implements a lightweight socket-based optimization server. It receives optimization problems (e.g. LP, QP) encoded in Arrow IPC format via TCP, solves them using JuMP and solver backends, and returns the result. The server listens for incoming socket connections and sends optimization results serialized in Arrow IPC format.</p>
+<section id="project-structure">
+<h2>📁 Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>julia/
+├── api/ # Request listener
+│ └── socket_server.jl # TCP socket server (entry controller)
+│
+├── model/ # Optimization model definitions
+│ ├── lp_model.jl
+│ └── qp_model.jl
+│
+├── service/ # Business logic and factories
+│ ├── model_factory.jl # Maps model type strings to model modules
+│ ├── solver_factory.jl # Maps solver name to JuMP optimizer
+│ └── optimization_service.jl # Core compute logic
+│
+├── utils/ # Reusable I/O and math helpers
+│ ├── io_utils.jl # Arrow serialization, TCP helpers
+│ └── sparse_matrix.jl # Sparse array converters
+│
+├── engine.jl # Project entry point
+├── Project.toml
+└── Manifest.toml
+</pre></div>
+</div>
+</section>
+<section id="getting-started">
+<h2>🚀 Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<section id="prerequisites">
+<h3>0. Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
+<p><strong>1. Install Julia</strong></p>
+<p>Follow the instructions in https://julialang.org/install/ for your OS (Linux / macOS / Windows).</p>
+<p><strong>2. Add Julia to your PATH (so you can run julia in the terminal):</strong></p>
+<ul>
+<li><p>Linux/macOS (bash/zsh):
+Find where Julia is installed. For example: <code class="docutils literal notranslate"><span class="pre">/usr/local/bin/julia</span></code>, then adding that folder to your PATH by running.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=&quot;$PATH:/usr/local/bin/julia&quot;&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<span class="nb">source</span><span class="w"> </span>~/.bashrc
+</pre></div>
+</div>
+</li>
+<li><p>Windows (PowerShell):
+Add Julia’s bin folder (e.g. C:\Users&lt;you&gt;\AppData\Local\Programs\Julia-x.y.z\bin) to your System Environment Variables → Path.</p></li>
+</ul>
+<p><strong>3. Verify installation</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>--version
+</pre></div>
+</div>
+<p>You should see something like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>version<span class="w"> </span><span class="m">1</span>.10.4
+</pre></div>
+</div>
+</section>
+<section id="launch-julia-in-project-mode">
+<h3>1.  Launch Julia in project mode<a class="headerlink" href="#launch-julia-in-project-mode" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">julia</span> <span class="pre">--project=.</span></code>
+This tells Julia to use the current folder's environment (Project.toml + Manifest.toml).</p>
+</section>
+<section id="install-dependencies-only-needed-the-first-time">
+<h3>2. Install dependencies (only needed the first time)<a class="headerlink" href="#install-dependencies-only-needed-the-first-time" title="Link to this heading"></a></h3>
+<p>Once inside Julia REPL:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">julia</span><span class="o">&gt;</span><span class="w"> </span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">pkg</span><span class="p">)</span> <span class="n">instantiate</span>
+</pre></div>
+</div>
+</section>
+<section id="start-the-server-directly-from-terminal">
+<h3>3. Start the server directly from terminal:<a class="headerlink" href="#start-the-server-directly-from-terminal" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>--project<span class="o">=</span>.<span class="w"> </span>engine.jl
+</pre></div>
+</div>
+<p>You should see:</p>
+<div class="highlight-Julia notranslate"><div class="highlight"><pre><span></span><span class="n">Julia</span><span class="w"> </span><span class="n">Engine</span><span class="w"> </span><span class="n">started</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">65432</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Overall Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="python_engine_setup.html" class="btn btn-neutral float-right" title="OptimizationServer (Python)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Digital Metabolic Twin Centre.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

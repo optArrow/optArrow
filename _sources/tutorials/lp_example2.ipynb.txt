@@ -1,0 +1,316 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "e7992a2a",
+   "metadata": {},
+   "source": [
+    "# LP Example: FBA analysis for ecoli model\n",
+    "\n",
+    "This example solves a **linear programming (LP)** problem to perform flux balance analysis (FBA) on the E. coli core metabolic model using the OptArrow solver backend.\n",
+    "\n",
+    "FBA identifies a steady-state flux distribution that maximizes biomass production,\n",
+    "subject to stoichiometric and flux constraints.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "7220b3aa",
+   "metadata": {},
+   "source": [
+    "## Step 1 : Parse the `.mat` model file\n",
+    "You can load a `.mat` model from local storage or download it from a public database,\n",
+    "such as the [BiGG Models database](http://bigg.ucsd.edu/)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "9b68ca36",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from scipy.io import loadmat\n",
+    "from scipy import sparse\n",
+    "import numpy as np\n",
+    "import requests\n",
+    "import pyarrow as pa\n",
+    "\n",
+    "# Option 1: Download model from BiGG (if not already downloaded)\n",
+    "url = \"http://bigg.ucsd.edu/static/models/e_coli_core.mat\"\n",
+    "filename = \"e_coli_core.mat\"\n",
+    "response = requests.get(url)\n",
+    "with open(filename, \"wb\") as f:\n",
+    "    f.write(response.content)\n",
+    "\n",
+    "# Option 2: Use local file instead\n",
+    "# filename = \"path/to/your/model.mat\"\n",
+    "\n",
+    "# Load .mat file\n",
+    "mat = loadmat(filename)\n",
+    "\n",
+    "# # Extract first non-system key as model name (exclude system keys like '__header__', etc.)\n",
+    "model_names = [key for key in mat.keys() if not key.startswith('__')]\n",
+    "model_name = model_names[0]\n",
+    "\n",
+    "# Unwrap model struct, the actual model object is wrapped in a 1x1 ndarray\n",
+    "model_data = mat[model_name]\n",
+    "if isinstance(model_data, np.ndarray) and model_data.shape == (1, 1):\n",
+    "    model = model_data[0, 0]\n",
+    "else:\n",
+    "    model = model_data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ea49b650",
+   "metadata": {},
+   "source": [
+    "## Step 2: Load the stoichiometric matrix and constraints\n",
+    "The core components for the LP problem are:\n",
+    "- `S`: stoichiometric matrix (m x n)\n",
+    "- `b`: RHS of equality constraints (`S @ v = b`)\n",
+    "- `c`: objective coefficients (biomass reaction)\n",
+    "- `lb`, `ub`: lower and upper bounds for each flux variable\n",
+    "\n",
+    "The matrix `S` is converted to sparse COO format."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "9a5717af",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Flatten the model fields into a dictionary\n",
+    "mat_dict = {field: model[field] for field in model.dtype.names}\n",
+    "\n",
+    "# Extract LP components\n",
+    "S = sparse.coo_matrix(mat_dict['S'])\n",
+    "b = mat_dict['b'].flatten()\n",
+    "c = mat_dict['c'].flatten()\n",
+    "lb = mat_dict['lb'].flatten()\n",
+    "ub = mat_dict['ub'].flatten()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "29a32c63",
+   "metadata": {},
+   "source": [
+    "## Step 3: Prepare model dictionary for OptArrow\n",
+    "Transform the data into a dictionary compatible with the OptArrow solver API.\n",
+    "\n",
+    "- The matrix `A` corresponds to `S`, encoded in COO format with row/col/val.\n",
+    "- `osense`: Objective sense, `\"max\"` for biomass maximization."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "0e3a6f8f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# computational model data\n",
+    "A ={\n",
+    "    \"row\" : S.row,\n",
+    "    \"col\" : S.col,\n",
+    "    \"val\" : S.data,\n",
+    "}\n",
+    "model_data = {\n",
+    "    \"A\": A,\n",
+    "    \"b\": b,\n",
+    "    \"c\": c,\n",
+    "    \"lb\": lb,\n",
+    "    \"ub\": ub,\n",
+    "    \"osense\": \"max\",\n",
+    "}\n",
+    "\n",
+    "# You can use either \"Python\" or \"Julia\" as the engine\n",
+    "engine = \"Python\"\n",
+    "\n",
+    "# Solver configuration\n",
+    "solver_type = \"LP\"\n",
+    "solver_name = \"HiGHS\"\n",
+    "solver_params = {\"presolve\":\"on\", \"infinite_cost\":1e+18}\n",
+    "\n",
+    "solver = {\n",
+    "    \"solver_name\": solver_name,\n",
+    "    \"solver_type\": solver_type,\n",
+    "    \"solver_params\": solver_params\n",
+    "}\n",
+    "\n",
+    "# Prepare the IPC dictionary for OptArrow\n",
+    "ipc_dict = {\n",
+    "    \"model\": model_data,\n",
+    "    \"model_name\": model_name,\n",
+    "    \"engine\": engine,\n",
+    "    \"solver\": solver\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b673dc95",
+   "metadata": {},
+   "source": [
+    "## Step 4: Solve the LP\n",
+    "Make sure the OptArrow service is running. Here in the example the service is running on localhost and can be accessed via 'http://localhost:8000`."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "90c155f2",
+   "metadata": {},
+   "source": [
+    "### Using Apache Arrow IPC binary stream via `/compute`\n",
+    "This format is more efficient for large-scale model transfer and preferred in high-performance systems."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "6bd39b9b",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Objective value: 0.8739215069684303\n",
+      "Status: optimal\n",
+      "Solution: [7.477381962160284, 0.0, 4.860861146496816, -16.023526143167604, 4.959984944574655, -0.0, -0.0, -14.716139568742832, 3.2148950476847684, -0.0, -0.0, -0.0, 2.5043094703687334, 6.007249575350332, 6.007249575350332, 8.39, 0.0, -0.0, 0.0, -0.0, 5.064375661482092, 45.51400977451745, -0.0, 1.7581774441067841, 0.8739215069684303, -0.0, -22.80983331020496, 2.678481850507529, 6.007249575350332, -2.2815030940671264, -0.0, 43.598985311997524, -0.0, 14.716139568742832, 0.0, -0.0, 5.064375661482092, -5.064375661482092, 1.4969837572615665, 0.0, 1.4969837572615665, 1.181498093245963, 7.477381962160284, 0.0, 0.0, 0.0, 22.80983331020496, 0.0, -0.0, 0.0, 0.0, -10.0, 0.0, 0.0, 17.530865429786786, 29.175827135565807, 0.0, 0.0, -4.765319193197456, -21.799492655998762, -3.2148950476847684, 0.0, 0.0, 7.477381962160284, 0.0, 0.0, -0.0, 0.0, -0.0, 5.064375661482092, -0.0, 4.959984944574655, 16.023526143167604, 10.0, 0.22346172933182762, -0.0, -4.541857463865629, 0.0, 0.0, -0.0, 4.959984944574655, -29.175827135565807, 6.007249575350332, -0.0, -0.0, 0.0, -0.0, 5.064375661482092, 0.0, 0.0, 38.53460965051543, 0.0, 4.765319193197456, 21.799492655998762, 9.282532599166615]\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Prepare Arrow IPC stream\n",
+    "pa_arrays = [pa.array([v]) for v in ipc_dict.values()]\n",
+    "ipc_tables = pa.Table.from_arrays(pa_arrays, names=list(ipc_dict.keys()))\n",
+    "\n",
+    "# Serialize to Arrow stream\n",
+    "sink = pa.BufferOutputStream()\n",
+    "with pa.ipc.new_stream(sink, ipc_tables.schema) as writer:\n",
+    "    writer.write(ipc_tables)\n",
+    "ipc_bytes = sink.getvalue().to_pybytes()\n",
+    "\n",
+    "# Send request\n",
+    "headers = {\n",
+    "        \"Content-Type\": \"application/vnd.apache.arrow.stream\"\n",
+    "    }\n",
+    "response = requests.post(\"http://localhost:8000/compute\", data=ipc_bytes, headers=headers)\n",
+    "\n",
+    "# Handle the response\n",
+    "if response.status_code == 200:\n",
+    "    response_data = response.content\n",
+    "    response_table = pa.ipc.open_stream(response_data).read_all()\n",
+    "    print(\"Objective value:\", response_table['obj_val'][0])\n",
+    "    print(\"Status:\", response_table['status'][0])\n",
+    "    print(\"Solution:\", response_table['solution'][0])\n",
+    "else:\n",
+    "    response_data = response.content\n",
+    "    response_table = pa.ipc.open_stream(response_data).read_all()\n",
+    "    print(\"Error message:\", response_table['error_message'][0])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "16ef68cf",
+   "metadata": {},
+   "source": [
+    "## Optional: Solve the LP using JSON via `/computeJSON`\n",
+    "If the model is small, you can also use JSON format for simplicity.\n",
+    "Since the data parsed from the `.mat` file is np.ndarray, it needs to be converted to Python native lists for JSON serialization."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "b9173b26",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "A ={\n",
+    "    \"row\" : S.row.tolist(),\n",
+    "    \"col\" : S.col.tolist(),\n",
+    "    \"val\" : S.data.tolist(),\n",
+    "}\n",
+    "model_data = {\n",
+    "    \"A\": A,\n",
+    "    \"b\": b.tolist(),\n",
+    "    \"c\": c.tolist(),\n",
+    "    \"lb\": lb.tolist(),\n",
+    "    \"ub\": ub.tolist(),\n",
+    "    \"osense\": \"max\",\n",
+    "}\n",
+    "\n",
+    "ipc_dict = {\n",
+    "    \"model\": model_data,\n",
+    "    \"model_name\": model_name,\n",
+    "    \"engine\": engine,\n",
+    "    \"solver\": solver\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "fe937465",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Objective Value: 0.8739215069684303\n",
+      "Solution: [7.477381962160284, 0.0, 4.860861146496816, -16.023526143167604, 4.959984944574655, -0.0, -0.0, -14.716139568742832, 3.2148950476847684, -0.0, -0.0, -0.0, 2.5043094703687334, 6.007249575350332, 6.007249575350332, 8.39, 0.0, -0.0, 0.0, -0.0, 5.064375661482092, 45.51400977451745, -0.0, 1.7581774441067841, 0.8739215069684303, -0.0, -22.80983331020496, 2.678481850507529, 6.007249575350332, -2.2815030940671264, -0.0, 43.598985311997524, -0.0, 14.716139568742832, 0.0, -0.0, 5.064375661482092, -5.064375661482092, 1.4969837572615665, 0.0, 1.4969837572615665, 1.181498093245963, 7.477381962160284, 0.0, 0.0, 0.0, 22.80983331020496, 0.0, -0.0, 0.0, 0.0, -10.0, 0.0, 0.0, 17.530865429786786, 29.175827135565807, 0.0, 0.0, -4.765319193197456, -21.799492655998762, -3.2148950476847684, 0.0, 0.0, 7.477381962160284, 0.0, 0.0, -0.0, 0.0, -0.0, 5.064375661482092, -0.0, 4.959984944574655, 16.023526143167604, 10.0, 0.22346172933182762, -0.0, -4.541857463865629, 0.0, 0.0, -0.0, 4.959984944574655, -29.175827135565807, 6.007249575350332, -0.0, -0.0, 0.0, -0.0, 5.064375661482092, 0.0, 0.0, 38.53460965051543, 0.0, 4.765319193197456, 21.799492655998762, 9.282532599166615]\n",
+      "Status: optimal\n"
+     ]
+    }
+   ],
+   "source": [
+    "headers = {\n",
+    "        \"Content-Type\": \"application/json\"\n",
+    "    }\n",
+    "\n",
+    "# Send the request to OptArrow backend\n",
+    "response = requests.post(\"http://localhost:8000/computeJSON\", json=ipc_dict, headers=headers)\n",
+    "\n",
+    "# Handle the response\n",
+    "if response.status_code == 200:\n",
+    "    result = response.json()\n",
+    "    objective_value = result.get(\"obj_val\", None) # objective value is returned as \"obj_val\"\n",
+    "    solution = result.get(\"solution\", None) # solution is returned as \"solution\"\n",
+    "    status = result.get(\"status\", None) # status of the optimization\n",
+    "    print(\"Objective Value:\", objective_value)\n",
+    "    print(\"Solution:\", solution)\n",
+    "    print(\"Status:\", status)\n",
+    "else:\n",
+    "    print(\"Error:\", response.text)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": ".venv",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
