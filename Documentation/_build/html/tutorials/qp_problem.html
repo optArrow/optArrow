@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quadratic Programming (QP) Problems in OptArrow &mdash; OptArrow  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="QP Example" href="qp_example.html" />
+    <link rel="prev" title="LP Example: FBA analysis for ecoli model" href="lp_example2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OptArrow
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intros/architecture.html">Architecture Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intros/installation.html">Overall Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/julia_setup.html">OptimizationServer (Julia)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/python_engine_setup.html">OptimizationServer (Python)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/benchmarking.html">Benchmark testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lp_problem.html">Linear Programming (LP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lp_example1.html">LP Example: Production Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lp_example2.html">LP Example: FBA analysis for ecoli model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quadratic Programming (QP) Problems in OptArrow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#standard-qp-form">Standard QP Form</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model-components">Model Components</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ipc-request-structure-ipc-dict">IPC Request Structure (<cite>ipc_dict</cite>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model-required"><cite>model</cite> (Required)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#solver-required"><cite>solver</cite> (Required)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#time-limit-optional"><cite>time_limit</cite> (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-name-optional"><cite>model_name</cite> (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine-required"><cite>engine</cite> (Required)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#data-packaging-with-apache-arrow">Data Packaging with Apache Arrow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sending-the-request">Sending the Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#response">Response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qp_example.html">QP Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matlab_interface.html">MATLAB interface for OptArrow</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intros/contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OptArrow</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quadratic Programming (QP) Problems in OptArrow</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/qp_problem.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quadratic-programming-qp-problems-in-optarrow">
+<h1>Quadratic Programming (QP) Problems in OptArrow<a class="headerlink" href="#quadratic-programming-qp-problems-in-optarrow" title="Link to this heading"></a></h1>
+<p>OptArrow provides an efficient optimization service using the Apache Arrow IPC format for inter-process communication. This document explains how to structure and send a Quadratic Programming (QP) problem to the OptArrow engine using Python.</p>
+<section id="standard-qp-form">
+<h2>Standard QP Form<a class="headerlink" href="#standard-qp-form" title="Link to this heading"></a></h2>
+<p>The QP problem should be structured as:</p>
+<p><strong>Objective</strong>: Minimize</p>
+<div class="math notranslate nohighlight">
+\[\frac{1}{2} x^T Q x + c^T x\]</div>
+<p><strong>Subject to</strong>:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}Ax = b \quad \text{(equality constraints)}\\Gx \leq h \quad \text{(inequality constraints)}\\lb \leq x \leq ub \quad \text{(bounds)}\end{aligned}\end{align} \]</div>
+<section id="model-components">
+<h3>Model Components<a class="headerlink" href="#model-components" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Q</strong>: Quadratic coefficient matrix (symmetric), stored as a sparse COO format with <cite>row</cite>, <cite>col</cite>, <cite>val</cite></p></li>
+<li><p><strong>c</strong>: Linear objective vector</p></li>
+<li><p><strong>A</strong>: (Optional) Equality constraint matrix (sparse COO)</p></li>
+<li><p><strong>b</strong>: (Optional) Right-hand side of equality constraints</p></li>
+<li><p><strong>G</strong>: (Optional) Inequality constraint matrix (sparse COO)</p></li>
+<li><p><strong>h</strong>: (Optional) Right-hand side of inequality constraints</p></li>
+<li><p><strong>lb</strong>: (Optional) Lower bounds for each variable</p></li>
+<li><p><strong>ub</strong>: (Optional) Upper bounds for each variable</p></li>
+<li><p><strong>osense</strong>: (Optional) Objective sense: “min” or “max” (default is “min”)</p></li>
+</ul>
+</section>
+</section>
+<section id="ipc-request-structure-ipc-dict">
+<h2>IPC Request Structure (<cite>ipc_dict</cite>)<a class="headerlink" href="#ipc-request-structure-ipc-dict" title="Link to this heading"></a></h2>
+<p>The message to OptArrow should be structured as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">model_data</span><span class="p">,</span>       <span class="c1"># The QP model data structure (see below)</span>
+    <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="s2">&quot;test_qp&quot;</span><span class="p">,</span>   <span class="c1"># Optional: model identifier</span>
+    <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;julia&quot;</span><span class="p">,</span>         <span class="c1"># Engine used for computation</span>
+    <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="n">solver_config</span>    <span class="c1"># Solver configuration</span>
+    <span class="s2">&quot;time_limit&quot;</span><span class="p">:</span> <span class="mi">60</span>           <span class="c1"># Optional: time limit in seconds (default is 300)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<section id="model-required">
+<h3><cite>model</cite> (Required)<a class="headerlink" href="#model-required" title="Link to this heading"></a></h3>
+<p>QP model structured as a dictionary:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Q&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>     <span class="c1"># Row indices for Q (symmetric matrix)</span>
+        <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>     <span class="c1"># Column indices for Q</span>
+        <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>      <span class="c1"># Values at (row, col)</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># Linear coefficients</span>
+    <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">{</span>              <span class="c1"># (Optional) Equality matrix</span>
+        <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
+        <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
+        <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># (Optional) RHS of equality constraints</span>
+    <span class="s2">&quot;G&quot;</span><span class="p">:</span> <span class="p">{</span>                <span class="c1"># (Optional) Inequality matrix</span>
+        <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
+        <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
+        <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># (Optional) RHS of inequality constraints</span>
+    <span class="s2">&quot;lb&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>          <span class="c1"># (Optional) Lower bounds</span>
+    <span class="s2">&quot;ub&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>          <span class="c1"># (Optional) Upper bounds</span>
+    <span class="s2">&quot;osense&quot;</span><span class="p">:</span> <span class="s2">&quot;min&quot;</span>       <span class="c1"># (Optional) &quot;min&quot; or &quot;max&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="solver-required">
+<h3><cite>solver</cite> (Required)<a class="headerlink" href="#solver-required" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;solver_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Gurobi&quot;</span><span class="p">,</span>       <span class="c1"># Example solver name</span>
+    <span class="s2">&quot;solver_type&quot;</span><span class="p">:</span> <span class="s2">&quot;QP&quot;</span><span class="p">,</span>         <span class="c1"># Solver type</span>
+    <span class="s2">&quot;solver_params&quot;</span><span class="p">:</span> <span class="p">{</span>            <span class="c1"># (Optional) solver-specific params</span>
+        <span class="s2">&quot;FeasibilityTol&quot;</span><span class="p">:</span> <span class="mf">1e-5</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="time-limit-optional">
+<h3><cite>time_limit</cite> (Optional)<a class="headerlink" href="#time-limit-optional" title="Link to this heading"></a></h3>
+<p>An optional time limit for solving the optimization model, specified in seconds, default is 300.
+This parameter is passed directly to the solver and controls how long it is allowed to run before stopping.</p>
+<p>For solvers that support time limits, the solver will attempt to return the best feasible solution found so far when the time limit is reached.
+If no feasible solution is found before the time limit, the solver may still return an infeasibility status or no solution.</p>
+</section>
+<section id="model-name-optional">
+<h3><cite>model_name</cite> (Optional)<a class="headerlink" href="#model-name-optional" title="Link to this heading"></a></h3>
+<p>For logging or traceability.</p>
+</section>
+<section id="engine-required">
+<h3><cite>engine</cite> (Required)<a class="headerlink" href="#engine-required" title="Link to this heading"></a></h3>
+<p>Specifies the backend system to be used for computation. Currently supports <cite>“julia”</cite> and <cite>“python”</cite>.</p>
+</section>
+</section>
+<section id="data-packaging-with-apache-arrow">
+<h2>Data Packaging with Apache Arrow<a class="headerlink" href="#data-packaging-with-apache-arrow" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ipc_table</span> <span class="o">=</span> <span class="n">dict_to_pa_table</span><span class="p">(</span><span class="n">ipc_dict</span><span class="p">)</span>
+
+<span class="n">sink</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">BufferOutputStream</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">new_stream</span><span class="p">(</span><span class="n">sink</span><span class="p">,</span> <span class="n">ipc_table</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ipc_table</span><span class="p">)</span>
+
+<span class="n">ipc_bytes</span> <span class="o">=</span> <span class="n">sink</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">to_pybytes</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="sending-the-request">
+<h2>Sending the Request<a class="headerlink" href="#sending-the-request" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/vnd.apache.arrow.stream&quot;</span>
+<span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ipc_bytes</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="response">
+<h2>Response<a class="headerlink" href="#response" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+<span class="n">result_table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Ensure symmetric structure in Q.</p></li>
+<li><p>G and h are optional; omit them for pure equality-constrained QP.</p></li>
+<li><p>Schema consistency is crucial; use Arrow types that match server expectations.</p></li>
+<li><p>Typical QP solvers include Gurobi, and Mosek.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lp_example2.html" class="btn btn-neutral float-left" title="LP Example: FBA analysis for ecoli model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="qp_example.html" class="btn btn-neutral float-right" title="QP Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, OptArrow Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

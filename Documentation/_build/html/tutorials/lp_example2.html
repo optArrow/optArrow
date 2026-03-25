@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LP Example: FBA analysis for ecoli model &mdash; OptArrow  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Quadratic Programming (QP) Problems in OptArrow" href="qp_problem.html" />
+    <link rel="prev" title="LP Example: Production Optimization" href="lp_example1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OptArrow
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intros/architecture.html">Architecture Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intros/installation.html">Overall Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/julia_setup.html">OptimizationServer (Julia)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/python_engine_setup.html">OptimizationServer (Python)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/benchmarking.html">Benchmark testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lp_problem.html">Linear Programming (LP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lp_example1.html">LP Example: Production Optimization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LP Example: FBA analysis for ecoli model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-parse-the-mat-model-file">Step 1 : Parse the <cite>.mat</cite> model file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-load-the-stoichiometric-matrix-and-constraints">Step 2: Load the stoichiometric matrix and constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-prepare-model-dictionary-for-optarrow">Step 3: Prepare model dictionary for OptArrow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-4-solve-the-lp">Step 4: Solve the LP</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-apache-arrow-ipc-binary-stream-via-compute">Using Apache Arrow IPC binary stream via <cite>/compute</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-solve-the-lp-using-json-via-computejson">Optional: Solve the LP using JSON via <cite>/computeJSON</cite></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qp_problem.html">Quadratic Programming (QP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qp_example.html">QP Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matlab_interface.html">MATLAB interface for OptArrow</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intros/contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OptArrow</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">LP Example: FBA analysis for ecoli model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/lp_example2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lp-example-fba-analysis-for-ecoli-model">
+<h1>LP Example: FBA analysis for ecoli model<a class="headerlink" href="#lp-example-fba-analysis-for-ecoli-model" title="Link to this heading"></a></h1>
+<p>This example solves a <strong>linear programming (LP)</strong> problem to perform flux balance analysis (FBA) on the E. coli core metabolic model using the OptArrow solver backend.</p>
+<p>FBA identifies a steady-state flux distribution that maximizes biomass production,
+subject to stoichiometric and flux constraints.</p>
+<section id="step-1-parse-the-mat-model-file">
+<h2>Step 1 : Parse the <cite>.mat</cite> model file<a class="headerlink" href="#step-1-parse-the-mat-model-file" title="Link to this heading"></a></h2>
+<p>You can load a <cite>.mat</cite> model from local storage or download it from a public database,
+such as the <a class="reference external" href="http://bigg.ucsd.edu/">BiGG Models database</a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.io</span> <span class="kn">import</span> <span class="n">loadmat</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+
+<span class="c1"># Option 1: Download model from BiGG (if not already downloaded)</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://bigg.ucsd.edu/static/models/e_coli_core.mat&quot;</span>
+<span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;e_coli_core.mat&quot;</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+<span class="c1"># Option 2: Use local file instead</span>
+<span class="c1"># filename = &quot;path/to/your/model.mat&quot;</span>
+
+<span class="c1"># Load .mat file</span>
+<span class="n">mat</span> <span class="o">=</span> <span class="n">loadmat</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+<span class="c1"># # Extract first non-system key as model name (exclude system keys like &#39;__header__&#39;, etc.)</span>
+<span class="n">model_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mat</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">)]</span>
+<span class="n">model_name</span> <span class="o">=</span> <span class="n">model_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Unwrap model struct, the actual model object is wrapped in a 1x1 ndarray</span>
+<span class="n">model_data</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span>
+<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model_data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">model_data</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model_data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model_data</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-load-the-stoichiometric-matrix-and-constraints">
+<h2>Step 2: Load the stoichiometric matrix and constraints<a class="headerlink" href="#step-2-load-the-stoichiometric-matrix-and-constraints" title="Link to this heading"></a></h2>
+<p>The core components for the LP problem are:
+- <cite>S</cite>: stoichiometric matrix (m x n)
+- <cite>b</cite>: RHS of equality constraints (<cite>S &#64; v = b</cite>)
+- <cite>c</cite>: objective coefficients (biomass reaction)
+- <cite>lb</cite>, <cite>ub</cite>: lower and upper bounds for each flux variable</p>
+<p>The matrix <cite>S</cite> is converted to sparse COO format.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Flatten the model fields into a dictionary</span>
+<span class="n">mat_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="p">:</span> <span class="n">model</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">}</span>
+
+<span class="c1"># Extract LP components</span>
+<span class="n">S</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">(</span><span class="n">mat_dict</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">mat_dict</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">mat_dict</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">lb</span> <span class="o">=</span> <span class="n">mat_dict</span><span class="p">[</span><span class="s1">&#39;lb&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">ub</span> <span class="o">=</span> <span class="n">mat_dict</span><span class="p">[</span><span class="s1">&#39;ub&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-prepare-model-dictionary-for-optarrow">
+<h2>Step 3: Prepare model dictionary for OptArrow<a class="headerlink" href="#step-3-prepare-model-dictionary-for-optarrow" title="Link to this heading"></a></h2>
+<p>Transform the data into a dictionary compatible with the OptArrow solver API.</p>
+<ul class="simple">
+<li><p>The matrix <cite>A</cite> corresponds to <cite>S</cite>, encoded in COO format with row/col/val.</p></li>
+<li><p><cite>osense</cite>: Objective sense, <cite>“max”</cite> for biomass maximization.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># computational model data</span>
+<span class="n">A</span> <span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;row&quot;</span> <span class="p">:</span> <span class="n">S</span><span class="o">.</span><span class="n">row</span><span class="p">,</span>
+    <span class="s2">&quot;col&quot;</span> <span class="p">:</span> <span class="n">S</span><span class="o">.</span><span class="n">col</span><span class="p">,</span>
+    <span class="s2">&quot;val&quot;</span> <span class="p">:</span> <span class="n">S</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">model_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="n">A</span><span class="p">,</span>
+    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">b</span><span class="p">,</span>
+    <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">c</span><span class="p">,</span>
+    <span class="s2">&quot;lb&quot;</span><span class="p">:</span> <span class="n">lb</span><span class="p">,</span>
+    <span class="s2">&quot;ub&quot;</span><span class="p">:</span> <span class="n">ub</span><span class="p">,</span>
+    <span class="s2">&quot;osense&quot;</span><span class="p">:</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># You can use either &quot;Python&quot; or &quot;Julia&quot; as the engine</span>
+<span class="n">engine</span> <span class="o">=</span> <span class="s2">&quot;Python&quot;</span>
+
+<span class="c1"># Solver configuration</span>
+<span class="n">solver_type</span> <span class="o">=</span> <span class="s2">&quot;LP&quot;</span>
+<span class="n">solver_name</span> <span class="o">=</span> <span class="s2">&quot;HiGHS&quot;</span>
+<span class="n">solver_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;presolve&quot;</span><span class="p">:</span><span class="s2">&quot;on&quot;</span><span class="p">,</span> <span class="s2">&quot;infinite_cost&quot;</span><span class="p">:</span><span class="mf">1e+18</span><span class="p">}</span>
+
+<span class="n">solver</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;solver_name&quot;</span><span class="p">:</span> <span class="n">solver_name</span><span class="p">,</span>
+    <span class="s2">&quot;solver_type&quot;</span><span class="p">:</span> <span class="n">solver_type</span><span class="p">,</span>
+    <span class="s2">&quot;solver_params&quot;</span><span class="p">:</span> <span class="n">solver_params</span>
+<span class="p">}</span>
+
+<span class="c1"># Prepare the IPC dictionary for OptArrow</span>
+<span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">model_data</span><span class="p">,</span>
+    <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="n">model_name</span><span class="p">,</span>
+    <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="n">engine</span><span class="p">,</span>
+    <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="n">solver</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-solve-the-lp">
+<h2>Step 4: Solve the LP<a class="headerlink" href="#step-4-solve-the-lp" title="Link to this heading"></a></h2>
+<p>Make sure the OptArrow service is running. Here in the example the service is running on localhost and can be accessed via ‘<a class="reference external" href="http://localhost">http://localhost</a>:8000`.</p>
+<section id="using-apache-arrow-ipc-binary-stream-via-compute">
+<h3>Using Apache Arrow IPC binary stream via <cite>/compute</cite><a class="headerlink" href="#using-apache-arrow-ipc-binary-stream-via-compute" title="Link to this heading"></a></h3>
+<p>This format is more efficient for large-scale model transfer and preferred in high-performance systems.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare Arrow IPC stream</span>
+<span class="n">pa_arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ipc_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+<span class="n">ipc_tables</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">pa_arrays</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">ipc_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+<span class="c1"># Serialize to Arrow stream</span>
+<span class="n">sink</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">BufferOutputStream</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">new_stream</span><span class="p">(</span><span class="n">sink</span><span class="p">,</span> <span class="n">ipc_tables</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+    <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ipc_tables</span><span class="p">)</span>
+<span class="n">ipc_bytes</span> <span class="o">=</span> <span class="n">sink</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">to_pybytes</span><span class="p">()</span>
+
+<span class="c1"># Send request</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/vnd.apache.arrow.stream&quot;</span>
+    <span class="p">}</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/compute&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ipc_bytes</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+<span class="c1"># Handle the response</span>
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+    <span class="n">response_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+    <span class="n">response_table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">response_data</span><span class="p">)</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Objective value:&quot;</span><span class="p">,</span> <span class="n">response_table</span><span class="p">[</span><span class="s1">&#39;obj_val&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Status:&quot;</span><span class="p">,</span> <span class="n">response_table</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution:&quot;</span><span class="p">,</span> <span class="n">response_table</span><span class="p">[</span><span class="s1">&#39;solution&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">response_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+    <span class="n">response_table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">response_data</span><span class="p">)</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error message:&quot;</span><span class="p">,</span> <span class="n">response_table</span><span class="p">[</span><span class="s1">&#39;error_message&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="optional-solve-the-lp-using-json-via-computejson">
+<h2>Optional: Solve the LP using JSON via <cite>/computeJSON</cite><a class="headerlink" href="#optional-solve-the-lp-using-json-via-computejson" title="Link to this heading"></a></h2>
+<p>If the model is small, you can also use JSON format for simplicity.
+Since the data parsed from the <cite>.mat</cite> file is np.ndarray, it needs to be converted to Python native lists for JSON serialization.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;row&quot;</span> <span class="p">:</span> <span class="n">S</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="s2">&quot;col&quot;</span> <span class="p">:</span> <span class="n">S</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="s2">&quot;val&quot;</span> <span class="p">:</span> <span class="n">S</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+<span class="p">}</span>
+<span class="n">model_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="n">A</span><span class="p">,</span>
+    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="n">b</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="s2">&quot;lb&quot;</span><span class="p">:</span> <span class="n">lb</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="s2">&quot;ub&quot;</span><span class="p">:</span> <span class="n">ub</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="s2">&quot;osense&quot;</span><span class="p">:</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">model_data</span><span class="p">,</span>
+    <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="n">model_name</span><span class="p">,</span>
+    <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="n">engine</span><span class="p">,</span>
+    <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="n">solver</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span>
+    <span class="p">}</span>
+
+<span class="c1"># Send the request to OptArrow backend</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/computeJSON&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">ipc_dict</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+<span class="c1"># Handle the response</span>
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">objective_value</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;obj_val&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="c1"># objective value is returned as &quot;obj_val&quot;</span>
+    <span class="n">solution</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solution&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="c1"># solution is returned as &quot;solution&quot;</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="c1"># status of the optimization</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Objective Value:&quot;</span><span class="p">,</span> <span class="n">objective_value</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution:&quot;</span><span class="p">,</span> <span class="n">solution</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Status:&quot;</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lp_example1.html" class="btn btn-neutral float-left" title="LP Example: Production Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="qp_problem.html" class="btn btn-neutral float-right" title="Quadratic Programming (QP) Problems in OptArrow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, OptArrow Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
