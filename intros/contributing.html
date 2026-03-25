@@ -1,23 +1,20 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="Python, Julia" data-content_root="../">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contributing to Arrow Gateway Engine &mdash; OptArrow  documentation</title>
+  <title>Contributing &mdash; OptArrow  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=d7d12e2f" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
-    <link rel="shortcut icon" href="../_static/favicon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e0c6dc42"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -33,9 +30,8 @@
 
           
           
-          <a href="../index.html">
-            
-              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          <a href="../index.html" class="icon icon-home">
+            OptArrow
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -47,7 +43,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
@@ -67,16 +62,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB interface for OptArrow</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Maintainance and Contribution</span></p>
+<p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to Arrow Gateway Engine</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#project-structure">Project Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#making-changes">Making Changes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#running-tests">Running Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#submitting-changes">Submitting Changes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#code-review">Code Review</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#questions">Questions?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-workflow">Documentation workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-validation">Local validation</a></li>
 </ul>
 </li>
 </ul>
@@ -95,9 +85,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Contributing to Arrow Gateway Engine</li>
+      <li class="breadcrumb-item active">Contributing</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/intros/contributing.md.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/intros/contributing.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -105,65 +95,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section class="tex2jax_ignore mathjax_ignore" id="contributing-to-arrow-gateway-engine">
-<h1>Contributing to Arrow Gateway Engine<a class="headerlink" href="#contributing-to-arrow-gateway-engine" title="Link to this heading"></a></h1>
-<p>Thank you for your interest in contributing! This guide will help you get started.</p>
-<section id="project-structure">
-<h2>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">./src</span></code>: Main source code.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">./tests</span></code>: Test suite for the project.</p></li>
-</ul>
-</section>
-<section id="getting-started">
-<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
-<ol class="arabic">
-<li><p><strong>Fork the repository</strong> and clone your fork.</p></li>
-<li><p><strong>Install dependencies</strong> as required by the project. You may use the <code class="docutils literal notranslate"><span class="pre">./scripts/envSetup.sh</span></code> to install dependencies quickly in a Linux(Debian) system. <code class="docutils literal notranslate"><span class="pre">Poetry</span></code> is used to manage python dependencies, but Julia dependencies need to be installed manually. Run <code class="docutils literal notranslate"><span class="pre">julia</span> <span class="pre">--project=./src/service/optimization_service/julia</span> <span class="pre">-e</span> <span class="pre">&quot;import</span> <span class="pre">Pkg;</span> <span class="pre">Pkg.instantiate()&quot;</span></code> to install julia dependencies.</p></li>
-<li><p><strong>Create a new branch</strong> for your feature or bugfix.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/your-feature-name
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-<section id="making-changes">
-<h2>Making Changes<a class="headerlink" href="#making-changes" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>Place all source code changes in the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory.</p></li>
-<li><p>Add or update tests in the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory.</p></li>
-<li><p>Add or update documentations in the <code class="docutils literal notranslate"><span class="pre">docs</span></code> directory.</p></li>
-<li><p>Ensure your code follows the project's style and linting rules.</p></li>
-</ul>
-</section>
-<section id="running-tests">
-<h2>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading"></a></h2>
-<p>Run the test suite to verify your changes:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>run<span class="w"> </span>pytest
-</pre></div>
-</div>
-<p>Add <code class="docutils literal notranslate"><span class="pre">-s</span></code> to see STDOUT output from the tests.</p>
-</section>
-<section id="submitting-changes">
-<h2>Submitting Changes<a class="headerlink" href="#submitting-changes" title="Link to this heading"></a></h2>
+  <section id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h1>
+<p>Thank you for helping improve OptArrow documentation.</p>
+<section id="documentation-workflow">
+<h2>Documentation workflow<a class="headerlink" href="#documentation-workflow" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
-<li><p>Commit your changes with clear messages.</p></li>
-<li><p>Push your branch to your fork.</p></li>
-<li><p>Open a Pull Request against the main repository.</p></li>
+<li><p>Edit files under <code class="docutils literal notranslate"><span class="pre">Documentation/</span></code>.</p></li>
+<li><p>Build locally to validate changes.</p></li>
+<li><p>Open a pull request.</p></li>
 </ol>
 </section>
-<section id="code-review">
-<h2>Code Review<a class="headerlink" href="#code-review" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>Address any feedback from reviewers.</p></li>
-<li><p>Ensure all tests pass before merging.</p></li>
-</ul>
-</section>
-<section id="questions">
-<h2>Questions?<a class="headerlink" href="#questions" title="Link to this heading"></a></h2>
-<p>Open an issue if you need help or clarification.</p>
-<hr class="docutils" />
-<p>Thank you for contributing!</p>
+<section id="local-validation">
+<h2>Local validation<a class="headerlink" href="#local-validation" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/bin/python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>Documentation/requirements.txt
+/bin/python<span class="w"> </span>-m<span class="w"> </span>sphinx<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>Documentation<span class="w"> </span>Documentation/_build/html
+</pre></div>
+</div>
+<p>When <code class="docutils literal notranslate"><span class="pre">Documentation/</span></code> changes are pushed to <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code>, GitHub Actions rebuilds and updates the generated site files on the same branch.</p>
 </section>
 </section>
 
@@ -177,9 +126,12 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, Digital Metabolic Twin Centre.</p>
+    <p>&#169; Copyright 2026, OptArrow Contributors.</p>
   </div>
 
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

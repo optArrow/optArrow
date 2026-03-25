@@ -1,26 +1,22 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="Python, Julia" data-content_root="../">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LP Example: Production Optimization &mdash; OptArrow  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=d7d12e2f" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
-    <link rel="shortcut icon" href="../_static/favicon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e0c6dc42"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,9 +32,8 @@
 
           
           
-          <a href="../index.html">
-            
-              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          <a href="../index.html" class="icon icon-home">
+            OptArrow
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -50,7 +45,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intros/architecture.html">Architecture Overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
@@ -80,9 +74,9 @@
 <li class="toctree-l1"><a class="reference internal" href="conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="matlab_interface.html">MATLAB interface for OptArrow</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Maintainance and Contribution</span></p>
+<p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../intros/contributing.html">Contributing to Arrow Gateway Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/contributing.html">Contributing</a></li>
 </ul>
 
         </div>
@@ -101,7 +95,7 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">LP Example: Production Optimization</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/tutorials/lp_example1.ipynb.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/lp_example1.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -109,7 +103,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section class="tex2jax_ignore mathjax_ignore" id="lp-example-production-optimization">
+  <section id="lp-example-production-optimization">
 <h1>LP Example: Production Optimization<a class="headerlink" href="#lp-example-production-optimization" title="Link to this heading"></a></h1>
 <p>This tutorial illustrates how to model and solve a real-world linear programming (LP) problem using the <strong>OptArrow</strong> optimization engine. The example is based on a classic production optimization problem where multiple products must be manufactured using limited resources to <strong>maximize profit</strong> while respecting <strong>resource</strong>, <strong>demand</strong>, and <strong>capacity</strong> constraints.</p>
 <section id="problem-overview">
@@ -121,7 +115,8 @@
 <li><p>150 units of <strong>Raw Material C</strong></p></li>
 </ul>
 <p>The factory produces two types of products: <strong>Product X</strong> and <strong>Product Y</strong>.</p>
-<table class="docutils align-default">
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Resource usage and profit</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Resource Usage</p></th>
 <th class="head"><p>Product X</p></th>
@@ -141,9 +136,9 @@
 <td><p>10</p></td>
 <td><p>30</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>Profit per unit</strong></p></td>
-<td><p>$5</p></td>
-<td><p>$12</p></td>
+<tr class="row-odd"><td><p>Profit per unit</p></td>
+<td><p>5</p></td>
+<td><p>12</p></td>
 </tr>
 </tbody>
 </table>
@@ -154,31 +149,28 @@
 <p><strong>Objective</strong>:
 Maximize profit</p>
 <div class="math notranslate nohighlight">
-\[ Z = 5x + 12y \]</div>
-<p>where <span class="math notranslate nohighlight">\(x\)</span> is the number of Product X produced and <span class="math notranslate nohighlight">\(y\)</span> is the number of Product Y produced.
+\[Z = 5x + 12y\]</div>
+<p>where $x$ is the number of Product X produced and $y$ is the number of Product Y produced.
 <strong>Subject to</strong>:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{aligned}
+\[\begin{split}\begin{aligned}
 20x + 10y &amp;\leq 200 \quad &amp;\text{(Material A constraint)} \\
 10x + 20y &amp;\leq 120 \quad &amp;\text{(Material B constraint)} \\
 10x + 30y &amp;\leq 150 \quad &amp;\text{(Material C constraint)} \\
 x, y &amp;\geq 0 \quad &amp;\text{(Non-negativity constraints)}
-\end{aligned}
-\end{split}\]</div>
+\end{aligned}\end{split}\]</div>
 </section>
 <section id="general-lp-formulation">
 <h2>General LP Formulation<a class="headerlink" href="#general-lp-formulation" title="Link to this heading"></a></h2>
 <p>The LP problem should be structured as:</p>
-<p><strong>Objective</strong>: Maximize <span class="math notranslate nohighlight">\(c^T x\)</span>
-where <span class="math notranslate nohighlight">\(c\)</span> is the profit vector and <span class="math notranslate nohighlight">\(x\)</span> is the production vector.</p>
+<p><strong>Objective</strong>: Maximize $c^T x$
+where $c$ is the profit vector and $x$ is the production vector.</p>
 <p><strong>Subject to</strong>:</p>
 <div class="math notranslate nohighlight">
 \[Ax = b; \quad lb \leq x \leq ub\]</div>
-<p>where <span class="math notranslate nohighlight">\(A\)</span> is the resource usage matrix, <span class="math notranslate nohighlight">\(b\)</span> is the resource availability vector, and <span class="math notranslate nohighlight">\(lb\)</span>, <span class="math notranslate nohighlight">\(ub\)</span> are the lower and upper bounds on the production quantities.</p>
+<p>where $A$ is the resource usage matrix, $b$ is the resource availability vector, and $lb$, $ub$ are the lower and upper bounds on the production quantities.</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}
-c =
+\[\begin{split}c =
 \begin{bmatrix}
 5 \\
 12
@@ -208,16 +200,13 @@ lb =
 \begin{bmatrix}
 0 \\
 0
-\end{bmatrix}
-\end{split}\]</div>
+\end{bmatrix}\end{split}\]</div>
 </section>
 <section id="solving-with-optarrow">
 <h2>Solving with OptArrow<a class="headerlink" href="#solving-with-optarrow" title="Link to this heading"></a></h2>
 <p>The following code illustrates how this linear program can be defined and solved using <strong>OptArrow</strong> in Python:</p>
-<p>A is the matrix in Coordinate(COO) format, which is a sparse matrix format suitable for large matrices. The <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">col</span></code>, and <code class="docutils literal notranslate"><span class="pre">val</span></code> lists represent the non-zero entries of the matrix.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
+<p>A is the matrix in Coordinate(COO) format, which is a sparse matrix format suitable for large matrices. The <cite>row</cite>, <cite>col</cite>, and <cite>val</cite> lists represent the non-zero entries of the matrix.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
   <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">{</span>
       <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
@@ -240,13 +229,9 @@ lb =
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-</div>
 <section id="using-arrow-ipc-stream-bytes-format">
 <h3>Using Arrow IPC Stream Bytes Format<a class="headerlink" href="#using-arrow-ipc-stream-bytes-format" title="Link to this heading"></a></h3>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="c1"># Convert the dictionary to an Arrow table for IPC serialization</span>
@@ -273,29 +258,13 @@ lb =
 <span class="nb">print</span><span class="p">(</span><span class="n">result_dict</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;success&#39;: [True], &#39;status&#39;: [&#39;OPTIMAL&#39;], &#39;obj_val&#39;: [66.0], &#39;solution&#39;: [[6.000000000000004, 2.9999999999999987]]}
-</pre></div>
-</div>
-</div>
-</div>
 </section>
 <section id="using-json">
 <h3>Using JSON<a class="headerlink" href="#using-json" title="Link to this heading"></a></h3>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/computeJSON&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">ipc_dict</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;success&#39;: True, &#39;status&#39;: &#39;OPTIMAL&#39;, &#39;obj_val&#39;: 66.0, &#39;solution&#39;: [6.000000000000004, 2.9999999999999987]}
-</pre></div>
-</div>
-</div>
 </div>
 </section>
 </section>
@@ -312,9 +281,12 @@ lb =
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, Digital Metabolic Twin Centre.</p>
+    <p>&#169; Copyright 2026, OptArrow Contributors.</p>
   </div>
 
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

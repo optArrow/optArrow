@@ -1,23 +1,20 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="Python, Julia" data-content_root="../">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Benchmark testing &mdash; OptArrow  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=d7d12e2f" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
-    <link rel="shortcut icon" href="../_static/favicon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e0c6dc42"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -34,9 +31,8 @@
 
           
           
-          <a href="../index.html">
-            
-              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          <a href="../index.html" class="icon icon-home">
+            OptArrow
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -48,7 +44,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
@@ -68,9 +63,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB interface for OptArrow</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Maintainance and Contribution</span></p>
+<p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to Arrow Gateway Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 </ul>
 
         </div>
@@ -89,7 +84,7 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Benchmark testing</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/intros/benchmarking.md.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/intros/benchmarking.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -97,9 +92,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section class="tex2jax_ignore mathjax_ignore" id="benchmark-testing">
+  <section id="benchmark-testing">
 <h1>Benchmark testing<a class="headerlink" href="#benchmark-testing" title="Link to this heading"></a></h1>
-<p>In order to do benchmark testing, use the source code from <code class="docutils literal notranslate"><span class="pre">benchmark</span></code> branch, this includes extra benchmark outputs such as compute time, RAM usage and CPU percentage output.</p>
+<p>In order to do benchmark testing, use the source code from <cite>benchmark</cite> branch, this includes extra benchmark outputs such as compute time, RAM usage and CPU percentage output.</p>
 <p>The unit tests in that branch can write .csv outputs to list the benchmark test results, and they are organized into different .csv files based on engines and problem types.</p>
 <p>Use this to switch branch and execute test:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>benchmark
@@ -120,9 +115,12 @@ poetry<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, Digital Metabolic Twin Centre.</p>
+    <p>&#169; Copyright 2026, OptArrow Contributors.</p>
   </div>
 
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

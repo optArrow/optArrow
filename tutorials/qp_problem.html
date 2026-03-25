@@ -1,26 +1,22 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="Python, Julia" data-content_root="../">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quadratic Programming (QP) Problems in OptArrow &mdash; OptArrow  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=d7d12e2f" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
-    <link rel="shortcut icon" href="../_static/favicon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e0c6dc42"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,9 +32,8 @@
 
           
           
-          <a href="../index.html">
-            
-              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          <a href="../index.html" class="icon icon-home">
+            OptArrow
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -50,7 +45,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../intros/architecture.html">Architecture Overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
@@ -70,12 +64,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#model-components">Model Components</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#ipc-request-structure-ipc-dict">IPC Request Structure (<code class="docutils literal notranslate"><span class="pre">ipc_dict</span></code>)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#model-required"><code class="docutils literal notranslate"><span class="pre">model</span></code> (Required)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#solver-required"><code class="docutils literal notranslate"><span class="pre">solver</span></code> (Required)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#time-limit-optional"><code class="docutils literal notranslate"><span class="pre">time_limit</span></code> (Optional)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#model-name-optional"><code class="docutils literal notranslate"><span class="pre">model_name</span></code> (Optional)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#engine-required"><code class="docutils literal notranslate"><span class="pre">engine</span></code> (Required)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ipc-request-structure-ipc-dict">IPC Request Structure (<cite>ipc_dict</cite>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#model-required"><cite>model</cite> (Required)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#solver-required"><cite>solver</cite> (Required)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#time-limit-optional"><cite>time_limit</cite> (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-name-optional"><cite>model_name</cite> (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#engine-required"><cite>engine</cite> (Required)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#data-packaging-with-apache-arrow">Data Packaging with Apache Arrow</a></li>
@@ -88,9 +82,9 @@
 <li class="toctree-l1"><a class="reference internal" href="conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="matlab_interface.html">MATLAB interface for OptArrow</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Maintainance and Contribution</span></p>
+<p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../intros/contributing.html">Contributing to Arrow Gateway Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/contributing.html">Contributing</a></li>
 </ul>
 
         </div>
@@ -109,7 +103,7 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Quadratic Programming (QP) Problems in OptArrow</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/tutorials/qp_problem.md.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/qp_problem.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -117,7 +111,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section class="tex2jax_ignore mathjax_ignore" id="quadratic-programming-qp-problems-in-optarrow">
+  <section id="quadratic-programming-qp-problems-in-optarrow">
 <h1>Quadratic Programming (QP) Problems in OptArrow<a class="headerlink" href="#quadratic-programming-qp-problems-in-optarrow" title="Link to this heading"></a></h1>
 <p>OptArrow provides an efficient optimization service using the Apache Arrow IPC format for inter-process communication. This document explains how to structure and send a Quadratic Programming (QP) problem to the OptArrow engine using Python.</p>
 <section id="standard-qp-form">
@@ -125,18 +119,14 @@
 <p>The QP problem should be structured as:</p>
 <p><strong>Objective</strong>: Minimize</p>
 <div class="math notranslate nohighlight">
-\[
-\frac{1}{2} x^T Q x + c^T x
-\]</div>
+\[\frac{1}{2} x^T Q x + c^T x\]</div>
 <p><strong>Subject to</strong>:</p>
 <div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}
-Ax = b \quad \text{(equality constraints)}\\Gx \leq h \quad \text{(inequality constraints)}\\lb \leq x \leq ub \quad \text{(bounds)}
-\end{aligned}\end{align} \]</div>
+\[ \begin{align}\begin{aligned}Ax = b \quad \text{(equality constraints)}\\Gx \leq h \quad \text{(inequality constraints)}\\lb \leq x \leq ub \quad \text{(bounds)}\end{aligned}\end{align} \]</div>
 <section id="model-components">
 <h3>Model Components<a class="headerlink" href="#model-components" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Q</strong>: Quadratic coefficient matrix (symmetric), stored as a sparse COO format with <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">col</span></code>, <code class="docutils literal notranslate"><span class="pre">val</span></code></p></li>
+<li><p><strong>Q</strong>: Quadratic coefficient matrix (symmetric), stored as a sparse COO format with <cite>row</cite>, <cite>col</cite>, <cite>val</cite></p></li>
 <li><p><strong>c</strong>: Linear objective vector</p></li>
 <li><p><strong>A</strong>: (Optional) Equality constraint matrix (sparse COO)</p></li>
 <li><p><strong>b</strong>: (Optional) Right-hand side of equality constraints</p></li>
@@ -144,12 +134,12 @@ Ax = b \quad \text{(equality constraints)}\\Gx \leq h \quad \text{(inequality co
 <li><p><strong>h</strong>: (Optional) Right-hand side of inequality constraints</p></li>
 <li><p><strong>lb</strong>: (Optional) Lower bounds for each variable</p></li>
 <li><p><strong>ub</strong>: (Optional) Upper bounds for each variable</p></li>
-<li><p><strong>osense</strong>: (Optional) Objective sense: &quot;min&quot; or &quot;max&quot; (default is &quot;min&quot;)</p></li>
+<li><p><strong>osense</strong>: (Optional) Objective sense: “min” or “max” (default is “min”)</p></li>
 </ul>
 </section>
 </section>
 <section id="ipc-request-structure-ipc-dict">
-<h2>IPC Request Structure (<code class="docutils literal notranslate"><span class="pre">ipc_dict</span></code>)<a class="headerlink" href="#ipc-request-structure-ipc-dict" title="Link to this heading"></a></h2>
+<h2>IPC Request Structure (<cite>ipc_dict</cite>)<a class="headerlink" href="#ipc-request-structure-ipc-dict" title="Link to this heading"></a></h2>
 <p>The message to OptArrow should be structured as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">model_data</span><span class="p">,</span>       <span class="c1"># The QP model data structure (see below)</span>
@@ -161,7 +151,7 @@ Ax = b \quad \text{(equality constraints)}\\Gx \leq h \quad \text{(inequality co
 </pre></div>
 </div>
 <section id="model-required">
-<h3><code class="docutils literal notranslate"><span class="pre">model</span></code> (Required)<a class="headerlink" href="#model-required" title="Link to this heading"></a></h3>
+<h3><cite>model</cite> (Required)<a class="headerlink" href="#model-required" title="Link to this heading"></a></h3>
 <p>QP model structured as a dictionary:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model_data</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;Q&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -190,7 +180,7 @@ Ax = b \quad \text{(equality constraints)}\\Gx \leq h \quad \text{(inequality co
 </div>
 </section>
 <section id="solver-required">
-<h3><code class="docutils literal notranslate"><span class="pre">solver</span></code> (Required)<a class="headerlink" href="#solver-required" title="Link to this heading"></a></h3>
+<h3><cite>solver</cite> (Required)<a class="headerlink" href="#solver-required" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;solver_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Gurobi&quot;</span><span class="p">,</span>       <span class="c1"># Example solver name</span>
     <span class="s2">&quot;solver_type&quot;</span><span class="p">:</span> <span class="s2">&quot;QP&quot;</span><span class="p">,</span>         <span class="c1"># Solver type</span>
@@ -202,19 +192,19 @@ Ax = b \quad \text{(equality constraints)}\\Gx \leq h \quad \text{(inequality co
 </div>
 </section>
 <section id="time-limit-optional">
-<h3><code class="docutils literal notranslate"><span class="pre">time_limit</span></code> (Optional)<a class="headerlink" href="#time-limit-optional" title="Link to this heading"></a></h3>
+<h3><cite>time_limit</cite> (Optional)<a class="headerlink" href="#time-limit-optional" title="Link to this heading"></a></h3>
 <p>An optional time limit for solving the optimization model, specified in seconds, default is 300.
 This parameter is passed directly to the solver and controls how long it is allowed to run before stopping.</p>
 <p>For solvers that support time limits, the solver will attempt to return the best feasible solution found so far when the time limit is reached.
 If no feasible solution is found before the time limit, the solver may still return an infeasibility status or no solution.</p>
 </section>
 <section id="model-name-optional">
-<h3><code class="docutils literal notranslate"><span class="pre">model_name</span></code> (Optional)<a class="headerlink" href="#model-name-optional" title="Link to this heading"></a></h3>
+<h3><cite>model_name</cite> (Optional)<a class="headerlink" href="#model-name-optional" title="Link to this heading"></a></h3>
 <p>For logging or traceability.</p>
 </section>
 <section id="engine-required">
-<h3><code class="docutils literal notranslate"><span class="pre">engine</span></code> (Required)<a class="headerlink" href="#engine-required" title="Link to this heading"></a></h3>
-<p>Specifies the backend system to be used for computation. Currently supports <code class="docutils literal notranslate"><span class="pre">&quot;julia&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;python&quot;</span></code>.</p>
+<h3><cite>engine</cite> (Required)<a class="headerlink" href="#engine-required" title="Link to this heading"></a></h3>
+<p>Specifies the backend system to be used for computation. Currently supports <cite>“julia”</cite> and <cite>“python”</cite>.</p>
 </section>
 </section>
 <section id="data-packaging-with-apache-arrow">
@@ -268,9 +258,12 @@ If no feasible solution is found before the time limit, the solver may still ret
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, Digital Metabolic Twin Centre.</p>
+    <p>&#169; Copyright 2026, OptArrow Contributors.</p>
   </div>
 
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

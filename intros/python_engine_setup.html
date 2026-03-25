@@ -1,23 +1,20 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="Python, Julia" data-content_root="../">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OptimizationServer (Python) &mdash; OptArrow  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=d7d12e2f" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
-    <link rel="shortcut icon" href="../_static/favicon.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e0c6dc42"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -34,9 +31,8 @@
 
           
           
-          <a href="../index.html">
-            
-              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          <a href="../index.html" class="icon icon-home">
+            OptArrow
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -48,7 +44,6 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
@@ -56,13 +51,8 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Overall Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="julia_setup.html">OptimizationServer (Julia)</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">OptimizationServer (Python)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#project-structure">📁 Project Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getting-started">🚀 Getting Started</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#install-dependencies">1.  Install dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#install-solvers">2. Install solvers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#start-the-server">3. Start the server</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#project-structure">Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="benchmarking.html">Benchmark testing</a></li>
@@ -77,9 +67,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB interface for OptArrow</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Maintainance and Contribution</span></p>
+<p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to Arrow Gateway Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 </ul>
 
         </div>
@@ -98,7 +88,7 @@
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">OptimizationServer (Python)</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/intros/python_engine_setup.md.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/intros/python_engine_setup.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -106,58 +96,50 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section class="tex2jax_ignore mathjax_ignore" id="optimizationserver-python">
+  <section id="optimizationserver-python">
 <h1>OptimizationServer (Python)<a class="headerlink" href="#optimizationserver-python" title="Link to this heading"></a></h1>
-<p>This project implements a lightweight gRPC-based optimization server. It receives optimization problems (e.g. LP, QP) encoded in Arrow IPC format, solves them using Pyomo in Python and solver backends, and returns the result. The server listens for incoming gRPC connections and sends optimization results serialized in Arrow IPC format.</p>
+<p>This service receives LP/QP optimization problems and solves them with Pyomo backends, returning results through the OptArrow API interface.</p>
 <section id="project-structure">
-<h2>📁 Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>python/pyomo
-├── problems/ # concrete problem classes (extends BaseProblem class)
-│ ├── lp_problem.py
-│ └── qp_problem.py
-│
-├── controller/ # Optimization gRPC service endpoint
-│ └── arrow_rpc_server.py
-│
-├── service/ # Business logic and factories
-│ └── cobra_solver.py # Core solver service wrapper class
-│
-├── objects/ # Reusable factories and class definitions
-│ ├── base_problem.py # base problems class
-│ ├── problem_factory.py # factory class for creating problem objects
-│ ├── solver_factory.py # factory class for creating solver objects
-│ └── solver.py # base solver class
-│
+<h2>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>python/pyomo/
+├── problems/
+│   ├── lp_problem.py
+│   └── qp_problem.py
+├── controller/
+│   └── arrow_rpc_server.py
+├── service/
+│   └── cobra_solver.py
+└── objects/
+    ├── base_problem.py
+    ├── problem_factory.py
+    ├── solver_factory.py
+    └── solver.py
 </pre></div>
 </div>
 </section>
 <section id="getting-started">
-<h2>🚀 Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
-<section id="install-dependencies">
-<h3>1.  Install dependencies<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h3>
-<p>On project root directory, run:</p>
-<p><code class="docutils literal notranslate"><span class="pre">poetry</span> <span class="pre">install</span> <span class="pre">--no-root</span></code></p>
-<p>This installs python dependencies using poetry</p>
-</section>
-<section id="install-solvers">
-<h3>2. Install solvers<a class="headerlink" href="#install-solvers" title="Link to this heading"></a></h3>
-<p>Most of the open-source solvers are installed with the python dependencies, however there are several exceptions, which require the solver to be manually installed, or require license:</p>
-<ul class="simple">
-<li><p>HiGHS (only for QP, <a class="reference external" href="https://ergo-code.github.io/HiGHS/dev/interfaces/cpp/">installation guide</a>)</p></li>
-<li><p>Gurobi (requires license)</p></li>
-<li><p>Ipopt (<a class="reference external" href="https://coin-or.github.io/Ipopt/INSTALL.html">installation guide</a>)</p></li>
-</ul>
-</section>
-<section id="start-the-server">
-<h3>3. Start the server<a class="headerlink" href="#start-the-server" title="Link to this heading"></a></h3>
-<p>using script:</p>
-<p><code class="docutils literal notranslate"><span class="pre">./scripts/startPyEngine.sh</span></code></p>
-<p>You should see:</p>
-<p><code class="docutils literal notranslate"><span class="pre">INFO:</span>&#160;&#160;&#160;&#160; <span class="pre">Server</span> <span class="pre">running</span> <span class="pre">at</span> <span class="pre">grpc://0.0.0.0:8101</span></code></p>
-<p>Alternatively, use script:</p>
-<p><code class="docutils literal notranslate"><span class="pre">./scripts/startAll.sh</span></code></p>
-<p>To start all services, including FastAPI gateway and Julia engine.</p>
-</section>
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Install Python dependencies from the project root:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--no-root
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Install required solvers as needed (for example HiGHS, Gurobi, Ipopt).</p></li>
+<li><p>Start the Python engine:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/startPyEngine.sh
+</pre></div>
+</div>
+<p>Expected startup log:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>INFO:     Server running at grpc://0.0.0.0:8101
+</pre></div>
+</div>
+<p>To launch all components (gateway + engines), use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/startAll.sh
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -172,9 +154,12 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, Digital Metabolic Twin Centre.</p>
+    <p>&#169; Copyright 2026, OptArrow Contributors.</p>
   </div>
 
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>
