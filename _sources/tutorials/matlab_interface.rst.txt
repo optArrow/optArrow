@@ -97,25 +97,25 @@ Alternative (Older) Approach: `urlreadpost`
 You might also come across a community-contributed utility, **`urlreadpost`**, designed to upload binary data via HTTP using `multipart/form-data`. However, this approach is limited:
 
 * It wraps files in a multipart form, not suitable for sending raw Arrow IPC streams.
-* `urlreadpost` isn't part of MATLAB's core and works via a more old-school `urlread` replacement ([MathWorks][2], [ww2.mathworks.cn][3]).
+* `urlreadpost` isn't part of MATLAB's core and works via a more old-school `urlread` replacement (`MathWorks`_, `ww2.mathworks.cn`_).
 
 Therefore, while interesting historically, it's not ideal for the Arrow streaming case.
-
----
 
 Summary
 ^^^^^^^
 
-| Requirement                      | Recommended Solution                                                      |
-| -------------------------------- | ------------------------------------------------------------------------- |
-| Send Arrow binary over HTTP      | Use `matlab.net.http.RequestMessage` + `body.Payload`                     |
-| Set Content-Type to Arrow stream | Use `GenericField('Content-Type', 'application/vnd.apache.arrow.stream')` |
-| Avoid MATLAB data conversion     | Assign to `body.Payload` (not `.Data`)                                    |
-| Old methods available            | `urlreadpost` (multipart only, not raw streaming)                         |
+.. csv-table::
+      :header: "Requirement", "Recommended Solution"
+      :widths: 35, 65
 
-[1]: https://www.mathworks.com/help/matlab/ref/matlab.net.http.requestmessage.send.html?utm_source=chatgpt.com "matlab.net.http.RequestMessage.send - Send HTTP request message and ..."
-[2]: https://www.mathworks.com/matlabcentral/fileexchange/27189-urlreadpost-url-post-method-with-binary-file-uploading?utm_source=chatgpt.com "urlreadpost - url POST method with binary file uploading"
-[3]: https://ww2.mathworks.cn/matlabcentral/fileexchange/27189-urlreadpost-url-post-method-with-binary-file-uploading?utm_source=chatgpt.com "urlreadpost - url POST method with binary file uploading"
+      "Send Arrow binary over HTTP", "Use ``matlab.net.http.RequestMessage`` + ``body.Payload``"
+      "Set Content-Type to Arrow stream", "Use ``GenericField('Content-Type', 'application/vnd.apache.arrow.stream')``"
+      "Avoid MATLAB data conversion", "Assign to ``body.Payload`` (not ``.Data``)"
+      "Old methods available", "``urlreadpost`` (multipart only, not raw streaming)"
+
+.. _RequestMessage.send: https://www.mathworks.com/help/matlab/ref/matlab.net.http.requestmessage.send.html
+.. _MathWorks: https://www.mathworks.com/matlabcentral/fileexchange/27189-urlreadpost-url-post-method-with-binary-file-uploading
+.. _ww2.mathworks.cn: https://ww2.mathworks.cn/matlabcentral/fileexchange/27189-urlreadpost-url-post-method-with-binary-file-uploading
 
 3. Call socket service for Julia directly
 -----------------------------------------
