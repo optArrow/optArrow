@@ -1,5 +1,5 @@
-Overall Setup
-=============
+Installation and Quick Start
+============================
 
 If you are new to OptArrow, use this page as the shortest path from zero setup to your first successful request.
 
