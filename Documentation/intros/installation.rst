@@ -3,6 +3,10 @@ Installation and Quick Start
 
 If you are new to OptArrow, use this page as the shortest path from zero setup to your first successful request.
 
+For the fastest onboarding flow, start here:
+
+- :doc:`Quick Start (10 Minutes) <quickstart>`
+
 Branch and repository layout
 ----------------------------
 
