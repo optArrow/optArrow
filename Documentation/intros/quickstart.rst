@@ -30,6 +30,12 @@ Use this guide if you want to run OptArrow today with minimum setup.
 
 Expected open ports include ``8000`` (gateway), ``8101`` (Python engine), and ``65432`` (Julia engine).
 
+Verify ports explicitly:
+
+.. code-block:: bash
+
+   nc -zv 127.0.0.1 8000 8101 65432
+
 4) Send your first request
 --------------------------
 
@@ -40,11 +46,33 @@ Use the full runnable example in:
 5) Verify success
 -----------------
 
-- Request returns HTTP ``200``
-- Response includes solver status and solution values
+Run a minimal JSON smoke test:
+
+.. code-block:: bash
+
+   curl -i -X POST http://127.0.0.1:8000/computeJSON \
+     -H "Content-Type: application/json" \
+     -d '{"model":{"A":{"row":[0],"col":[0],"val":[1.0]},"b":[1.0],"c":[1.0],"lb":[0.0],"csense":["E"],"osense":"max"},"model_name":"smoke_test","engine":"julia","solver":{"solver_name":"HiGHS","solver_type":"LP","solver_params":{}}}'
+
+Expected output:
+
+- HTTP status ``200``
+- Response JSON contains solver status and a solution payload
 
 Troubleshooting
 ---------------
 
-- If startup fails, check dependency installation and whether ports are already in use.
-- If request fails, verify endpoint path and content type.
+If startup fails, verify dependencies and listening ports:
+
+.. code-block:: bash
+
+   poetry install --no-root
+   julia --project=./src/service/optimization_service/julia -e "import Pkg; Pkg.instantiate()"
+   ss -ltnp | grep -E ':8000|:8101|:65432'
+
+If request fails, confirm endpoint and content type:
+
+.. code-block:: bash
+
+   curl -i http://127.0.0.1:8000/
+   curl -i -X POST http://127.0.0.1:8000/computeJSON -H "Content-Type: application/json" -d '{}'
