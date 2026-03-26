@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Overall Setup &mdash; OptArrow  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom-wide.css?v=35173757" />
 
@@ -50,7 +50,11 @@
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Overall Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#branch-and-repository-layout">Branch and repository layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-the-source-code">Get the source code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start-first-working-request">Quick start (first working request)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-first-run-checks">Common first-run checks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#install-dependencies">Install dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#build-the-html-docs-locally">Build the HTML docs locally</a></li>
 </ul>
@@ -100,20 +104,81 @@
              
   <section id="overall-setup">
 <h1>Overall Setup<a class="headerlink" href="#overall-setup" title="Link to this heading"></a></h1>
-<p>This documentation site is built with Sphinx from the <code class="docutils literal notranslate"><span class="pre">Documentation/</span></code> folder.</p>
+<p>If you are new to OptArrow, use this page as the shortest path from zero setup to your first successful request.</p>
+<section id="branch-and-repository-layout">
+<h2>Branch and repository layout<a class="headerlink" href="#branch-and-repository-layout" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">main</span></code> branch contains the source code for gateway, engines, and scripts used to run OptArrow.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch (this docs site) contains generated documentation artifacts.</p></li>
+</ul>
+<p>If you want to run OptArrow locally, clone and work from <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p>
+</section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
 <ul class="simple">
+<li><p>Git</p></li>
 <li><p>Python 3.10+</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pip</span></code></p></li>
+<li><p>Julia 1.9+ (required when using the Julia engine)</p></li>
+<li><p>Optional but recommended: <code class="docutils literal notranslate"><span class="pre">poetry</span></code> (used in Python engine setup)</p></li>
+</ul>
+</section>
+<section id="get-the-source-code">
+<h2>Get the source code<a class="headerlink" href="#get-the-source-code" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:optArrow/optArrow.git
+<span class="nb">cd</span><span class="w"> </span>optArrow
+git<span class="w"> </span>checkout<span class="w"> </span>main
+</pre></div>
+</div>
+</section>
+<section id="quick-start-first-working-request">
+<h2>Quick start (first working request)<a class="headerlink" href="#quick-start-first-working-request" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Start the backend services by following one of these setup guides:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="julia_setup.html"><span class="doc">OptimizationServer (Julia)</span></a></p></li>
+<li><p><a class="reference internal" href="python_engine_setup.html"><span class="doc">OptimizationServer (Python)</span></a></p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Run a ready tutorial request from the docs examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../tutorials/lp_example1.html"><span class="doc">LP Example: Production Optimization</span></a></p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Verify success:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>HTTP responses return status <code class="docutils literal notranslate"><span class="pre">200</span></code>.</p></li>
+<li><p>Response body can be decoded as Arrow IPC (or JSON for <code class="docutils literal notranslate"><span class="pre">/computeJSON</span></code>).</p></li>
+<li><p>Returned object includes solver status and solution vectors.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="common-first-run-checks">
+<h2>Common first-run checks<a class="headerlink" href="#common-first-run-checks" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>If service does not start, confirm engine ports are free and dependencies are installed.</p></li>
+<li><p>If request fails, verify endpoint path and <code class="docutils literal notranslate"><span class="pre">Content-Type</span></code> header.</p></li>
+<li><p>For Arrow IPC requests, ensure the payload is a valid IPC stream.</p></li>
 </ul>
 </section>
 <section id="install-dependencies">
 <h2>Install dependencies<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h2>
-<p>From the project root:</p>
+<p>For docs only (this documentation site):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/bin/python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>Documentation/requirements.txt
 </pre></div>
 </div>
+<p>For runtime services, use the installation steps in:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="julia_setup.html"><span class="doc">OptimizationServer (Julia)</span></a></p></li>
+<li><p><a class="reference internal" href="python_engine_setup.html"><span class="doc">OptimizationServer (Python)</span></a></p></li>
+</ul>
 </section>
 <section id="build-the-html-docs-locally">
 <h2>Build the HTML docs locally<a class="headerlink" href="#build-the-html-docs-locally" title="Link to this heading"></a></h2>
