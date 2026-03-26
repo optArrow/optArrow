@@ -26,6 +26,7 @@ Learn More
    :maxdepth: 1
    :caption: Setup and Installation
 
+   intros/quickstart
    intros/installation
    intros/julia_setup
    intros/python_engine_setup

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OptimizationServer (Julia) &mdash; OptArrow  documentation</title>
+  <title>Quick Start (10 Minutes) &mdash; OptArrow  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/custom-wide.css?v=35173757" />
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="OptimizationServer (Python)" href="python_engine_setup.html" />
-    <link rel="prev" title="Installation and Quick Start" href="installation.html" /> 
+    <link rel="next" title="Installation and Quick Start" href="installation.html" />
+    <link rel="prev" title="Architecture Overview" href="architecture.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,13 +49,17 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start (10 Minutes)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Quick Start</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">OptimizationServer (Julia)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#project-structure">Project Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start (10 Minutes)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#clone-the-source-repository">1) Clone the source repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-dependencies">2) Install dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#start-services">3) Start services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#send-your-first-request">4) Send your first request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#verify-success">5) Verify success</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="julia_setup.html">OptimizationServer (Julia)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="python_engine_setup.html">OptimizationServer (Python)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="benchmarking.html">Benchmark testing</a></li>
 </ul>
@@ -88,9 +92,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">OptimizationServer (Julia)</li>
+      <li class="breadcrumb-item active">Quick Start (10 Minutes)</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/intros/julia_setup.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/intros/quickstart.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -98,62 +102,52 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="optimizationserver-julia">
-<h1>OptimizationServer (Julia)<a class="headerlink" href="#optimizationserver-julia" title="Link to this heading"></a></h1>
-<p>This service receives LP/QP optimization problems encoded with Arrow IPC over TCP, solves them with JuMP backends, and returns Arrow IPC responses.</p>
-<section id="project-structure">
-<h2>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h2>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>julia/
-├── api/
-│   └── socket_server.jl
-├── model/
-│   ├── lp_model.jl
-│   └── qp_model.jl
-├── service/
-│   ├── model_factory.jl
-│   ├── solver_factory.jl
-│   └── optimization_service.jl
-├── utils/
-│   ├── io_utils.jl
-│   └── sparse_matrix.jl
-├── engine.jl
-├── Project.toml
-└── Manifest.toml
+  <section id="quick-start-10-minutes">
+<h1>Quick Start (10 Minutes)<a class="headerlink" href="#quick-start-10-minutes" title="Link to this heading"></a></h1>
+<p>Use this guide if you want to run OptArrow today with minimum setup.</p>
+<section id="clone-the-source-repository">
+<h2>1) Clone the source repository<a class="headerlink" href="#clone-the-source-repository" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:optArrow/optArrow.git
+<span class="nb">cd</span><span class="w"> </span>optArrow
+git<span class="w"> </span>checkout<span class="w"> </span>main
 </pre></div>
 </div>
 </section>
-<section id="getting-started">
-<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
-<ol class="arabic simple">
-<li><p>Install Julia from <a class="reference external" href="https://julialang.org/install/">https://julialang.org/install/</a>.</p></li>
-<li><p>Verify installation:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>--version
+<section id="install-dependencies">
+<h2>2) Install dependencies<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pipx<span class="w"> </span>install<span class="w"> </span>poetry
+poetry<span class="w"> </span>install<span class="w"> </span>--no-root
+julia<span class="w"> </span>--project<span class="o">=</span>./src/service/optimization_service/julia<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;import Pkg; Pkg.instantiate()&quot;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="3">
-<li><p>Launch project mode from the Julia service directory:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>--project<span class="o">=</span>.
+</section>
+<section id="start-services">
+<h2>3) Start services<a class="headerlink" href="#start-services" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/startAll.sh
 </pre></div>
 </div>
-<ol class="arabic simple" start="4">
-<li><p>Install dependencies from Julia package mode:</p></li>
-</ol>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>]
-instantiate
-</pre></div>
-</div>
-<ol class="arabic simple" start="5">
-<li><p>Start the service:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>--project<span class="o">=</span>.<span class="w"> </span>engine.jl
-</pre></div>
-</div>
-<p>Expected startup log:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Julia Engine started on 127.0.0.1:65432
-</pre></div>
-</div>
+<p>Expected open ports include <code class="docutils literal notranslate"><span class="pre">8000</span></code> (gateway), <code class="docutils literal notranslate"><span class="pre">8101</span></code> (Python engine), and <code class="docutils literal notranslate"><span class="pre">65432</span></code> (Julia engine).</p>
+</section>
+<section id="send-your-first-request">
+<h2>4) Send your first request<a class="headerlink" href="#send-your-first-request" title="Link to this heading"></a></h2>
+<p>Use the full runnable example in:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../tutorials/lp_example1.html"><span class="doc">LP Example: Production Optimization</span></a></p></li>
+</ul>
+</section>
+<section id="verify-success">
+<h2>5) Verify success<a class="headerlink" href="#verify-success" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Request returns HTTP <code class="docutils literal notranslate"><span class="pre">200</span></code></p></li>
+<li><p>Response includes solver status and solution values</p></li>
+</ul>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>If startup fails, check dependency installation and whether ports are already in use.</p></li>
+<li><p>If request fails, verify endpoint path and content type.</p></li>
+</ul>
 </section>
 </section>
 
@@ -161,8 +155,8 @@ instantiate
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="installation.html" class="btn btn-neutral float-left" title="Installation and Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="python_engine_setup.html" class="btn btn-neutral float-right" title="OptimizationServer (Python)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="architecture.html" class="btn btn-neutral float-left" title="Architecture Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation and Quick Start" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
