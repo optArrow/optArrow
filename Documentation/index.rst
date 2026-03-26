@@ -13,8 +13,8 @@ Introduction
 Learn More
 ----------
 
-- `How to Define an LP Problem <tutorials/lp_problem>`_
-- `How to Use OptArrow to Solve an LP Problem <tutorials/lp_example1>`_
+- :doc:`How to Define an LP Problem <tutorials/lp_problem>`
+- :doc:`How to Use OptArrow to Solve an LP Problem <tutorials/lp_example1>`
 
 .. toctree::
    :maxdepth: 1
