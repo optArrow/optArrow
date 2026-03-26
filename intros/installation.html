@@ -156,10 +156,20 @@ git<span class="w"> </span>checkout<span class="w"> </span>main
 </li>
 <li><p>Verify success:</p>
 <blockquote>
-<div><ul class="simple">
-<li><p>HTTP responses return status <code class="docutils literal notranslate"><span class="pre">200</span></code>.</p></li>
-<li><p>Response body can be decoded as Arrow IPC (or JSON for <code class="docutils literal notranslate"><span class="pre">/computeJSON</span></code>).</p></li>
-<li><p>Returned object includes solver status and solution vectors.</p></li>
+<div><p>Check that services are listening on expected ports:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nc<span class="w"> </span>-zv<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span><span class="m">8000</span><span class="w"> </span><span class="m">8101</span><span class="w"> </span><span class="m">65432</span>
+</pre></div>
+</div>
+<p>Send a quick health-style request to the JSON endpoint:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-i<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/computeJSON<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;:{&quot;A&quot;:{&quot;row&quot;:[0],&quot;col&quot;:[0],&quot;val&quot;:[1.0]},&quot;b&quot;:[1.0],&quot;c&quot;:[1.0],&quot;lb&quot;:[0.0],&quot;csense&quot;:[&quot;E&quot;],&quot;osense&quot;:&quot;max&quot;},&quot;model_name&quot;:&quot;smoke_test&quot;,&quot;engine&quot;:&quot;julia&quot;,&quot;solver&quot;:{&quot;solver_name&quot;:&quot;HiGHS&quot;,&quot;solver_type&quot;:&quot;LP&quot;,&quot;solver_params&quot;:{}}}&#39;</span>
+</pre></div>
+</div>
+<p>Expected result:</p>
+<ul class="simple">
+<li><p>HTTP status <code class="docutils literal notranslate"><span class="pre">200</span></code></p></li>
+<li><p>JSON response includes a solver status and solution fields</p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -167,11 +177,26 @@ git<span class="w"> </span>checkout<span class="w"> </span>main
 </section>
 <section id="common-first-run-checks">
 <h2>Common first-run checks<a class="headerlink" href="#common-first-run-checks" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>If service does not start, confirm engine ports are free and dependencies are installed.</p></li>
-<li><p>If request fails, verify endpoint path and <code class="docutils literal notranslate"><span class="pre">Content-Type</span></code> header.</p></li>
-<li><p>For Arrow IPC requests, ensure the payload is a valid IPC stream.</p></li>
-</ul>
+<p>If service does not start, check startup logs and whether required ports are already in use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/startAll.sh
+ss<span class="w"> </span>-ltnp<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;:8000|:8101|:65432&#39;</span>
+</pre></div>
+</div>
+<p>If dependencies may be missing, verify both Python and Julia environments:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>--version
+poetry<span class="w"> </span>install<span class="w"> </span>--no-root
+julia<span class="w"> </span>--project<span class="o">=</span>./src/service/optimization_service/julia<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;import Pkg; Pkg.instantiate()&quot;</span>
+</pre></div>
+</div>
+<p>If requests fail, verify endpoint path and content type:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-i<span class="w"> </span>http://127.0.0.1:8000/
+curl<span class="w"> </span>-i<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/computeJSON<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{}&#39;</span>
+</pre></div>
+</div>
+<p>For Arrow IPC requests, confirm the header is:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Content-Type: application/vnd.apache.arrow.stream
+</pre></div>
+</div>
 </section>
 <section id="install-dependencies">
 <h2>Install dependencies<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h2>

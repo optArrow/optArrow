@@ -47,16 +47,55 @@ Quick start (first working request)
 
 3. Verify success:
 
-    - HTTP responses return status ``200``.
-    - Response body can be decoded as Arrow IPC (or JSON for ``/computeJSON``).
-    - Returned object includes solver status and solution vectors.
+    Check that services are listening on expected ports:
+
+    .. code-block:: bash
+
+        nc -zv 127.0.0.1 8000 8101 65432
+
+    Send a quick health-style request to the JSON endpoint:
+
+    .. code-block:: bash
+
+        curl -i -X POST http://127.0.0.1:8000/computeJSON \
+          -H "Content-Type: application/json" \
+          -d '{"model":{"A":{"row":[0],"col":[0],"val":[1.0]},"b":[1.0],"c":[1.0],"lb":[0.0],"csense":["E"],"osense":"max"},"model_name":"smoke_test","engine":"julia","solver":{"solver_name":"HiGHS","solver_type":"LP","solver_params":{}}}'
+
+    Expected result:
+
+    - HTTP status ``200``
+    - JSON response includes a solver status and solution fields
 
 Common first-run checks
 -----------------------
 
-- If service does not start, confirm engine ports are free and dependencies are installed.
-- If request fails, verify endpoint path and ``Content-Type`` header.
-- For Arrow IPC requests, ensure the payload is a valid IPC stream.
+If service does not start, check startup logs and whether required ports are already in use:
+
+.. code-block:: bash
+
+    ./scripts/startAll.sh
+    ss -ltnp | grep -E ':8000|:8101|:65432'
+
+If dependencies may be missing, verify both Python and Julia environments:
+
+.. code-block:: bash
+
+    poetry --version
+    poetry install --no-root
+    julia --project=./src/service/optimization_service/julia -e "import Pkg; Pkg.instantiate()"
+
+If requests fail, verify endpoint path and content type:
+
+.. code-block:: bash
+
+    curl -i http://127.0.0.1:8000/
+    curl -i -X POST http://127.0.0.1:8000/computeJSON -H "Content-Type: application/json" -d '{}'
+
+For Arrow IPC requests, confirm the header is:
+
+.. code-block:: text
+
+    Content-Type: application/vnd.apache.arrow.stream
 
 Install dependencies
 --------------------
