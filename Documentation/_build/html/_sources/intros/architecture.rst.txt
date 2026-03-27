@@ -5,13 +5,16 @@ Architecture Overview
    :align: center
    :width: 50%
 
-The architecture of OptArrow is designed to facilitate seamless communication between Python and Julia optimization solvers.
+OptArrow's architecture is designed to enable seamless communication between Python- and Julia-based optimization solvers.
+It is composed of three core services:
 
-Key components
+Key Components
 --------------
 
-1. **Gateway**: Entry point for optimization requests. It handles sessions and routes tasks to the selected solver backend.
-2. **Python Engine**: Python-based optimization execution (for example with Pyomo) and Arrow-based payload handling.
-3. **Julia Engine**: Julia-based optimization execution (for example with JuMP), using socket/TCP communication and Arrow IPC payloads.
+1. **Gateway**: The entry point for all optimization requests. It receives requests, manages sessions, and routes tasks to the appropriate solver backend. It also provides a unified interface that abstracts language-specific differences between Python and Julia, allowing users to switch solvers with minimal code changes.
 
-These services can run independently, enabling flexible deployment and scaling.
+2. **Python Engine**: The Python optimization engine, built on libraries such as Pyomo. It uses Apache Arrow Flight RPC for efficient communication with the Gateway and is designed to execute optimization workloads such as Linear Programming (LP) and Quadratic Programming (QP).
+
+3. **Julia Engine**: The Julia optimization engine, built on libraries such as JuMP. It leverages Julia's performance advantages for computationally intensive optimization problems. It communicates with the Gateway through socket-based TCP connections, using Apache Arrow IPC bytes for efficient data exchange.
+
+These three services can run independently, enabling flexible deployment and scaling. The Gateway serves as the central hub, coordinating requests and responses between the Python and Julia engines.

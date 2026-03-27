@@ -9,7 +9,7 @@
   <title>Architecture Overview &mdash; OptArrow  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom-wide.css?v=35173757" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom-wide.css?v=4d4a401b" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -46,14 +46,14 @@
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Architecture Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#key-components">Key components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-components">Key Components</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start (10 Minutes)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Overall Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="julia_setup.html">OptimizationServer (Julia)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="python_engine_setup.html">OptimizationServer (Python)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="benchmarking.html">Benchmark testing</a></li>
@@ -70,7 +70,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to Arrow Gateway Engine</a></li>
 </ul>
 
         </div>
@@ -103,15 +103,16 @@
 <a class="reference internal image-reference" href="../_images/optarrow_architecture.png"><img alt="../_images/optarrow_architecture.png" src="../_images/optarrow_architecture.png" style="width: 50%;" />
 </a>
 </figure>
-<p>The architecture of OptArrow is designed to facilitate seamless communication between Python and Julia optimization solvers.</p>
+<p>OptArrow’s architecture is designed to enable seamless communication between Python- and Julia-based optimization solvers.
+It is composed of three core services:</p>
 <section id="key-components">
-<h2>Key components<a class="headerlink" href="#key-components" title="Link to this heading"></a></h2>
+<h2>Key Components<a class="headerlink" href="#key-components" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
-<li><p><strong>Gateway</strong>: Entry point for optimization requests. It handles sessions and routes tasks to the selected solver backend.</p></li>
-<li><p><strong>Python Engine</strong>: Python-based optimization execution (for example with Pyomo) and Arrow-based payload handling.</p></li>
-<li><p><strong>Julia Engine</strong>: Julia-based optimization execution (for example with JuMP), using socket/TCP communication and Arrow IPC payloads.</p></li>
+<li><p><strong>Gateway</strong>: The entry point for all optimization requests. It receives requests, manages sessions, and routes tasks to the appropriate solver backend. It also provides a unified interface that abstracts language-specific differences between Python and Julia, allowing users to switch solvers with minimal code changes.</p></li>
+<li><p><strong>Python Engine</strong>: The Python optimization engine, built on libraries such as Pyomo. It uses Apache Arrow Flight RPC for efficient communication with the Gateway and is designed to execute optimization workloads such as Linear Programming (LP) and Quadratic Programming (QP).</p></li>
+<li><p><strong>Julia Engine</strong>: The Julia optimization engine, built on libraries such as JuMP. It leverages Julia’s performance advantages for computationally intensive optimization problems. It communicates with the Gateway through socket-based TCP connections, using Apache Arrow IPC bytes for efficient data exchange.</p></li>
 </ol>
-<p>These services can run independently, enabling flexible deployment and scaling.</p>
+<p>These three services can run independently, enabling flexible deployment and scaling. The Gateway serves as the central hub, coordinating requests and responses between the Python and Julia engines.</p>
 </section>
 </section>
 

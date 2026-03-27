@@ -1,5 +1,16 @@
 .wy-nav-content {
     max-width: none !important;
-    width: auto !important;
+    width: 100% !important;
     margin: 0 !important;
+}
+
+.figure.intro-logo p.caption strong {
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+.figure.intro-logo p.caption em {
+    display: block;
+    margin-top: 0.25rem;
+    font-style: italic;
 }

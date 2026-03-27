@@ -6,10 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation and Quick Start &mdash; OptArrow  documentation</title>
+  <title>Installation and Overall Setup &mdash; OptArrow  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom-wide.css?v=35173757" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom-wide.css?v=4d4a401b" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -50,14 +50,50 @@
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start (10 Minutes)</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation and Quick Start</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#branch-and-repository-layout">Branch and repository layout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#get-the-source-code">Get the source code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#quick-start-first-working-request">Quick start (first working request)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#common-first-run-checks">Common first-run checks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#install-dependencies">Install dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#build-the-html-docs-locally">Build the HTML docs locally</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation and Overall Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overall-setup">Overall Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#optarrow-computation-service">OptArrow Computation Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#requirements">Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#clone-the-repository">1. Clone the repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-python-and-julia">2. Install Python and Julia</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-python-3-12-recommended">2.1 Install Python (&gt;=3.12 recommended)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#windows">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#macos">macOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#linux-debian-ubuntu">Linux (Debian/Ubuntu)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#linux-fedora-rhel">Linux (Fedora/RHEL)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#install-julia-1-11-recommended">2.2 Install Julia (&gt;=1.11 recommended)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#windows-macos-linux-generic">Windows / macOS / Linux (generic)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#linux-debian-ubuntu-quick-install">Linux (Debian/Ubuntu quick install)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#macos-homebrew">macOS (Homebrew)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#install-dependencies">3. Install dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-pipx">3.1 Install pipx</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">macOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Linux (Debian/Ubuntu)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fedora-rhel">Fedora / RHEL</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#install-python-dependencies">3.2 Install Python dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-julia-dependencies">3.3 Install Julia dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#start-all-service-instances-engines-gateway">4. Start all service instances (engines + gateway)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#services-are-ready">5. Services are ready</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alternative-start-services-with-docker">6. Alternative: Start services with Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#more-information">More Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configure-service-ports">Configure service ports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scripts-in-scripts">Scripts in <code class="docutils literal notranslate"><span class="pre">./scripts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extending-the-code">Extending the code</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="julia_setup.html">OptimizationServer (Julia)</a></li>
@@ -76,7 +112,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to Arrow Gateway Engine</a></li>
 </ul>
 
         </div>
@@ -93,7 +129,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Installation and Quick Start</li>
+      <li class="breadcrumb-item active">Installation and Overall Setup</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/intros/installation.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -103,119 +139,317 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="installation-and-quick-start">
-<h1>Installation and Quick Start<a class="headerlink" href="#installation-and-quick-start" title="Link to this heading"></a></h1>
-<p>If you are new to OptArrow, use this page as the shortest path from zero setup to your first successful request.</p>
-<p>For the fastest onboarding flow, start here:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="quickstart.html"><span class="doc">Quick Start (10 Minutes)</span></a></p></li>
-</ul>
-<section id="branch-and-repository-layout">
-<h2>Branch and repository layout<a class="headerlink" href="#branch-and-repository-layout" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">main</span></code> branch contains the source code for gateway, engines, and scripts used to run OptArrow.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch (this docs site) contains generated documentation artifacts.</p></li>
-</ul>
-<p>If you want to run OptArrow locally, clone and work from <code class="docutils literal notranslate"><span class="pre">main</span></code>.</p>
+  <section id="installation-and-overall-setup">
+<h1>Installation and Overall Setup<a class="headerlink" href="#installation-and-overall-setup" title="Link to this heading"></a></h1>
+<section id="overall-setup">
+<h2>Overall Setup<a class="headerlink" href="#overall-setup" title="Link to this heading"></a></h2>
+<section id="optarrow-computation-service">
+<h3>OptArrow Computation Service<a class="headerlink" href="#optarrow-computation-service" title="Link to this heading"></a></h3>
+<p>OptArrow is an optimization integration engine designed to seamlessly connect the Python and Julia ecosystems.
+It addresses the technical and structural challenges of building scalable, high-performance optimization pipelines
+across languages.</p>
+<p>This setup is used for the Cobra Arrow project and is related to the OpenCobra toolbox project.</p>
 </section>
-<section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<section id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>Git</p></li>
-<li><p>Python 3.10+</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pip</span></code></p></li>
-<li><p>Julia 1.9+ (required when using the Julia engine)</p></li>
-<li><p>Optional but recommended: <code class="docutils literal notranslate"><span class="pre">poetry</span></code> (used in Python engine setup)</p></li>
+<li><p>Python <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">3.12</span></code> (recommended)</p></li>
+<li><p>Julia <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">1.11</span></code> (recommended)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">poetry</span></code> for dependency and environment management (recommended best practice)</p></li>
 </ul>
+<p>Currently supported solvers:</p>
+<ul class="simple">
+<li><p>GLPK (not supported for QP problems)</p></li>
+<li><p>GUROBI</p></li>
+<li><p>HiGHS</p></li>
+<li><p>Mosek</p></li>
+<li><p>Hypatia (Julia only)</p></li>
+</ul>
+<p>Make sure solver executables are installed and available in your system <code class="docutils literal notranslate"><span class="pre">PATH</span></code>.</p>
 </section>
-<section id="get-the-source-code">
-<h2>Get the source code<a class="headerlink" href="#get-the-source-code" title="Link to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:optArrow/optArrow.git
-<span class="nb">cd</span><span class="w"> </span>optArrow
-git<span class="w"> </span>checkout<span class="w"> </span>main
+</section>
+<section id="clone-the-repository">
+<h2>1. Clone the repository<a class="headerlink" href="#clone-the-repository" title="Link to this heading"></a></h2>
+<p>If you are not using Docker, clone the source code first:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Digital-Metabolic-Twin-Centre/OptArrow.git
+<span class="nb">cd</span><span class="w"> </span>OptArrow
 </pre></div>
 </div>
 </section>
-<section id="quick-start-first-working-request">
-<h2>Quick start (first working request)<a class="headerlink" href="#quick-start-first-working-request" title="Link to this heading"></a></h2>
-<ol class="arabic">
-<li><p>Start the backend services by following one of these setup guides:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="julia_setup.html"><span class="doc">OptimizationServer (Julia)</span></a></p></li>
-<li><p><a class="reference internal" href="python_engine_setup.html"><span class="doc">OptimizationServer (Python)</span></a></p></li>
+<section id="install-python-and-julia">
+<h2>2. Install Python and Julia<a class="headerlink" href="#install-python-and-julia" title="Link to this heading"></a></h2>
+<section id="install-python-3-12-recommended">
+<h3>2.1 Install Python (&gt;=3.12 recommended)<a class="headerlink" href="#install-python-3-12-recommended" title="Link to this heading"></a></h3>
+<section id="windows">
+<h4>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Download the installer from Python.org Downloads.</p></li>
+<li><p>During installation, check <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">Python</span> <span class="pre">to</span> <span class="pre">PATH</span></code>.</p></li>
+<li><p>Verify installation:</p></li>
 </ul>
-</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<section id="macos">
+<h4>macOS<a class="headerlink" href="#macos" title="Link to this heading"></a></h4>
+<p>Use Homebrew:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>python@3.12
+</pre></div>
+</div>
+<p>Or download directly from Python.org.</p>
+<p>Verify installation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<section id="linux-debian-ubuntu">
+<h4>Linux (Debian/Ubuntu)<a class="headerlink" href="#linux-debian-ubuntu" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3.12<span class="w"> </span>python3.12-venv<span class="w"> </span>python3.12-dev
+python3.12<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<section id="linux-fedora-rhel">
+<h4>Linux (Fedora/RHEL)<a class="headerlink" href="#linux-fedora-rhel" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>python3.12<span class="w"> </span>python3.12-devel
+python3.12<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+</section>
+<section id="install-julia-1-11-recommended">
+<h3>2.2 Install Julia (&gt;=1.11 recommended)<a class="headerlink" href="#install-julia-1-11-recommended" title="Link to this heading"></a></h3>
+<section id="windows-macos-linux-generic">
+<h4>Windows / macOS / Linux (generic)<a class="headerlink" href="#windows-macos-linux-generic" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Download binaries from Julia Downloads.</p></li>
+<li><p>Extract and place Julia in your preferred folder.</p></li>
+<li><p>Add the Julia <code class="docutils literal notranslate"><span class="pre">bin/</span></code> directory to <code class="docutils literal notranslate"><span class="pre">PATH</span></code>:</p>
+<ul>
+<li><p>Windows: System Environment Variables</p></li>
+<li><p>Linux/macOS: <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code> or <code class="docutils literal notranslate"><span class="pre">~/.zshrc</span></code></p></li>
+</ul>
 </li>
-<li><p>Run a ready tutorial request from the docs examples:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="../tutorials/lp_example1.html"><span class="doc">LP Example: Production Optimization</span></a></p></li>
 </ul>
-</div></blockquote>
-</li>
-<li><p>Verify success:</p>
-<blockquote>
-<div><p>Check that services are listening on expected ports:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nc<span class="w"> </span>-zv<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span><span class="m">8000</span><span class="w"> </span><span class="m">8101</span><span class="w"> </span><span class="m">65432</span>
+<p>Verify installation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>--version
 </pre></div>
 </div>
-<p>Send a quick health-style request to the JSON endpoint:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-i<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/computeJSON<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;:{&quot;A&quot;:{&quot;row&quot;:[0],&quot;col&quot;:[0],&quot;val&quot;:[1.0]},&quot;b&quot;:[1.0],&quot;c&quot;:[1.0],&quot;lb&quot;:[0.0],&quot;csense&quot;:[&quot;E&quot;],&quot;osense&quot;:&quot;max&quot;},&quot;model_name&quot;:&quot;smoke_test&quot;,&quot;engine&quot;:&quot;julia&quot;,&quot;solver&quot;:{&quot;solver_name&quot;:&quot;HiGHS&quot;,&quot;solver_type&quot;:&quot;LP&quot;,&quot;solver_params&quot;:{}}}&#39;</span>
-</pre></div>
-</div>
-<p>Expected result:</p>
-<ul class="simple">
-<li><p>HTTP status <code class="docutils literal notranslate"><span class="pre">200</span></code></p></li>
-<li><p>JSON response includes a solver status and solution fields</p></li>
-</ul>
-</div></blockquote>
-</li>
-</ol>
 </section>
-<section id="common-first-run-checks">
-<h2>Common first-run checks<a class="headerlink" href="#common-first-run-checks" title="Link to this heading"></a></h2>
-<p>If service does not start, check startup logs and whether required ports are already in use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/startAll.sh
-ss<span class="w"> </span>-ltnp<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;:8000|:8101|:65432&#39;</span>
+<section id="linux-debian-ubuntu-quick-install">
+<h4>Linux (Debian/Ubuntu quick install)<a class="headerlink" href="#linux-debian-ubuntu-quick-install" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://install.julialang.org<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
 </pre></div>
 </div>
-<p>If dependencies may be missing, verify both Python and Julia environments:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>--version
-poetry<span class="w"> </span>install<span class="w"> </span>--no-root
-julia<span class="w"> </span>--project<span class="o">=</span>./src/service/optimization_service/julia<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;import Pkg; Pkg.instantiate()&quot;</span>
+</section>
+<section id="macos-homebrew">
+<h4>macOS (Homebrew)<a class="headerlink" href="#macos-homebrew" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>julia
 </pre></div>
 </div>
-<p>If requests fail, verify endpoint path and content type:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-i<span class="w"> </span>http://127.0.0.1:8000/
-curl<span class="w"> </span>-i<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/computeJSON<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{}&#39;</span>
-</pre></div>
-</div>
-<p>For Arrow IPC requests, confirm the header is:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Content-Type: application/vnd.apache.arrow.stream
-</pre></div>
-</div>
+</section>
+</section>
 </section>
 <section id="install-dependencies">
-<h2>Install dependencies<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h2>
-<p>For docs only (this documentation site):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/bin/python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>Documentation/requirements.txt
+<h2>3. Install dependencies<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h2>
+<section id="install-pipx">
+<h3>3.1 Install pipx<a class="headerlink" href="#install-pipx" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">pipx</span></code> installs Python applications in isolated environments and is recommended for installing <code class="docutils literal notranslate"><span class="pre">poetry</span></code>.</p>
+<p>General:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pipx<span class="w"> </span>install<span class="w"> </span>poetry
 </pre></div>
 </div>
-<p>For runtime services, use the installation steps in:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="julia_setup.html"><span class="doc">OptimizationServer (Julia)</span></a></p></li>
-<li><p><a class="reference internal" href="python_engine_setup.html"><span class="doc">OptimizationServer (Python)</span></a></p></li>
+<section id="id1">
+<h4>Windows<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<p>Make sure Python 3.12+ is installed and added to <code class="docutils literal notranslate"><span class="pre">PATH</span></code>.
+In PowerShell:</p>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">py</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="p">-</span><span class="n">-user</span> <span class="n">pipx</span>
+<span class="n">py</span> <span class="n">-m</span> <span class="n">pipx</span> <span class="n">ensurepath</span>
+</pre></div>
+</div>
+<p>Restart PowerShell (or your terminal), then verify:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pipx<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h4>macOS<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<p>Install via Homebrew:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>pipx
+pipx<span class="w"> </span>ensurepath
+</pre></div>
+</div>
+<p>Or via pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>pipx
+python3<span class="w"> </span>-m<span class="w"> </span>pipx<span class="w"> </span>ensurepath
+</pre></div>
+</div>
+<p>Restart your terminal (or run <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.zshrc</span></code>), then verify:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pipx<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h4>Linux (Debian/Ubuntu)<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3.12<span class="w"> </span>python3.12-venv<span class="w"> </span>python3-pip
+python3.12<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>pipx
+python3.12<span class="w"> </span>-m<span class="w"> </span>pipx<span class="w"> </span>ensurepath
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=$PATH:~/.local/bin&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<span class="nb">source</span><span class="w"> </span>~/.bashrc
+pipx<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<section id="fedora-rhel">
+<h4>Fedora / RHEL<a class="headerlink" href="#fedora-rhel" title="Link to this heading"></a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>pipx
+pipx<span class="w"> </span>ensurepath
+</pre></div>
+</div>
+</section>
+</section>
+<section id="install-python-dependencies">
+<h3>3.2 Install Python dependencies<a class="headerlink" href="#install-python-dependencies" title="Link to this heading"></a></h3>
+<p>Install <code class="docutils literal notranslate"><span class="pre">poetry</span></code> first (via <code class="docutils literal notranslate"><span class="pre">pipx</span></code>), then install project dependencies from the project root:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pipx<span class="w"> </span>install<span class="w"> </span>poetry
+poetry<span class="w"> </span>install<span class="w"> </span>--no-root
+</pre></div>
+</div>
+<p>Using <code class="docutils literal notranslate"><span class="pre">pip</span></code> directly (or other dependency managers) is not recommended, to avoid environment inconsistency.</p>
+</section>
+<section id="install-julia-dependencies">
+<h3>3.3 Install Julia dependencies<a class="headerlink" href="#install-julia-dependencies" title="Link to this heading"></a></h3>
+<p>Launch Julia in project mode:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>--project<span class="o">=</span>./src/service/optimization_service/julia
+</pre></div>
+</div>
+<p>Then instantiate dependencies in the Julia REPL:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>julia&gt; ]
+(pkg) instantiate
+</pre></div>
+</div>
+</section>
+</section>
+<section id="start-all-service-instances-engines-gateway">
+<h2>4. Start all service instances (engines + gateway)<a class="headerlink" href="#start-all-service-instances-engines-gateway" title="Link to this heading"></a></h2>
+<p>Start all services:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh<span class="w"> </span>scripts/startAll.sh
+</pre></div>
+</div>
+<p>Start services individually:</p>
+<ul>
+<li><p>Gateway only:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh<span class="w"> </span>scripts/startServer.sh
+</pre></div>
+</div>
+</li>
+<li><p>Python engine only:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh<span class="w"> </span>scripts/startPyEngine.sh
+</pre></div>
+</div>
+</li>
+<li><p>Julia engine only:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh<span class="w"> </span>scripts/startJulia.sh
+</pre></div>
+</div>
+</li>
 </ul>
 </section>
-<section id="build-the-html-docs-locally">
-<h2>Build the HTML docs locally<a class="headerlink" href="#build-the-html-docs-locally" title="Link to this heading"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/bin/python<span class="w"> </span>-m<span class="w"> </span>sphinx<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>Documentation<span class="w"> </span>Documentation/_build/html
+<section id="services-are-ready">
+<h2>5. Services are ready<a class="headerlink" href="#services-are-ready" title="Link to this heading"></a></h2>
+<p>After services are running and communicating, run the following Python example to solve a simple LP problem:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+          <span class="p">},</span>
+          <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span>
+          <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
+          <span class="s2">&quot;lb&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+          <span class="s2">&quot;csense&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">],</span>
+          <span class="s2">&quot;osense&quot;</span><span class="p">:</span> <span class="s2">&quot;max&quot;</span>
+     <span class="p">},</span>
+     <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="s2">&quot;product_mix_lp&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;julia&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;solver_name&quot;</span><span class="p">:</span> <span class="s2">&quot;HiGHS&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;solver_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LP&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;solver_params&quot;</span><span class="p">:</span> <span class="p">{}</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">pa_arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">value</span><span class="p">])</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ipc_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">pa_arrays</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">ipc_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+<span class="n">sink</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">BufferOutputStream</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">new_stream</span><span class="p">(</span><span class="n">sink</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
+     <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<span class="n">ipc_bytes</span> <span class="o">=</span> <span class="n">sink</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">to_pybytes</span><span class="p">()</span>
+
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/vnd.apache.arrow.stream&quot;</span><span class="p">}</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/compute&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ipc_bytes</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+<span class="n">result_table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
+<span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">result_table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">to_pylist</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">result_table</span><span class="o">.</span><span class="n">column_names</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result_dict</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Open the generated site at <code class="docutils literal notranslate"><span class="pre">Documentation/_build/html/index.html</span></code>.</p>
+<p>Expected output (example):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;success&#39;: [True], &#39;status&#39;: [&#39;OPTIMAL&#39;], &#39;obj_val&#39;: [66.0], &#39;solution&#39;: [[6.000000000000004, 2.9999999999999987]]}
+</pre></div>
+</div>
+</section>
+<section id="alternative-start-services-with-docker">
+<h2>6. Alternative: Start services with Docker<a class="headerlink" href="#alternative-start-services-with-docker" title="Link to this heading"></a></h2>
+<p>Docker can run services in isolated containers for production-style deployments.</p>
+<p>Gateway service (<code class="docutils literal notranslate"><span class="pre">server.dockerfile</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>gateway-server<span class="w"> </span>-f<span class="w"> </span>server.dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--net<span class="o">=</span>host<span class="w"> </span>gateway-server
+</pre></div>
+</div>
+<p>Python engine service (<code class="docutils literal notranslate"><span class="pre">py_engine.dockerfile</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>py-engine-server<span class="w"> </span>-f<span class="w"> </span>py_engine.dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--net<span class="o">=</span>host<span class="w"> </span>py-engine-server
+</pre></div>
+</div>
+<p>Julia engine service (<code class="docutils literal notranslate"><span class="pre">julia_engine.dockerfile</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>julia-engine-server<span class="w"> </span>-f<span class="w"> </span>julia_engine.dockerfile<span class="w"> </span>.
+docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--net<span class="o">=</span>host<span class="w"> </span>julia-engine-server
+</pre></div>
+</div>
+<p>Start all services together with Compose:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>compose.yaml<span class="w"> </span>up
+</pre></div>
+</div>
+</section>
+<section id="more-information">
+<h2>More Information<a class="headerlink" href="#more-information" title="Link to this heading"></a></h2>
+<section id="configure-service-ports">
+<h3>Configure service ports<a class="headerlink" href="#configure-service-ports" title="Link to this heading"></a></h3>
+<p>See <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> for service IP/port configuration.
+If ports are changed, update Dockerfiles accordingly so the correct ports are exposed.</p>
+</section>
+<section id="scripts-in-scripts">
+<h3>Scripts in <code class="docutils literal notranslate"><span class="pre">./scripts</span></code><a class="headerlink" href="#scripts-in-scripts" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">envSetup.sh</span></code> can be used to install dependencies on Debian-based Linux systems.
+Other scripts start individual services, and <code class="docutils literal notranslate"><span class="pre">startAll.sh</span></code> starts all services locally.</p>
+</section>
+<section id="extending-the-code">
+<h3>Extending the code<a class="headerlink" href="#extending-the-code" title="Link to this heading"></a></h3>
+<p>See <a class="reference internal" href="contributing.html"><span class="doc">Contributing</span></a>.</p>
+</section>
 </section>
 </section>
 

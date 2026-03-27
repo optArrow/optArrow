@@ -1,121 +1,366 @@
-Installation and Quick Start
-============================
+Installation and Overall Setup
+==============================
 
-If you are new to OptArrow, use this page as the shortest path from zero setup to your first successful request.
-
-For the fastest onboarding flow, start here:
-
-- :doc:`Quick Start (10 Minutes) <quickstart>`
-
-Branch and repository layout
-----------------------------
-
-- ``main`` branch contains the source code for gateway, engines, and scripts used to run OptArrow.
-- ``gh-pages`` branch (this docs site) contains generated documentation artifacts.
-
-If you want to run OptArrow locally, clone and work from ``main``.
-
-Prerequisites
+Overall Setup
 -------------
 
-- Git
-- Python 3.10+
-- ``pip``
-- Julia 1.9+ (required when using the Julia engine)
-- Optional but recommended: ``poetry`` (used in Python engine setup)
+OptArrow Computation Service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Get the source code
--------------------
+OptArrow is an optimization integration engine designed to seamlessly connect the Python and Julia ecosystems.
+It addresses the technical and structural challenges of building scalable, high-performance optimization pipelines
+across languages.
 
-.. code-block:: bash
+This setup is used for the Cobra Arrow project and is related to the OpenCobra toolbox project.
 
-    git clone git@github.com:optArrow/optArrow.git
-    cd optArrow
-    git checkout main
+Requirements
+~~~~~~~~~~~~
 
-Quick start (first working request)
------------------------------------
+- Python ``>= 3.12`` (recommended)
+- Julia ``>= 1.11`` (recommended)
+- ``poetry`` for dependency and environment management (recommended best practice)
 
-1. Start the backend services by following one of these setup guides:
+Currently supported solvers:
 
-    - :doc:`OptimizationServer (Julia) <julia_setup>`
-    - :doc:`OptimizationServer (Python) <python_engine_setup>`
+- GLPK (not supported for QP problems)
+- GUROBI
+- HiGHS
+- Mosek
+- Hypatia (Julia only)
 
-2. Run a ready tutorial request from the docs examples:
+Make sure solver executables are installed and available in your system ``PATH``.
 
-    - :doc:`LP Example: Production Optimization <../tutorials/lp_example1>`
-
-3. Verify success:
-
-    Check that services are listening on expected ports:
-
-    .. code-block:: bash
-
-        nc -zv 127.0.0.1 8000 8101 65432
-
-    Send a quick health-style request to the JSON endpoint:
-
-    .. code-block:: bash
-
-        curl -i -X POST http://127.0.0.1:8000/computeJSON \
-          -H "Content-Type: application/json" \
-          -d '{"model":{"A":{"row":[0],"col":[0],"val":[1.0]},"b":[1.0],"c":[1.0],"lb":[0.0],"csense":["E"],"osense":"max"},"model_name":"smoke_test","engine":"julia","solver":{"solver_name":"HiGHS","solver_type":"LP","solver_params":{}}}'
-
-    Expected result:
-
-    - HTTP status ``200``
-    - JSON response includes a solver status and solution fields
-
-Common first-run checks
+1. Clone the repository
 -----------------------
 
-If service does not start, check startup logs and whether required ports are already in use:
+If you are not using Docker, clone the source code first:
 
 .. code-block:: bash
 
-    ./scripts/startAll.sh
-    ss -ltnp | grep -E ':8000|:8101|:65432'
+    git clone https://github.com/Digital-Metabolic-Twin-Centre/OptArrow.git
+    cd OptArrow
 
-If dependencies may be missing, verify both Python and Julia environments:
+2. Install Python and Julia
+---------------------------
+
+2.1 Install Python (>=3.12 recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Windows
+^^^^^^^
+
+- Download the installer from Python.org Downloads.
+- During installation, check ``Add Python to PATH``.
+- Verify installation:
 
 .. code-block:: bash
 
-    poetry --version
+    python --version
+
+macOS
+^^^^^
+
+Use Homebrew:
+
+.. code-block:: bash
+
+    brew install python@3.12
+
+Or download directly from Python.org.
+
+Verify installation:
+
+.. code-block:: bash
+
+    python3 --version
+
+Linux (Debian/Ubuntu)
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+    sudo apt update
+    sudo apt install -y python3.12 python3.12-venv python3.12-dev
+    python3.12 --version
+
+Linux (Fedora/RHEL)
+^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+    sudo dnf install python3.12 python3.12-devel
+    python3.12 --version
+
+2.2 Install Julia (>=1.11 recommended)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Windows / macOS / Linux (generic)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Download binaries from Julia Downloads.
+- Extract and place Julia in your preferred folder.
+- Add the Julia ``bin/`` directory to ``PATH``:
+
+  - Windows: System Environment Variables
+  - Linux/macOS: ``~/.bashrc`` or ``~/.zshrc``
+
+Verify installation:
+
+.. code-block:: bash
+
+    julia --version
+
+Linux (Debian/Ubuntu quick install)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+    curl -fsSL https://install.julialang.org | sh
+
+macOS (Homebrew)
+^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+    brew install julia
+
+3. Install dependencies
+-----------------------
+
+3.1 Install pipx
+~~~~~~~~~~~~~~~~
+
+``pipx`` installs Python applications in isolated environments and is recommended for installing ``poetry``.
+
+General:
+
+.. code-block:: bash
+
+    pipx install poetry
+
+Windows
+^^^^^^^
+
+Make sure Python 3.12+ is installed and added to ``PATH``.
+In PowerShell:
+
+.. code-block:: powershell
+
+    py -m pip install --user pipx
+    py -m pipx ensurepath
+
+Restart PowerShell (or your terminal), then verify:
+
+.. code-block:: bash
+
+    pipx --version
+
+macOS
+^^^^^
+
+Install via Homebrew:
+
+.. code-block:: bash
+
+    brew install pipx
+    pipx ensurepath
+
+Or via pip:
+
+.. code-block:: bash
+
+    python3 -m pip install --user pipx
+    python3 -m pipx ensurepath
+
+Restart your terminal (or run ``source ~/.zshrc``), then verify:
+
+.. code-block:: bash
+
+    pipx --version
+
+Linux (Debian/Ubuntu)
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+    sudo apt update
+    sudo apt install -y python3.12 python3.12-venv python3-pip
+    python3.12 -m pip install --user pipx
+    python3.12 -m pipx ensurepath
+    echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
+    source ~/.bashrc
+    pipx --version
+
+Fedora / RHEL
+^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+    sudo dnf install pipx
+    pipx ensurepath
+
+3.2 Install Python dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Install ``poetry`` first (via ``pipx``), then install project dependencies from the project root:
+
+.. code-block:: bash
+
+    pipx install poetry
     poetry install --no-root
-    julia --project=./src/service/optimization_service/julia -e "import Pkg; Pkg.instantiate()"
 
-If requests fail, verify endpoint path and content type:
+Using ``pip`` directly (or other dependency managers) is not recommended, to avoid environment inconsistency.
+
+3.3 Install Julia dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Launch Julia in project mode:
 
 .. code-block:: bash
 
-    curl -i http://127.0.0.1:8000/
-    curl -i -X POST http://127.0.0.1:8000/computeJSON -H "Content-Type: application/json" -d '{}'
+    julia --project=./src/service/optimization_service/julia
 
-For Arrow IPC requests, confirm the header is:
+Then instantiate dependencies in the Julia REPL:
 
 .. code-block:: text
 
-    Content-Type: application/vnd.apache.arrow.stream
+    julia> ]
+    (pkg) instantiate
 
-Install dependencies
---------------------
+4. Start all service instances (engines + gateway)
+---------------------------------------------------
 
-For docs only (this documentation site):
-
-.. code-block:: bash
-
-    /bin/python -m pip install -r Documentation/requirements.txt
-
-For runtime services, use the installation steps in:
-
-- :doc:`OptimizationServer (Julia) <julia_setup>`
-- :doc:`OptimizationServer (Python) <python_engine_setup>`
-
-Build the HTML docs locally
----------------------------
+Start all services:
 
 .. code-block:: bash
 
-    /bin/python -m sphinx -b html Documentation Documentation/_build/html
+    sh scripts/startAll.sh
 
-Open the generated site at ``Documentation/_build/html/index.html``.
+Start services individually:
+
+- Gateway only:
+
+  .. code-block:: bash
+
+      sh scripts/startServer.sh
+
+- Python engine only:
+
+  .. code-block:: bash
+
+      sh scripts/startPyEngine.sh
+
+- Julia engine only:
+
+  .. code-block:: bash
+
+      sh scripts/startJulia.sh
+
+5. Services are ready
+---------------------
+
+After services are running and communicating, run the following Python example to solve a simple LP problem:
+
+.. code-block:: python
+
+    import pyarrow as pa
+    import requests
+
+    ipc_dict = {
+         "model": {
+              "A": {
+                    "row": [0, 0, 1, 1, 2, 2],
+                    "col": [0, 1, 0, 1, 0, 1],
+                    "val": [20, 10, 10, 20, 10, 30]
+              },
+              "b": [200, 120, 150],
+              "c": [5, 12],
+              "lb": [0, 0],
+              "csense": ["L", "L", "L"],
+              "osense": "max"
+         },
+         "model_name": "product_mix_lp",
+         "engine": "julia",
+         "solver": {
+              "solver_name": "HiGHS",
+              "solver_type": "LP",
+              "solver_params": {}
+         }
+    }
+
+    pa_arrays = [pa.array([value]) for value in ipc_dict.values()]
+    table = pa.Table.from_arrays(pa_arrays, names=list(ipc_dict.keys()))
+
+    sink = pa.BufferOutputStream()
+    with pa.ipc.new_stream(sink, table.schema) as writer:
+         writer.write(table)
+    ipc_bytes = sink.getvalue().to_pybytes()
+
+    headers = {"Content-Type": "application/vnd.apache.arrow.stream"}
+    response = requests.post("http://localhost:8000/compute", data=ipc_bytes, headers=headers)
+
+    if response.status_code != 200:
+         print(f"Error: {response.status_code} - {response.text}")
+
+    reader = pa.ipc.open_stream(response.content)
+    result_table = reader.read_all()
+    result_dict = {name: result_table.column(name).to_pylist() for name in result_table.column_names}
+    print(result_dict)
+
+Expected output (example):
+
+.. code-block:: text
+
+    {'success': [True], 'status': ['OPTIMAL'], 'obj_val': [66.0], 'solution': [[6.000000000000004, 2.9999999999999987]]}
+
+6. Alternative: Start services with Docker
+------------------------------------------
+
+Docker can run services in isolated containers for production-style deployments.
+
+Gateway service (``server.dockerfile``):
+
+.. code-block:: bash
+
+    docker build -t gateway-server -f server.dockerfile .
+    docker run -d --net=host gateway-server
+
+Python engine service (``py_engine.dockerfile``):
+
+.. code-block:: bash
+
+    docker build -t py-engine-server -f py_engine.dockerfile .
+    docker run -d --net=host py-engine-server
+
+Julia engine service (``julia_engine.dockerfile``):
+
+.. code-block:: bash
+
+    docker build -t julia-engine-server -f julia_engine.dockerfile .
+    docker run -d --net=host julia-engine-server
+
+Start all services together with Compose:
+
+.. code-block:: bash
+
+    docker compose -f compose.yaml up
+
+More Information
+----------------
+
+Configure service ports
+~~~~~~~~~~~~~~~~~~~~~~~
+
+See ``config.yaml`` for service IP/port configuration.
+If ports are changed, update Dockerfiles accordingly so the correct ports are exposed.
+
+Scripts in ``./scripts``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+``envSetup.sh`` can be used to install dependencies on Debian-based Linux systems.
+Other scripts start individual services, and ``startAll.sh`` starts all services locally.
+
+Extending the code
+~~~~~~~~~~~~~~~~~~
+
+See :doc:`Contributing <contributing>`.

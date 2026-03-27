@@ -9,7 +9,7 @@
   <title>Introduction &mdash; OptArrow  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/custom-wide.css?v=35173757" />
+      <link rel="stylesheet" type="text/css" href="_static/custom-wide.css?v=4d4a401b" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -49,7 +49,7 @@
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intros/quickstart.html">Quick Start (10 Minutes)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intros/installation.html">Installation and Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intros/installation.html">Installation and Overall Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intros/julia_setup.html">OptimizationServer (Julia)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intros/python_engine_setup.html">OptimizationServer (Python)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intros/benchmarking.html">Benchmark testing</a></li>
@@ -66,7 +66,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="intros/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intros/contributing.html">Contributing to Arrow Gateway Engine</a></li>
 </ul>
 
         </div>
@@ -96,19 +96,52 @@
   <section id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h1>
 <figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="_images/logo.png"><img alt="_images/logo.png" src="_images/logo.png" style="width: 20%;" />
+<a class="intro-logo reference internal image-reference" href="_images/logo.png"><img alt="_images/logo.png" class="intro-logo" src="_images/logo.png" style="width: 20%;" />
 </a>
 <figcaption>
-<p><span class="caption-text"><strong>OptArrow</strong>
-Solve optimization problems anywhere, in any language, with any solver.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+<p><span class="caption-text"><strong>OptArrow</strong></span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+<div class="legend">
+<p><em>Solve optimization problems anywhere, in any language, with any solver.</em></p>
+</div>
 </figcaption>
 </figure>
-<p><strong>OptArrow</strong> is an optimization integration engine designed to connect Python and Julia ecosystems for scalable optimization workflows.</p>
+<p>OptArrow is an optimization integration engine designed to seamlessly connect the Python and Julia ecosystems.
+It addresses the technical and structural challenges of building scalable, high-performance optimization
+pipelines across languages.</p>
+<section id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading"></a></h2>
+<p>Modern optimization workflows often involve multiple components:</p>
+<ul class="simple">
+<li><p><strong>Python</strong> is widely used for data preparation, orchestration, and web service development.</p></li>
+<li><p><strong>Julia</strong>, on the other hand, offers state-of-the-art numerical solvers with exceptional performance for mathematical programming.</p></li>
+</ul>
+<p>However, bridging these two environments remains challenging. Users frequently encounter issues with data format inconsistencies,
+communication overhead, and the lack of a unified interface for optimization models.</p>
+<p>OptArrow was developed to close this gap.</p>
+</section>
+<section id="what-problem-does-optarrow-solve">
+<h2>What Problem Does OptArrow Solve?<a class="headerlink" href="#what-problem-does-optarrow-solve" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Cross-language communication bottlenecks</strong>: Passing large-scale optimization models between Python and Julia often involves serialization overhead, format mismatches, and maintenance burdens.</p></li>
+<li><p><strong>Inconsistent model representations</strong>: Different solvers have their own modeling APIs (for example, Pyomo and JuMP), making solver switching difficult and error-prone.</p></li>
+<li><p><strong>Scalability and memory inefficiency</strong>: Traditional formats such as JSON or <code class="docutils literal notranslate"><span class="pre">.mat</span></code> files struggle with large sparse matrices and high-dimensional data.</p></li>
+</ul>
+</section>
+<section id="optarrow-s-solution">
+<h2>OptArrow’s Solution<a class="headerlink" href="#optarrow-s-solution" title="Link to this heading"></a></h2>
+<p>OptArrow introduces a streamlined, interoperable architecture with the following features:</p>
+<ul class="simple">
+<li><p><strong>Unified in-memory model representation</strong>: Based on the Apache Arrow columnar format, OptArrow enables zero-copy data exchange between Python and Julia.</p></li>
+<li><p><strong>Protocol-based model definitions</strong>: Optimization problems (for example, Linear Programming and Quadratic Programming) are described using well-defined schemas, independent of solver-specific syntax.</p></li>
+<li><p><strong>Multi-backend support</strong>: Users can run the same model through solvers like HiGHS, Gurobi, Mosek, or GLPK by switching backend configuration.</p></li>
+<li><p><strong>Efficient communication channels</strong>: OptArrow supports HTTP and Arrow Flight RPC, providing flexibility for both local and distributed deployments.</p></li>
+</ul>
+</section>
 <section id="learn-more">
 <h2>Learn More<a class="headerlink" href="#learn-more" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="tutorials/lp_problem.html"><span class="doc">How to Define an LP Problem</span></a></p></li>
-<li><p><a class="reference internal" href="tutorials/lp_example1.html"><span class="doc">How to Use OptArrow to Solve an LP Problem</span></a></p></li>
+<li><p><a class="reference internal" href="tutorials/lp_example1.html"><span class="doc">How to Use OptArrow to solve an LP Problem</span></a></p></li>
 </ul>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
@@ -120,7 +153,7 @@ Solve optimization problems anywhere, in any language, with any solver.</span><a
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intros/quickstart.html">Quick Start (10 Minutes)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intros/installation.html">Installation and Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intros/installation.html">Installation and Overall Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intros/julia_setup.html">OptimizationServer (Julia)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intros/python_engine_setup.html">OptimizationServer (Python)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intros/benchmarking.html">Benchmark testing</a></li>
@@ -141,7 +174,7 @@ Solve optimization problems anywhere, in any language, with any solver.</span><a
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="intros/contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intros/contributing.html">Contributing to Arrow Gateway Engine</a></li>
 </ul>
 </div>
 </section>
