@@ -44,12 +44,6 @@ OptArrow introduces a streamlined, interoperable architecture with the following
 - **Multi-backend support**: Users can run the same model through solvers like HiGHS, Gurobi, Mosek, or GLPK by switching backend configuration.
 - **Efficient communication channels**: OptArrow supports HTTP and Arrow Flight RPC, providing flexibility for both local and distributed deployments.
 
-Learn More
-----------
-
-- :doc:`How to Define an LP Problem <tutorials/lp_problem>`
-- :doc:`How to Use OptArrow to solve an LP Problem <tutorials/lp_example1>`
-
 .. toctree::
    :maxdepth: 1
    :caption: Introduction
@@ -83,3 +77,9 @@ Learn More
    :caption: Maintenance and Contribution
 
    intros/contributing
+
+Learn More
+----------
+
+- :doc:`How to Define an LP Problem <tutorials/lp_problem>`
+- :doc:`How to Use OptArrow to solve an LP Problem <tutorials/lp_example1>`
