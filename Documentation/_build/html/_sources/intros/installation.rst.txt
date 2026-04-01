@@ -11,7 +11,8 @@ OptArrow is an optimization integration engine designed to seamlessly connect th
 It addresses the technical and structural challenges of building scalable, high-performance optimization pipelines
 across languages.
 
-This setup is used for the Cobra Arrow project and is related to the OpenCobra toolbox project.
+This setup can also be used from MATLAB through the packaged client under
+``src/matlab``.
 
 Requirements
 ~~~~~~~~~~~~
@@ -258,6 +259,37 @@ Start services individually:
 
 5. Services are ready
 ---------------------
+
+Optional: MATLAB Client Setup
+-----------------------------
+
+If you want to call OptArrow from MATLAB after starting the services:
+
+1. Add the MATLAB client to your path:
+
+   .. code-block:: matlab
+
+      addpath(genpath(fullfile(repoRoot, "src", "matlab")));
+
+2. Point MATLAB to a Python environment with ``pyarrow`` and ``requests``:
+
+   .. code-block:: matlab
+
+      pyenv("Version", "/path/to/python");
+
+3. Configure the OptArrow client:
+
+   .. code-block:: matlab
+
+      cfg = struct( ...
+          'engine', 'python', ...
+          'backendSolver', 'HiGHS', ...
+          'backendSolverType', 'LP', ...
+          'endpoint', 'http://127.0.0.1:8000/compute', ...
+          'timeoutSec', 120);
+      optarrow.setOptArrowConfig(cfg);
+
+4. Continue with the full guide in :doc:`../tutorials/matlab_interface`.
 
 After services are running and communicating, run the following Python example to solve a simple LP problem:
 

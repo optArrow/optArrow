@@ -42,6 +42,8 @@ Verify ports explicitly:
 Use the full runnable example in:
 
 - :doc:`LP Example: Production Optimization <../tutorials/lp_example1>`
+- :doc:`MATLAB Interface <../tutorials/matlab_interface>` if you want to call
+  the gateway from MATLAB
 
 5) Verify success
 -----------------
@@ -58,6 +60,13 @@ Expected output:
 
 - HTTP status ``200``
 - Response JSON contains solver status and a solution payload
+
+If you plan to use MATLAB, the next step after the gateway smoke test is to:
+
+1. add ``src/matlab`` to the MATLAB path
+2. configure ``pyenv`` with a Python environment containing ``pyarrow`` and
+   ``requests``
+3. use :doc:`../tutorials/matlab_interface`
 
 Troubleshooting
 ---------------

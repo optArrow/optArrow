@@ -71,7 +71,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_problem.html">Quadratic Programming (QP) Problems in OptArrow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_example.html">QP Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB interface for OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB Interface for OptArrow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
@@ -137,6 +137,8 @@ julia<span class="w"> </span>--project<span class="o">=</span>./src/service/opti
 <p>Use the full runnable example in:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../tutorials/lp_example1.html"><span class="doc">LP Example: Production Optimization</span></a></p></li>
+<li><p><a class="reference internal" href="../tutorials/matlab_interface.html"><span class="doc">MATLAB Interface</span></a> if you want to call
+the gateway from MATLAB</p></li>
 </ul>
 </section>
 <section id="verify-success">
@@ -152,6 +154,13 @@ julia<span class="w"> </span>--project<span class="o">=</span>./src/service/opti
 <li><p>HTTP status <code class="docutils literal notranslate"><span class="pre">200</span></code></p></li>
 <li><p>Response JSON contains solver status and a solution payload</p></li>
 </ul>
+<p>If you plan to use MATLAB, the next step after the gateway smoke test is to:</p>
+<ol class="arabic simple">
+<li><p>add <code class="docutils literal notranslate"><span class="pre">src/matlab</span></code> to the MATLAB path</p></li>
+<li><p>configure <code class="docutils literal notranslate"><span class="pre">pyenv</span></code> with a Python environment containing <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code> and
+<code class="docutils literal notranslate"><span class="pre">requests</span></code></p></li>
+<li><p>use <a class="reference internal" href="../tutorials/matlab_interface.html"><span class="doc">MATLAB Interface for OptArrow</span></a></p></li>
+</ol>
 </section>
 <section id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>

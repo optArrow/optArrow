@@ -87,6 +87,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#start-all-service-instances-engines-gateway">4. Start all service instances (engines + gateway)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#services-are-ready">5. Services are ready</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-matlab-client-setup">Optional: MATLAB Client Setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#alternative-start-services-with-docker">6. Alternative: Start services with Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#more-information">More Information</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#configure-service-ports">Configure service ports</a></li>
@@ -108,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_problem.html">Quadratic Programming (QP) Problems in OptArrow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_example.html">QP Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB interface for OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB Interface for OptArrow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
@@ -148,7 +149,8 @@
 <p>OptArrow is an optimization integration engine designed to seamlessly connect the Python and Julia ecosystems.
 It addresses the technical and structural challenges of building scalable, high-performance optimization pipelines
 across languages.</p>
-<p>This setup is used for the Cobra Arrow project and is related to the OpenCobra toolbox project.</p>
+<p>This setup can also be used from MATLAB through the packaged client under
+<code class="docutils literal notranslate"><span class="pre">src/matlab</span></code>.</p>
 </section>
 <section id="requirements">
 <h3>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
@@ -360,6 +362,34 @@ poetry<span class="w"> </span>install<span class="w"> </span>--no-root
 </section>
 <section id="services-are-ready">
 <h2>5. Services are ready<a class="headerlink" href="#services-are-ready" title="Link to this heading"></a></h2>
+</section>
+<section id="optional-matlab-client-setup">
+<h2>Optional: MATLAB Client Setup<a class="headerlink" href="#optional-matlab-client-setup" title="Link to this heading"></a></h2>
+<p>If you want to call OptArrow from MATLAB after starting the services:</p>
+<ol class="arabic">
+<li><p>Add the MATLAB client to your path:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">addpath</span><span class="p">(</span><span class="nb">genpath</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="n">repoRoot</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;matlab&quot;</span><span class="p">)));</span>
+</pre></div>
+</div>
+</li>
+<li><p>Point MATLAB to a Python environment with <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code> and <code class="docutils literal notranslate"><span class="pre">requests</span></code>:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">pyenv</span><span class="p">(</span><span class="s">&quot;Version&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/path/to/python&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p>Configure the OptArrow client:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">&#39;engine&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;python&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">&#39;backendSolver&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;HiGHS&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">&#39;backendSolverType&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;LP&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">&#39;endpoint&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;http://127.0.0.1:8000/compute&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">&#39;timeoutSec&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">);</span>
+<span class="n">optarrow</span><span class="p">.</span><span class="n">setOptArrowConfig</span><span class="p">(</span><span class="n">cfg</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p>Continue with the full guide in <a class="reference internal" href="../tutorials/matlab_interface.html"><span class="doc">MATLAB Interface for OptArrow</span></a>.</p></li>
+</ol>
 <p>After services are running and communicating, run the following Python example to solve a simple LP problem:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>

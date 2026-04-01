@@ -47,6 +47,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Architecture Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#key-components">Key Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#client-interfaces">Client Interfaces</a></li>
 </ul>
 </li>
 </ul>
@@ -66,7 +67,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_problem.html">Quadratic Programming (QP) Problems in OptArrow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_example.html">QP Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB interface for OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB Interface for OptArrow</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
 <ul>
@@ -103,8 +104,10 @@
 <a class="reference internal image-reference" href="../_images/optarrow_architecture.png"><img alt="../_images/optarrow_architecture.png" src="../_images/optarrow_architecture.png" style="width: 50%;" />
 </a>
 </figure>
-<p>OptArrow’s architecture is designed to enable seamless communication between Python- and Julia-based optimization solvers.
-It is composed of three core services:</p>
+<p>OptArrow’s architecture is designed to enable seamless communication between
+solver backends while exposing a stable client-facing interface.
+Its runtime is composed of three core services, and clients such as Python or
+MATLAB interact with the system through the gateway.</p>
 <section id="key-components">
 <h2>Key Components<a class="headerlink" href="#key-components" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
@@ -112,7 +115,23 @@ It is composed of three core services:</p>
 <li><p><strong>Python Engine</strong>: The Python optimization engine, built on libraries such as Pyomo. It uses Apache Arrow Flight RPC for efficient communication with the Gateway and is designed to execute optimization workloads such as Linear Programming (LP) and Quadratic Programming (QP).</p></li>
 <li><p><strong>Julia Engine</strong>: The Julia optimization engine, built on libraries such as JuMP. It leverages Julia’s performance advantages for computationally intensive optimization problems. It communicates with the Gateway through socket-based TCP connections, using Apache Arrow IPC bytes for efficient data exchange.</p></li>
 </ol>
-<p>These three services can run independently, enabling flexible deployment and scaling. The Gateway serves as the central hub, coordinating requests and responses between the Python and Julia engines.</p>
+</section>
+<section id="client-interfaces">
+<h2>Client Interfaces<a class="headerlink" href="#client-interfaces" title="Link to this heading"></a></h2>
+<p>OptArrow can be called from multiple client environments as long as they can
+construct a valid request payload and send it to the gateway.</p>
+<ul class="simple">
+<li><p><strong>Python clients</strong> can call the gateway directly or build Arrow payloads in
+process.</p></li>
+<li><p><strong>MATLAB clients</strong> can use the packaged MATLAB interface under
+<code class="docutils literal notranslate"><span class="pre">src/matlab/+optarrow</span></code> to send Arrow IPC requests through the gateway.</p></li>
+</ul>
+<p>This keeps OptArrow generic: client-specific model translation lives in the
+client project, while OptArrow itself remains focused on transport, model
+contracts, and backend execution.</p>
+<p>These services can run independently, enabling flexible deployment and
+scaling. The Gateway serves as the central hub, coordinating requests and
+responses between clients and backend engines.</p>
 </section>
 </section>
 

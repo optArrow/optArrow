@@ -1,125 +1,189 @@
-MATLAB interface for OptArrow
+MATLAB Interface for OptArrow
 =============================
 
-To use MATLAB for OptArrow Service, there are 3 options:
+OptArrow now includes a real MATLAB interface under ``src/matlab``.
 
-1. Call Python code directly
-----------------------------
+This interface is designed as a generic MATLAB client for OptArrow:
 
-This requires the service of Julia and Python engine to be running. Use MATLAB code to call `src/compute.py` directly, you can refer to the sample code below:
+- it uses the OptArrow HTTP gateway
+- it sends requests using Apache Arrow IPC
+- it supports sparse LP transfer through COO triplets
+- it stays generic and does not depend on any toolbox-specific model schema
 
-.. code-block:: matlab
+For toolbox-specific integrations such as COBRA Toolbox, the translation layer
+should live in the downstream project, while OptArrow remains a general
+optimization service.
 
-   % Call when the python/julia service is up.
-   
-   %% ==== Set Python Virtual Environment ====
-   % ⚠️ Change this to your venv python absolute path (recommend absolute path for clarity)
-   venvPython = "path/to/your/python/executable/file";
-   
-   % Example (Linux/Mac):
-   % venvPython = fullfile(pwd, ".venv", "bin", "python");
-   % Example (Windows):
-   % venvPython = fullfile(pwd, ".venv", "Scripts", "python.exe");
-   
-   pyenv("Version", venvPython);
-   
-   %% ==== Add project src path ====
-   % ⚠️ Change this to your project src path
-   insert(py.sys.path, int32(0), "path/to/optarrow/src");
-   
-   % Example (Linux/Mac):
-   % insert(py.sys.path, int32(0), fullfile(pwd, "src"));
-   % Example (Windows):
-   % insert(py.sys.path, int32(0), "D:\Work\arrow_gateway_engine\src");
-   
-   %% ==== Prepare Data ====
-   % Solver configuration
-   solver = struct("solver_name", "glpk", "solver_type", "LP", "solver_params", struct());
-   
-   % Model data file
-   matFile   = "path/to/your/model/data/file";
-   % Example (Linux/Mac):
-   % matFile = fullfile(pwd, "testdata", "e_coli_core.mat");
-   
-   % Python compute script
-   computePy = "path/to/optarrow/src/compute.py";
-   % Example (Linux/Mac):
-   % computePy = fullfile(pwd, "src", "compute.py");
-   
-   %% ==== Run Python ====
-   result_py = struct( pyrunfile(computePy, "result", mat_file=matFile, engine="python", solver=solver) );
-   
-   %% ==== Run Julia ====
-   result_jl = struct( pyrunfile(computePy, "result", mat_file=matFile, engine="julia", solver=solver) );
-   
+What Is Included
+----------------
 
-This method allows using .mat file directly as long as it follows the same file structure as the featured `e_coli_core.mat` model.
+The MATLAB package currently provides these entry points:
 
-2. Call HTTP web service
-------------------------
+- ``optarrow.setOptArrowConfig``: configure the active OptArrow endpoint,
+  engine, backend solver, and timeout
+- ``optarrow.getOptArrowConfig``: inspect the active configuration
+- ``optarrow.compute``: submit a generic OptArrow payload
+- ``optarrow.solveLP``: convenience wrapper for MATLAB LP structs
 
-Send request to address `https://your_FastAPI_service_ip:port/compute`. This requires sending a POST request with content type of `application/vnd.apache.arrow.stream`. This can be achieved by using MATLAB’s **HTTP Interface**, not the simpler `webwrite` function as stated below. Alternatively you can use `/computeJSON` to send and receive JSON data, but this would be slower than using Arrow (0.01 seconds slower than `/compute` using the `e_coli_core` model, performance difference would be much greater when using a larger model).
+The supporting Python bridge is:
 
-Using MATLAB’s `matlab.net.http` Interface to send `application/vnd.apache.arrow.stream` data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- ``src/matlab/py/optarrow_matlab_bridge.py``
 
-1. **Read your Arrow file into a `uint8` array**, for example using:
+This bridge serializes MATLAB payloads to Arrow IPC, posts them to the
+OptArrow gateway, and decodes the response back into a MATLAB struct.
+
+Prerequisites
+-------------
+
+1. MATLAB with Python integration enabled
+2. A Python environment available to MATLAB via ``pyenv``
+3. Python packages installed in that environment:
+
+   - ``pyarrow``
+   - ``requests``
+
+4. The OptArrow gateway running, typically on ``http://127.0.0.1:8000/compute``
+5. At least one OptArrow backend engine running, for example the Python engine
+
+Recommended Usage
+-----------------
+
+The recommended way to use OptArrow from MATLAB is through the packaged MATLAB
+namespace under ``src/matlab/+optarrow``.
+
+Setup
+^^^^^
 
 .. code-block:: matlab
 
-      fid = fopen('data.arrow','rb');
-      data = fread(fid, Inf, '*uint8');
-      fclose(fid);
+   repoRoot = "/path/to/OptArrow";
+   addpath(genpath(fullfile(repoRoot, "src", "matlab")));
 
-2. **Construct a POST request using `RequestMessage`**, explicitly setting the header and sending raw bytes without conversion:
+   pyenv("Version", "/path/to/python");
+
+   cfg = struct( ...
+       'name', 'optarrow', ...
+       'engine', 'python', ...
+       'backendSolver', 'HiGHS', ...
+       'backendSolverType', 'LP', ...
+       'backendOptions', struct(), ...
+       'endpoint', 'http://127.0.0.1:8000/compute', ...
+       'timeoutSec', 120);
+
+   optarrow.setOptArrowConfig(cfg);
+
+You can inspect the resolved configuration with:
 
 .. code-block:: matlab
 
-      import matlab.net.http.*
-      import matlab.net.http.field.*
-   
-      % Create the request with custom header
-      headers = [GenericField('Content-Type', 'application/vnd.apache.arrow.stream')];
-      body = MessageBody();
-      body.Payload = data;  % Ensures MATLAB sends raw bytes without conversion
-      request = RequestMessage('POST', headers, body);
-   
-      % Optionally suppress default header alterations
-      request.Completed = true;
-   
-      % Send the request
-      uri = 'https://your.endpoint.url/upload';
-      response = request.send(uri);
+   disp(optarrow.getOptArrowConfig())
 
-Alternative (Older) Approach: `urlreadpost`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Solve an LP From MATLAB
+^^^^^^^^^^^^^^^^^^^^^^^
 
-You might also come across a community-contributed utility, **`urlreadpost`**, designed to upload binary data via HTTP using `multipart/form-data`. However, this approach is limited:
+``optarrow.solveLP`` accepts a generic LP struct with fields such as ``A``,
+``b``, ``c``, ``lb``, ``ub``, ``csense``, and ``osense``.
 
-* It wraps files in a multipart form, not suitable for sending raw Arrow IPC streams.
-* `urlreadpost` isn't part of MATLAB's core and works via a more old-school `urlread` replacement (`MathWorks`_, `ww2.mathworks.cn`_).
+.. code-block:: matlab
 
-Therefore, while interesting historically, it's not ideal for the Arrow streaming case.
+   LPproblem = struct();
+   LPproblem.A = sparse([20 10; 10 20; 10 30]);
+   LPproblem.b = [200; 120; 150];
+   LPproblem.c = [5; 12];
+   LPproblem.lb = [0; 0];
+   LPproblem.ub = [1000; 1000];
+   LPproblem.csense = ['L'; 'L'; 'L'];
+   LPproblem.osense = -1;   % -1 = max, 1 = min
 
-Summary
-^^^^^^^
+   result = optarrow.solveLP(LPproblem, struct( ...
+       'modelName', 'matlab_lp_demo'));
+
+   disp(result)
+
+Internally, ``optarrow.solveLP``:
+
+1. converts the MATLAB matrix to sparse COO triplets
+2. normalizes objective and constraint senses
+3. builds a generic OptArrow payload
+4. sends the request through ``optarrow.compute``
+5. returns the decoded response as a MATLAB struct
+
+Submit a Generic Payload
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use ``optarrow.compute`` if you already have an OptArrow-compatible request
+payload and want full control over the request body.
+
+.. code-block:: matlab
+
+   payload = struct();
+   payload.model = struct( ...
+       'A', struct('row', [0 1], 'col', [0 1], 'val', [1 1]), ...
+       'b', [1 1], ...
+       'c', [2 3], ...
+       'lb', [0 0], ...
+       'ub', [10 10], ...
+       'csense', {{'L'; 'L'}}, ...
+       'osense', 'max');
+   payload.model_name = 'generic_payload_demo';
+
+   result = optarrow.compute(payload);
+   disp(result)
+
+Request Configuration
+---------------------
+
+``optarrow.setOptArrowConfig`` supports these main fields:
 
 .. csv-table::
-      :header: "Requirement", "Recommended Solution"
-      :widths: 35, 65
+   :header: "Field", "Meaning"
+   :widths: 30, 70
 
-      "Send Arrow binary over HTTP", "Use ``matlab.net.http.RequestMessage`` + ``body.Payload``"
-      "Set Content-Type to Arrow stream", "Use ``GenericField('Content-Type', 'application/vnd.apache.arrow.stream')``"
-      "Avoid MATLAB data conversion", "Assign to ``body.Payload`` (not ``.Data``)"
-      "Old methods available", "``urlreadpost`` (multipart only, not raw streaming)"
+   "``engine``", "Backend engine name, such as ``python`` or ``julia``"
+   "``backendSolver``", "Backend solver name, such as ``HiGHS``"
+   "``backendSolverType``", "Problem class, such as ``LP``"
+   "``backendOptions``", "Solver parameter struct"
+   "``endpoint``", "Gateway URL, usually ``http://127.0.0.1:8000/compute``"
+   "``timeoutSec``", "HTTP timeout in seconds"
+   "``transport``", "Currently must be ``arrow``"
 
-.. _RequestMessage.send: https://www.mathworks.com/help/matlab/ref/matlab.net.http.requestmessage.send.html
-.. _MathWorks: https://www.mathworks.com/matlabcentral/fileexchange/27189-urlreadpost-url-post-method-with-binary-file-uploading
-.. _ww2.mathworks.cn: https://ww2.mathworks.cn/matlabcentral/fileexchange/27189-urlreadpost-url-post-method-with-binary-file-uploading
+The current MATLAB interface is Arrow-only by design. It does not expose a
+separate JSON transport path.
 
-3. Call socket service for Julia directly
------------------------------------------
+Low-Level HTTP Alternative
+--------------------------
 
-As MATLAB natively support sockets, it's possible to call julia service directly as it's exposed using sockets. This is not recommended however as this is a non-standard way of using this service and more data processing is required on the MATLAB side.
+If needed, MATLAB can also send Arrow IPC bytes directly using
+``matlab.net.http``. This is useful for debugging transport issues or for
+advanced custom clients, but for normal usage the packaged interface above is
+recommended.
 
-It's not possible to call gRPC service in MATLAB directly, to use Python engine, please use the other 2 methods.
+.. code-block:: matlab
+
+   fid = fopen('data.arrow', 'rb');
+   data = fread(fid, Inf, '*uint8');
+   fclose(fid);
+
+   import matlab.net.http.*
+   import matlab.net.http.field.*
+
+   headers = [GenericField('Content-Type', 'application/vnd.apache.arrow.stream')];
+   body = MessageBody();
+   body.Payload = data;
+   request = RequestMessage('POST', headers, body);
+
+   response = request.send('http://127.0.0.1:8000/compute');
+
+This route is lower-level than ``optarrow.compute`` and requires you to handle
+Arrow request and response serialization yourself.
+
+Notes
+-----
+
+- ``optarrow.solveLP`` is package namespace syntax from the ``+optarrow``
+  folder, not object-oriented method dispatch.
+- The MATLAB interface is generic and intentionally does not include
+  COBRA-specific model translation.
+- MATLAB currently reaches the Arrow gateway through a small Python bridge.
+- For toolbox integrations, keep the OptArrow client generic and place any
+  application-specific adaptation logic in the downstream project.

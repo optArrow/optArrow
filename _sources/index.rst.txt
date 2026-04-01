@@ -10,9 +10,11 @@ Introduction
 
    *Solve optimization problems anywhere, in any language, with any solver.*
 
-OptArrow is an optimization integration engine designed to seamlessly connect the Python and Julia ecosystems.
-It addresses the technical and structural challenges of building scalable, high-performance optimization
-pipelines across languages.
+OptArrow is an optimization integration engine designed to connect optimization
+clients and solver backends through a stable, high-performance transport layer.
+Its current runtime centers on Python and Julia backends, and it can also be
+called from environments such as MATLAB through a lightweight client
+interface.
 
 Motivation
 ----------
@@ -21,6 +23,7 @@ Modern optimization workflows often involve multiple components:
 
 - **Python** is widely used for data preparation, orchestration, and web service development.
 - **Julia**, on the other hand, offers state-of-the-art numerical solvers with exceptional performance for mathematical programming.
+- **MATLAB** is still widely used in scientific and engineering workflows and benefits from a clean client path to the same backend services.
 
 However, bridging these two environments remains challenging. Users frequently encounter issues with data format inconsistencies,
 communication overhead, and the lack of a unified interface for optimization models.
@@ -43,12 +46,7 @@ OptArrow introduces a streamlined, interoperable architecture with the following
 - **Protocol-based model definitions**: Optimization problems (for example, Linear Programming and Quadratic Programming) are described using well-defined schemas, independent of solver-specific syntax.
 - **Multi-backend support**: Users can run the same model through solvers like HiGHS, Gurobi, Mosek, or GLPK by switching backend configuration.
 - **Efficient communication channels**: OptArrow supports HTTP and Arrow Flight RPC, providing flexibility for both local and distributed deployments.
-
-Learn More
-----------
-
-- :doc:`How to Define an LP Problem <tutorials/lp_problem>`
-- :doc:`How to Use OptArrow to solve an LP Problem <tutorials/lp_example1>`
+- **Reusable client integrations**: client-specific adapters can remain thin while OptArrow stays solver- and domain-generic.
 
 .. toctree::
    :maxdepth: 1
@@ -83,3 +81,9 @@ Learn More
    :caption: Maintenance and Contribution
 
    intros/contributing
+
+Learn More
+----------
+
+- :doc:`How to Define an LP Problem <tutorials/lp_problem>`
+- :doc:`How to Use OptArrow to solve an LP Problem <tutorials/lp_example1>`
