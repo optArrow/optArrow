@@ -61,12 +61,23 @@ Expected output:
 - HTTP status ``200``
 - Response JSON contains solver status and a solution payload
 
-If you plan to use MATLAB, the next step after the gateway smoke test is to:
+If you plan to use MATLAB (R2023b or later), the next step after the gateway
+smoke test is to:
 
-1. add ``src/matlab`` to the MATLAB path
-2. configure ``pyenv`` with a Python environment containing ``pyarrow`` and
-   ``requests``
-3. use :doc:`../tutorials/matlab_interface`
+1. Build and install the **MATLAB Interface to Apache Arrow** — see
+   :ref:`native-addon` in the MATLAB Interface guide. This is a one-time step.
+
+2. Add ``src/matlab`` to the MATLAB path and configure the client:
+
+   .. code-block:: matlab
+
+      addpath(genpath(fullfile('<repo_root>', 'src', 'matlab')));
+      optarrow.setOptArrowConfig(struct( ...
+          'endpoint',      'http://127.0.0.1:8000/compute', ...
+          'backendSolver', 'HiGHS'));
+
+3. See :doc:`../tutorials/matlab_interface` for LP/QP examples and the
+   full configuration reference.
 
 Troubleshooting
 ---------------
