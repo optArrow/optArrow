@@ -263,33 +263,31 @@ Start services individually:
 Optional: MATLAB Client Setup
 -----------------------------
 
-If you want to call OptArrow from MATLAB after starting the services:
+MATLAB **R2023b or later** is required. Arrow IPC serialization is handled
+natively in MATLAB using the **MATLAB Interface to Apache Arrow**, which must
+be built once from the Apache Arrow source repository. See the full build
+instructions in :doc:`../tutorials/matlab_interface`.
+
+Once the add-on is installed:
 
 1. Add the MATLAB client to your path:
 
    .. code-block:: matlab
 
-      addpath(genpath(fullfile(repoRoot, "src", "matlab")));
+      addpath(genpath(fullfile(repoRoot, 'src', 'matlab')));
 
-2. Point MATLAB to a Python environment with ``pyarrow`` and ``requests``:
-
-   .. code-block:: matlab
-
-      pyenv("Version", "/path/to/python");
-
-3. Configure the OptArrow client:
+2. Configure the OptArrow client:
 
    .. code-block:: matlab
 
       cfg = struct( ...
-          'engine', 'python', ...
+          'endpoint',      'http://127.0.0.1:8000/compute', ...
+          'engine',        'python', ...
           'backendSolver', 'HiGHS', ...
-          'backendSolverType', 'LP', ...
-          'endpoint', 'http://127.0.0.1:8000/compute', ...
-          'timeoutSec', 120);
+          'timeoutSec',    120);
       optarrow.setOptArrowConfig(cfg);
 
-4. Continue with the full guide in :doc:`../tutorials/matlab_interface`.
+3. Continue with the full guide in :doc:`../tutorials/matlab_interface`.
 
 After services are running and communicating, run the following Python example to solve a simple LP problem:
 

@@ -154,12 +154,21 @@ the gateway from MATLAB</p></li>
 <li><p>HTTP status <code class="docutils literal notranslate"><span class="pre">200</span></code></p></li>
 <li><p>Response JSON contains solver status and a solution payload</p></li>
 </ul>
-<p>If you plan to use MATLAB, the next step after the gateway smoke test is to:</p>
-<ol class="arabic simple">
-<li><p>add <code class="docutils literal notranslate"><span class="pre">src/matlab</span></code> to the MATLAB path</p></li>
-<li><p>configure <code class="docutils literal notranslate"><span class="pre">pyenv</span></code> with a Python environment containing <code class="docutils literal notranslate"><span class="pre">pyarrow</span></code> and
-<code class="docutils literal notranslate"><span class="pre">requests</span></code></p></li>
-<li><p>use <a class="reference internal" href="../tutorials/matlab_interface.html"><span class="doc">MATLAB Interface for OptArrow</span></a></p></li>
+<p>If you plan to use MATLAB (R2023b or later), the next step after the gateway
+smoke test is to:</p>
+<ol class="arabic">
+<li><p>Build and install the <strong>MATLAB Interface to Apache Arrow</strong> — see
+<a class="reference internal" href="../tutorials/matlab_interface.html#native-addon"><span class="std std-ref">MATLAB Interface to Apache Arrow</span></a> in the MATLAB Interface guide. This is a one-time step.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">src/matlab</span></code> to the MATLAB path and configure the client:</p>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">addpath</span><span class="p">(</span><span class="nb">genpath</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="s">&#39;&lt;repo_root&gt;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;src&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;matlab&#39;</span><span class="p">)));</span>
+<span class="n">optarrow</span><span class="p">.</span><span class="n">setOptArrowConfig</span><span class="p">(</span><span class="nb">struct</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">&#39;endpoint&#39;</span><span class="p">,</span><span class="w">      </span><span class="s">&#39;http://127.0.0.1:8000/compute&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">&#39;backendSolver&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;HiGHS&#39;</span><span class="p">));</span>
+</pre></div>
+</div>
+</li>
+<li><p>See <a class="reference internal" href="../tutorials/matlab_interface.html"><span class="doc">MATLAB Interface for OptArrow</span></a> for LP/QP examples and the
+full configuration reference.</p></li>
 </ol>
 </section>
 <section id="troubleshooting">
