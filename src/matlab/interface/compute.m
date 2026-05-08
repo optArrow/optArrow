@@ -168,8 +168,24 @@ import matlab.net.http.field.*
 import matlab.net.http.io.*
 
 contentType = ContentTypeField('application/vnd.apache.arrow.stream');
-body        = MessageBody(ipcBytes);
-request     = RequestMessage(RequestMethod.POST, contentType, body);
+try
+    provider = matlab.net.http.io.ByteArrayProvider(ipcBytes);
+    request  = RequestMessage(RequestMethod.POST, contentType, provider);
+catch
+    % Fallback for older MATLAB versions without ByteArrayProvider.
+    tmpFile = [tempname '.arrow'];
+    cleanup = onCleanup(@() localDeleteFile(tmpFile)); %#ok<NASGU>
+
+    fid = fopen(tmpFile, 'wb');
+    if fid == -1
+        error('optarrow.compute: could not write temporary Arrow request file.');
+    end
+    fwrite(fid, ipcBytes, 'uint8');
+    fclose(fid);
+
+    provider = matlab.net.http.io.FileProvider(tmpFile);
+    request  = RequestMessage(RequestMethod.POST, contentType, provider);
+end
 
 opts = matlab.net.http.HTTPOptions( ...
     'ConnectTimeout', double(timeoutSec), ...
@@ -194,18 +210,7 @@ end
 % =========================================================================
 function result = localParseResponse(responseBytes)
 
-% Write bytes to temp file so arrow.io.ipc can read them
-tmpFile = [tempname '.arrow'];
-cleanup = onCleanup(@() localDeleteFile(tmpFile)); %#ok<NASGU>
-
-fid = fopen(tmpFile, 'wb');
-if fid == -1
-    error('optarrow.compute: could not write temporary Arrow response file.');
-end
-fwrite(fid, responseBytes, 'uint8');
-fclose(fid);
-
-reader = arrow.io.ipc.RecordBatchStreamReader(tmpFile);
+reader = arrow.io.ipc.RecordBatchStreamReader.fromBytes(responseBytes(:));
 rb     = reader.read();
 
 result = struct();
@@ -306,13 +311,21 @@ end
 
 function v = localArrowToMatlab(col)
 % Convert an Arrow column (chunk array) to a MATLAB value.
-arr = col.chunk(1);
+if ismethod(col, 'chunk')
+    arr = col.chunk(1);
+else
+    arr = col;
+end
 switch class(arr)
     case {'arrow.array.BooleanArray'}
         v = logical(arr.toMATLAB());
     case {'arrow.array.ListArray'}
-        inner = arr.values;
-        v     = double(inner.toMATLAB())';
+        listVals = arr.toMATLAB();
+        if iscell(listVals) && numel(listVals) == 1
+            v = double(listVals{1}(:))';
+        else
+            v = listVals;
+        end
     case {'arrow.array.StringArray'}
         v = char(arr.toMATLAB());
     otherwise
