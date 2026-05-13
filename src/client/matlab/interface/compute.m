@@ -9,6 +9,10 @@ function result = compute(payload, varargin)
 % it directly to the OptArrow Gateway. No Python interpreter is involved.
 % Requires MATLAB R2023b or later (for Arrow list-array support).
 %
+% If cfg.transport is 'json', the request is sent to /computeJSON using
+% MATLAB's native JSON support. If cfg.transport is 'auto', Arrow IPC is used
+% when the Arrow MATLAB interface is installed; otherwise JSON is used.
+%
 % USAGE:
 %
 %    result = optarrow.compute(payload)
@@ -68,6 +72,13 @@ if nargin >= 2 && isstruct(varargin{1})
 end
 if isfield(opts, 'endpoint'),   cfg.endpoint   = opts.endpoint;   end
 if isfield(opts, 'timeoutSec'), cfg.timeoutSec = opts.timeoutSec; end
+if isfield(opts, 'transport'),  cfg.transport  = opts.transport;  end
+
+transport = localResolveTransport(cfg);
+if strcmp(transport, 'json')
+    result = localComputeJSON(payload, cfg);
+    return;
+end
 
 % Build Arrow IPC request bytes
 requestBytes = localBuildRequest(payload, cfg);
@@ -81,6 +92,105 @@ end
 
 
 % =========================================================================
+% Transport selection / JSON fallback
+% =========================================================================
+function transport = localResolveTransport(cfg)
+transport = 'auto';
+if isfield(cfg, 'transport') && ~isempty(cfg.transport)
+    transport = lower(char(string(cfg.transport)));
+end
+
+if strcmp(transport, 'auto')
+    if localArrowAvailable()
+        transport = 'arrow';
+    else
+        transport = 'json';
+    end
+elseif ~ismember(transport, {'arrow', 'json'})
+    error('optarrow.compute: transport must be auto, arrow, or json.');
+end
+end
+
+function tf = localArrowAvailable()
+tf = exist('arrow.recordBatch', 'file') == 2;
+end
+
+function result = localComputeJSON(payload, cfg)
+jsonPayload = localJsonPayload(payload, cfg);
+endpoint = localJsonEndpoint(cfg.endpoint);
+
+opts = weboptions( ...
+    'MediaType', 'application/json', ...
+    'RequestMethod', 'post', ...
+    'Timeout', double(cfg.timeoutSec));
+
+try
+    result = webwrite(endpoint, jsonPayload, opts);
+catch ME
+    error('optarrow.compute: JSON request to %s failed: %s', endpoint, ME.message);
+end
+end
+
+function jsonPayload = localJsonPayload(payload, cfg)
+jsonPayload = struct();
+jsonPayload.model = payload.model;
+
+if isfield(payload, 'model_name') && ~isempty(payload.model_name)
+    jsonPayload.model_name = payload.model_name;
+else
+    jsonPayload.model_name = 'matlab_model';
+end
+
+if isfield(payload, 'engine') && ~isempty(payload.engine)
+    jsonPayload.engine = payload.engine;
+elseif isfield(cfg, 'engine') && ~isempty(cfg.engine)
+    jsonPayload.engine = cfg.engine;
+else
+    jsonPayload.engine = 'python';
+end
+
+if isfield(payload, 'solver') && isstruct(payload.solver)
+    jsonPayload.solver = payload.solver;
+else
+    solver = struct();
+    if isfield(payload, 'solver_name') && ~isempty(payload.solver_name)
+        solver.solver_name = payload.solver_name;
+    else
+        solver.solver_name = cfg.backendSolver;
+    end
+    if isfield(payload, 'problem_type') && ~isempty(payload.problem_type)
+        solver.solver_type = payload.problem_type;
+    else
+        solver.solver_type = cfg.backendSolverType;
+    end
+    if isfield(payload, 'solver_params') && isstruct(payload.solver_params)
+        solver.solver_params = payload.solver_params;
+    else
+        solver.solver_params = cfg.backendOptions;
+    end
+    jsonPayload.solver = solver;
+end
+
+if isfield(payload, 'time_limit') && ~isempty(payload.time_limit)
+    jsonPayload.time_limit = payload.time_limit;
+end
+end
+
+function endpoint = localJsonEndpoint(endpoint)
+endpoint = char(string(endpoint));
+if endsWith(endpoint, '/computeJSON')
+    return;
+elseif endsWith(endpoint, '/cobra/compute')
+    endpoint = regexprep(endpoint, '/cobra/compute$', '/computeJSON');
+elseif endsWith(endpoint, '/compute')
+    endpoint = regexprep(endpoint, '/compute$', '/computeJSON');
+else
+    endpoint = [regexprep(endpoint, '/$', '') '/computeJSON'];
+end
+end
+
+
+% =========================================================================
 % Build Arrow IPC request
 % =========================================================================
 function ipcBytes = localBuildRequest(payload, cfg)
@@ -89,7 +199,11 @@ problemType = upper(char(string(payload.problem_type)));
 engine      = char(string(payload.engine));
 solverName  = char(string(payload.solver_name));
 modelName   = char(string(payload.model_name));
-timeLimit   = double(payload.time_limit);
+if isfield(payload, 'time_limit') && ~isempty(payload.time_limit)
+    timeLimit = double(payload.time_limit);
+else
+    timeLimit = 300;
+end
 
 model = payload.model;
 

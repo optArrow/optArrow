@@ -58,9 +58,15 @@ if nargin >= 2 && isstruct(varargin{1})
     opts = varargin{1};
 end
 
+cfg = optarrow.getOptArrowConfig();
+
 payload = struct();
+payload.problem_type = 'QP';
 payload.model       = localBuildModelDict(QPproblem);
 payload.model_name  = 'optarrow_qp_model';
+payload.engine      = cfg.engine;
+payload.solver_name = cfg.backendSolver;
+payload.solver_params = cfg.backendOptions;
 
 if isfield(opts, 'modelName') && ~isempty(opts.modelName)
     payload.model_name = opts.modelName;
@@ -70,6 +76,12 @@ if isfield(opts, 'engine') && ~isempty(opts.engine)
 end
 if isfield(opts, 'solver') && ~isempty(opts.solver)
     payload.solver = opts.solver;
+    if isfield(opts.solver, 'solver_name')
+        payload.solver_name = opts.solver.solver_name;
+    end
+    if isfield(opts.solver, 'solver_params')
+        payload.solver_params = opts.solver.solver_params;
+    end
 end
 if isfield(opts, 'time_limit')
     payload.time_limit = opts.time_limit;
@@ -78,6 +90,7 @@ end
 computeOpts = struct();
 if isfield(opts, 'endpoint'),   computeOpts.endpoint   = opts.endpoint;   end
 if isfield(opts, 'timeoutSec'), computeOpts.timeoutSec = opts.timeoutSec; end
+if isfield(opts, 'transport'),  computeOpts.transport  = opts.transport;  end
 
 if isempty(fieldnames(computeOpts))
     result = optarrow.compute(payload);

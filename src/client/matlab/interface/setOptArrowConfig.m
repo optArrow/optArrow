@@ -21,7 +21,7 @@ function cfg = setOptArrowConfig(cfg)
 %                    - backendOptions    struct, solver parameter dictionary
 %                    - endpoint          char/string, OptArrow API URL
 %                    - timeoutSec        numeric scalar, timeout in seconds
-%                    - transport         char/string, must be 'arrow'
+%                    - transport         char/string, 'auto' | 'arrow' | 'json'
 %
 % OUTPUT:
 %    cfg:          struct, resolved configuration (input merged with defaults)
@@ -47,7 +47,7 @@ defaults = struct( ...
     'backendOptions', struct(), ...
     'endpoint', 'http://127.0.0.1:8000/compute', ...
     'timeoutSec', 120, ...
-    'transport', 'arrow');
+    'transport', 'auto');
 
 fields = fieldnames(defaults);
 for i = 1:numel(fields)
@@ -57,9 +57,11 @@ for i = 1:numel(fields)
     end
 end
 
-if ~strcmpi(cfg.transport, 'arrow')
-    error('Only Arrow transport is supported in this interface.');
+transport = lower(char(string(cfg.transport)));
+if ~ismember(transport, {'auto', 'arrow', 'json'})
+    error('transport must be one of: auto, arrow, json.');
 end
+cfg.transport = transport;
 
 OPTARROW_CONFIG = cfg;
 end
