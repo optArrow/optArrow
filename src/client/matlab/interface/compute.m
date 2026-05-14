@@ -133,7 +133,7 @@ end
 
 function jsonPayload = localJsonPayload(payload, cfg)
 jsonPayload = struct();
-jsonPayload.model = payload.model;
+jsonPayload.model = localJsonModel(payload.model);
 
 if isfield(payload, 'model_name') && ~isempty(payload.model_name)
     jsonPayload.model_name = payload.model_name;
@@ -173,6 +173,27 @@ end
 
 if isfield(payload, 'time_limit') && ~isempty(payload.time_limit)
     jsonPayload.time_limit = payload.time_limit;
+end
+end
+
+function model = localJsonModel(model)
+if isfield(model, 'A') && isstruct(model.A)
+    model.A = localJsonCOO(model.A);
+end
+if isfield(model, 'Q') && isstruct(model.Q)
+    model.Q = localJsonCOO(model.Q);
+end
+if isfield(model, 'F') && isstruct(model.F)
+    model.F = localJsonCOO(model.F);
+end
+end
+
+function coo = localJsonCOO(coo)
+% /computeJSON reconstructs sparse matrices from row/col/val only.
+% The Arrow IPC path uses shape separately, but including it here makes
+% pyarrow.RecordBatch.from_pydict see columns of unequal length.
+if isfield(coo, 'shape')
+    coo = rmfield(coo, 'shape');
 end
 end
 
