@@ -70,6 +70,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#project-structure">Project Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#making-changes">Making Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#website-documentation">Website Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-tests">Running Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#submitting-changes">Submitting Changes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#code-review">Code Review</a></li>
@@ -146,6 +147,24 @@
 <li><p>Add or update documentation in <code class="docutils literal notranslate"><span class="pre">./Documentation</span></code>.</p></li>
 <li><p>Ensure your code follows the project’s style and linting rules.</p></li>
 </ul>
+</section>
+<section id="website-documentation">
+<h2>Website Documentation<a class="headerlink" href="#website-documentation" title="Link to this heading"></a></h2>
+<p>The OptArrow website is built from the <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch. The documentation
+source files live under <code class="docutils literal notranslate"><span class="pre">Documentation/</span></code> on that branch and are written in
+reStructuredText (<code class="docutils literal notranslate"><span class="pre">.rst</span></code>).</p>
+<p>When documentation changes are needed, edit the relevant <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files in
+<code class="docutils literal notranslate"><span class="pre">Documentation/</span></code>. A GitHub Actions CI workflow is configured to rebuild the
+website whenever the documentation source changes. The workflow converts the
+<code class="docutils literal notranslate"><span class="pre">.rst</span></code> files to generated HTML and publishes the updated site, so contributors
+normally do not need to edit generated HTML files by hand.</p>
+<p>In short:</p>
+<ol class="arabic simple">
+<li><p>Check out the <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch.</p></li>
+<li><p>Edit the appropriate <code class="docutils literal notranslate"><span class="pre">Documentation/**/*.rst</span></code> file.</p></li>
+<li><p>Commit and push the source change.</p></li>
+<li><p>Let CI build and publish the HTML website.</p></li>
+</ol>
 </section>
 <section id="running-tests">
 <h2>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading"></a></h2>
