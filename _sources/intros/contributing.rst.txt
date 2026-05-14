@@ -1,4 +1,4 @@
-Contributing to Arrow Gateway Engine
+Contributing to OptArrow
 ====================================
 
 Thank you for your interest in contributing. This guide will help you get started.
