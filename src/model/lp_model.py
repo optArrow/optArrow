@@ -54,7 +54,10 @@ class LPModel(ArrowModel):
         c = pa.array(model_dict["c"])
         lb = pa.array(model_dict["lb"] if model_dict.get("lb") is not None else [-float("inf")] * len(c), type=pa.float64())
         ub = pa.array(model_dict["ub"] if model_dict.get("ub") is not None else [float("inf")] * len(c), type=pa.float64())
-        osense = pa.scalar(model_dict.get("osense", "min"), type=pa.string())
+        raw_osense = model_dict.get("osense", "min")
+        if isinstance(raw_osense, (int, float)):
+            raw_osense = "max" if raw_osense == -1 else "min"
+        osense = pa.scalar(str(raw_osense).lower(), type=pa.string())
         csense = pa.array(
             model_dict["csense"] if model_dict.get("csense") is not None else ["E"] * len(b),
             type=pa.string()

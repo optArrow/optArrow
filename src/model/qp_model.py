@@ -58,7 +58,10 @@ class QPModel(ArrowModel):
         h = model_dict.get("h", None)
         lb = model_dict["lb"] if model_dict.get("lb") is not None else [-float("inf")] * len(c)
         ub = model_dict["ub"] if model_dict.get("ub") is not None else [float("inf")] * len(c)
-        osense = pa.scalar(model_dict.get("osense", "min"), type=pa.string())
+        raw_osense = model_dict.get("osense", "min")
+        if isinstance(raw_osense, (int, float)):
+            raw_osense = "max" if raw_osense == -1 else "min"
+        osense = pa.scalar(str(raw_osense).lower(), type=pa.string())
 
         mats = [("Q", Q)]
         if A is not None:
