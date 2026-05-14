@@ -27,9 +27,9 @@ class LPProblem(BaseProblem):
         self.c = np.array(c)
         self.lb = np.array(lb)
         self.ub = np.array(ub)
-        if osense == 'max':
+        if osense == 'max' or osense == -1:
             self.osense = 1
-        elif osense == 'min':
+        else:
             self.osense = -1
         self.csense = np.array(csense)
         self.model = None

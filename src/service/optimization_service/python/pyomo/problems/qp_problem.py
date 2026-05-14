@@ -62,9 +62,9 @@ class QPProblem(BaseProblem):
             self.meq = self.A["shape"][0]
         if self.G is not None:
             self.mieq = self.G["shape"][0]
-        if osense == 'max':
+        if osense == 'max' or osense == -1:
             self.osense = 1
-        elif osense == 'min':
+        else:
             self.osense = -1
         self.model = None
         self.solution = None

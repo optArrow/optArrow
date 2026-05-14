@@ -189,6 +189,14 @@ end
 if isfield(model, 'F') && isstruct(model.F)
     model.F = localJsonCOO(model.F);
 end
+% Convert COBRA numeric osense (-1=max, +1=min) to string for server.
+if isfield(model, 'osense') && isnumeric(model.osense)
+    if model.osense == -1
+        model.osense = 'max';
+    else
+        model.osense = 'min';
+    end
+end
 end
 
 function coo = localJsonCOO(coo)
