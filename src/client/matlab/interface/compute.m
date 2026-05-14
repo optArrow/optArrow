@@ -144,15 +144,15 @@ try
         if isstruct(result) && isfield(result, 'error_message')
             msg = sprintf('%s Server error: %s', msg, result.error_message);
         end
-        err = struct('identifier', 'optarrow.compute:JSONError', 'message', msg);
+        err = struct('identifier', 'optarrow:computeJSONError', 'message', msg);
         error(err);
     end
 catch ME
-    if strcmp(ME.identifier, 'optarrow.compute:JSONError')
+    if strcmp(ME.identifier, 'optarrow:computeJSONError')
         rethrow(ME);
     end
     err = struct( ...
-        'identifier', 'optarrow.compute:JSONError', ...
+        'identifier', 'optarrow:computeJSONError', ...
         'message', sprintf('JSON request to %s failed: %s', endpoint, ME.message));
     error(err);
 end
