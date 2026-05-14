@@ -2,6 +2,7 @@
 FastAPI RESTful API for OptArrow
 This module defines the FastAPI application and its endpoints for handling computation requests.
 """
+import logging
 import time
 import pyarrow as pa
 from fastapi import Request
@@ -15,6 +16,7 @@ from arrow_table_dict_conversion import dict_to_pa_table, unpack_pa_table_dict
 
 app = FastAPI()
 controller = Controller()
+logger = logging.getLogger("optarrow.api")
 
 @app.post("/computeJSON")
 async def compute_json(request: Request) -> Response:
@@ -37,12 +39,19 @@ async def compute_json(request: Request) -> Response:
                 status_code = status.HTTP_200_OK,
                 media_type= "application/json"
             )
+        logger.error(
+            "computeJSON failed: %s",
+            return_data.get("error_message", return_data)
+            if isinstance(return_data, dict)
+            else return_data,
+        )
         return JSONResponse(
             content = jsonable_encoder(return_data),
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
             media_type= "application/json"
         )
     except Exception as e:
+        logger.exception("computeJSON request failed before compute")
         return JSONResponse(
             content = jsonable_encoder({
                 "error_message": f"{type(e).__name__}: {str(e)}"
