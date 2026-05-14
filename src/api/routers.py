@@ -29,7 +29,7 @@ async def compute_json(request: Request) -> Response:
     """
     try:
         raw = await request.json()
-        success, return_data = controller.compute_dict(payload=raw)
+        success, return_data = _compute_json_payload(raw)
         if success:
             return JSONResponse(
                 content = jsonable_encoder(return_data),
@@ -56,6 +56,20 @@ async def compute_json(request: Request) -> Response:
             status_code = status.HTTP_400_BAD_REQUEST,
             media_type= "application/json"
         )
+
+def _compute_json_payload(raw: dict) -> tuple[bool, dict]:
+    """Compute a JSON payload without the gateway-to-gRPC Arrow Flight hop."""
+    if str(raw.get("engine", "")).lower() == "python":
+        from service.optimization_service.python.pyomo.service.opt_solver import PyomoSolver
+
+        params = dict(raw.get("model") or {})
+        params["solver"] = raw.get("solver")
+        if raw.get("time_limit") is not None:
+            params["time_limit"] = raw.get("time_limit")
+        result = PyomoSolver().run(params)
+        return bool(result.get("success")), result
+
+    return controller.compute_dict(payload=raw)
 
 @app.post("/cobra/compute")
 async def cobra_compute(request: Request) -> Response:
