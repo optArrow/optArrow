@@ -69,7 +69,18 @@ def _compute_json_payload(raw: dict) -> tuple[bool, dict]:
         result = PyomoSolver().run(params)
         return bool(result.get("success")), result
 
-    return controller.compute_dict(payload=raw)
+    success, result = controller.compute_dict(payload=raw)
+    if "stat" not in result:
+        s = (result.get("status") or "").strip().lower()
+        if s in {"optimal", "locallyoptimal"}:
+            result["stat"] = 1
+        elif s == "infeasible":
+            result["stat"] = 0
+        elif s == "unbounded":
+            result["stat"] = 2
+        else:
+            result["stat"] = -1
+    return success, result
 
 @app.post("/cobra/compute")
 async def cobra_compute(request: Request) -> Response:
