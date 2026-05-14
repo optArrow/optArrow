@@ -41,10 +41,20 @@ class PyomoSolver(BaseSolver):
                 problem.build(solver)
                 problem.solve(solver_params, timeout)
                 time_end = time.time()
+                status_str = (problem.status or "").lower()
+                if "optimal" in status_str:
+                    stat = 1
+                elif "infeasible" in status_str:
+                    stat = 0
+                elif "unbounded" in status_str:
+                    stat = 2
+                else:
+                    stat = -1
                 return {
                     "success": True,
                     "solution": problem.solution,
-                    "status": problem.status.lower(),
+                    "status": status_str,
+                    "stat": stat,
                     "obj_val": problem.objective_value,
                     # "run_time": time_end - time_start # Benchmark only
                 }
