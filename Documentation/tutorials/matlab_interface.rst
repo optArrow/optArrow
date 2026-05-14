@@ -1,264 +1,302 @@
 MATLAB Interface for OptArrow
 =============================
 
-OptArrow includes a native MATLAB client under ``src/matlab``.
+OptArrow includes a general MATLAB client for sending optimization models to
+the OptArrow Gateway.
 
-The interface communicates with the OptArrow HTTP gateway using the Apache
-Arrow IPC format, supports LP and QP problems via sparse COO triplets, and
-does not depend on any toolbox-specific schema. Application-specific
-translation layers belong in the downstream project.
+The preferred MATLAB transport is Apache Arrow IPC:
 
-Arrow serialization is handled entirely inside MATLAB using the
-**MATLAB Interface to Apache Arrow** — a native C++ add-on built from the
-Apache Arrow source repository. No Python environment is required.
+1. MATLAB builds a plain model struct for an LP or QP problem.
+2. Sparse matrices are serialized as COO arrays: ``row``, ``col``, ``val``,
+   and ``shape``.
+3. ``optarrow.compute`` converts the request to a flat Arrow IPC stream.
+4. The request is posted to the Gateway endpoint.
+5. The Arrow IPC response is decoded back into a MATLAB struct.
 
-What Is Included
-----------------
+No Python interpreter is involved on the MATLAB client side. Python and Julia
+are still used by the OptArrow services behind the Gateway.
 
-The MATLAB package provides these entry points under ``src/matlab/+optarrow``:
+When Apache Arrow MATLAB is not installed, the client can fall back to the
+Gateway's JSON route, ``/computeJSON``. JSON fallback is intended for setup
+verification and compatibility. Arrow IPC remains the recommended path for
+large sparse models.
+
+Files
+-----
+
+The MATLAB client source is under ``src/matlab``:
 
 .. list-table::
    :header-rows: 1
    :widths: 35 65
 
-   * - Function
+   * - File
      - Purpose
-   * - ``optarrow.setOptArrowConfig``
-     - Configure the active endpoint, engine, backend solver, and timeout
-   * - ``optarrow.getOptArrowConfig``
-     - Inspect the active configuration
-   * - ``optarrow.compute``
-     - Serialize an LP/QP payload to Arrow IPC, POST it to the gateway,
-       and return the decoded response struct
-   * - ``optarrow.solveLP``
-     - Convenience wrapper: accepts a plain MATLAB LP struct, builds the
-       OptArrow payload, and calls ``compute``
-   * - ``optarrow.solveQP``
-     - Convenience wrapper for QP problems (adds the Hessian ``Q``
-       field in COO format)
+   * - ``interface/setOptArrowConfig.m``
+     - Set global OptArrow runtime config
+   * - ``interface/getOptArrowConfig.m``
+     - Read global OptArrow runtime config
+   * - ``interface/compute.m``
+     - Generic Arrow IPC or JSON request/response call
+   * - ``interface/solveLP.m``
+     - LP convenience wrapper
+   * - ``interface/solveQP.m``
+     - QP convenience wrapper
+   * - ``vendor/apache-arrow/``
+     - Optional bundled Apache Arrow MATLAB builds
 
-Prerequisites
--------------
+The MATLAB functions use the ``optarrow.*`` package namespace. In an installed
+copy, the files from ``interface/`` should be available on the MATLAB path as
+the ``+optarrow`` package folder.
 
-MATLAB Version
-^^^^^^^^^^^^^^
+Downstream integrations, such as COBRA Toolbox adapters, should keep
+toolbox-specific conversion and solver-dispatch logic outside this general
+MATLAB client.
 
-MATLAB **R2023b or later** is required. ``optarrow.compute`` uses
-``matlab.net.http`` for HTTP and argument-block validation syntax introduced
-in R2023b.
+Requirements
+------------
 
-.. _native-addon:
+- MATLAB R2023b or later.
+- A running OptArrow Gateway, usually at
+  ``http://127.0.0.1:8000/compute``.
+- Apache Arrow MATLAB interface for the preferred Arrow IPC path.
 
-MATLAB Interface to Apache Arrow
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+If Arrow is unavailable and ``transport`` is set to ``auto`` or ``json``, the
+client posts the same logical request to ``/computeJSON`` using MATLAB's native
+JSON support.
 
-The Arrow add-on is **not** available in MATLAB's Add-On Explorer. It must be
-built once from the Apache Arrow source repository.
+Set Up Apache Arrow for MATLAB
+------------------------------
 
-**Build requirements (macOS)**
+These steps assume you are working from the OptArrow repository:
 
 .. code-block:: bash
 
-   xcode-select --install        # C++20 compiler (Apple Clang)
+   git clone https://github.com/optArrow/optArrow.git
+   cd optArrow
+
+Try the Bundled Linux Build
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+On Linux x86_64, OptArrow includes an experimental bundled Apache Arrow MATLAB
+build under:
+
+.. code-block:: text
+
+   src/matlab/vendor/apache-arrow/linux-x86_64/arrow_matlab
+
+From MATLAB, run:
+
+.. code-block:: matlab
+
+   run scripts/setupMATLABArrow.m
+
+The setup script first looks for the bundled Linux build. If it is found, it
+adds it to the MATLAB path, verifies it by constructing an Arrow record batch,
+and then saves the MATLAB path.
+
+Verify manually with:
+
+.. code-block:: matlab
+
+   arrow.recordBatch(table(["A"; "B"], [1; 2]))
+
+If MATLAB prints a ``RecordBatch``, Arrow is ready.
+
+Build Arrow If Needed
+^^^^^^^^^^^^^^^^^^^^^
+
+If ``setupMATLABArrow`` cannot find a usable build, or if MATLAB reports a
+``GLIBCXX_*`` runtime error while loading the bundled MEX file, build Apache
+Arrow and the MATLAB interface locally.
+
+Install build prerequisites:
+
+.. code-block:: bash
+
+   # Debian/Ubuntu
+   sudo apt install -y cmake build-essential
+
+   # macOS
+   xcode-select --install
    brew install cmake
 
-**Build requirements (Linux)**
+Then run:
 
 .. code-block:: bash
 
-   sudo apt install -y cmake build-essential   # Debian/Ubuntu
-   # or: sudo dnf install cmake gcc-c++        # Fedora/RHEL
+   ./scripts/buildMATLABArrow.sh
 
-**Step 1 — Build Arrow C++ without S3 support**
+The script clones Apache Arrow if needed, builds Arrow C++, builds the MATLAB
+bindings, and installs them by default to:
 
-Building without S3 avoids a shared-library version conflict between MATLAB's
-bundled AWS libraries and the AWS C SDK that the default Arrow build pulls in
-from Anaconda or Homebrew.
+.. code-block:: text
 
-.. code-block:: bash
+   $HOME/arrow_no_s3
+   $HOME/arrow_matlab
 
-   git clone https://github.com/apache/arrow.git
-   cd arrow
-
-   cmake -S cpp -B build_cpp \
-     -DCMAKE_BUILD_TYPE=Release \
-     -DCMAKE_INSTALL_PREFIX=$HOME/arrow_no_s3 \
-     -DARROW_S3=OFF \
-     -DARROW_WITH_RE2=OFF \
-     -DARROW_CSV=ON \
-     -DARROW_IPC=ON \
-     -DARROW_COMPUTE=ON \
-     -DARROW_BUILD_TESTS=OFF \
-     -DxsimdSOURCE=BUNDLED
-
-   cmake --build build_cpp --config Release -j$(nproc || sysctl -n hw.logicalcpu)
-   cmake --build build_cpp --config Release --target install
-
-**Step 2 — Build the MATLAB bindings against that Arrow**
-
-.. code-block:: bash
-
-   cmake -S matlab -B build_matlab \
-     -DArrow_DIR=$HOME/arrow_no_s3/lib/cmake/Arrow \
-     -DCMAKE_INSTALL_PREFIX=$HOME/arrow_matlab
-
-   cmake --build build_matlab --config Release
-   cmake --build build_matlab --config Release --target install
-
-The installer automatically adds ``$HOME/arrow_matlab/arrow_matlab`` to
-MATLAB's saved search path (``pathdef.m``). The next MATLAB session will pick
-it up automatically. To use it in the current session:
+After the build finishes, rerun the setup script from MATLAB:
 
 .. code-block:: matlab
 
-   addpath(genpath(fullfile(getenv('HOME'), 'arrow_matlab', 'arrow_matlab')));
+   run scripts/setupMATLABArrow.m
 
-**Step 3 — Verify**
+Or add the source-built interface manually:
 
 .. code-block:: matlab
 
-   arrow.recordBatch(table(["A"; "B"], [1; 2], 'VariableNames', {'name', 'val'}))
+   addpath(fullfile(getenv('HOME'), 'arrow_matlab', 'arrow_matlab'));
+   savepath;
+   arrow.recordBatch(table(["A"; "B"], [1; 2]))
 
-A successful result returns an ``arrow.tabular.RecordBatch`` object.
-
-OptArrow Gateway
-^^^^^^^^^^^^^^^^
-
-The gateway must be running before any MATLAB call:
+Optional S3-enabled build:
 
 .. code-block:: bash
 
-   cd <optArrow_repo>
-   python src/run_server.py
+   ./scripts/buildMATLABArrow.sh --with-s3
 
-Default endpoint: ``http://127.0.0.1:8000/compute``
+The build paths can be customized with ``ARROW_REPO_DIR``,
+``ARROW_CPP_INSTALL``, and ``ARROW_MATLAB_INSTALL``.
 
-Setup
------
+Why Models Must Be Serialized
+-----------------------------
 
-Add the MATLAB package to the path:
+The Gateway accepts Arrow IPC bytes on ``/compute``. MATLAB structs, sparse
+matrices, and cell arrays cannot be sent directly over HTTP as MATLAB objects.
+Before posting a request, the MATLAB client serializes the optimization model
+into Arrow-friendly columns.
+
+For sparse matrices, the interface uses COO form:
 
 .. code-block:: matlab
 
-   addpath(genpath(fullfile('<optArrow_repo>', 'src', 'matlab')));
+   [row, col, val] = find(A);
+   model.A = struct( ...
+       'row', row(:)' - 1, ...
+       'col', col(:)' - 1, ...
+       'val', val(:)', ...
+       'shape', [size(A, 1), size(A, 2)]);
 
-Configure the client (call once per session or place in ``startup.m``):
+Rows and columns are zero-based because the Gateway and Python/Julia engine
+side expect zero-based matrix coordinates. Vector fields such as ``b``, ``c``,
+``lb``, ``ub``, and ``csense`` are packed as Arrow list columns. Solver options
+are packed as parallel key/value string lists.
+
+Most users should call ``optarrow.solveLP`` or ``optarrow.solveQP``; these
+wrappers build the serialized model payload. Use ``optarrow.compute`` directly
+only when you already have an OptArrow payload struct.
+
+Configure The MATLAB Client
+---------------------------
+
+Start the OptArrow Gateway first. From the repository root, one common local
+path is:
+
+.. code-block:: bash
+
+   sh scripts/startAll.sh
+
+Then configure MATLAB:
 
 .. code-block:: matlab
 
    cfg = struct( ...
-       'endpoint',      'http://127.0.0.1:8000/compute', ...
-       'engine',        'python', ...
+       'engine', 'python', ...
        'backendSolver', 'HiGHS', ...
-       'timeoutSec',    120);
+       'backendSolverType', 'LP', ...
+       'backendOptions', struct(), ...
+       'endpoint', 'http://127.0.0.1:8000/compute', ...
+       'timeoutSec', 120, ...
+       'transport', 'auto');
 
    optarrow.setOptArrowConfig(cfg);
 
-Inspect the resolved configuration at any time:
+Supported MATLAB transports:
 
-.. code-block:: matlab
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
 
-   disp(optarrow.getOptArrowConfig())
+   * - Transport
+     - Behavior
+   * - ``auto``
+     - Use Arrow IPC when Apache Arrow MATLAB is installed; otherwise use JSON
+   * - ``arrow``
+     - Require Arrow IPC and fail if Apache Arrow MATLAB is unavailable
+   * - ``json``
+     - Always use ``/computeJSON``
+
+For JSON fallback, ``optarrow.compute`` rewrites a configured ``/compute`` or
+``/cobra/compute`` endpoint to ``/computeJSON``.
 
 Solve an LP
 -----------
 
-``optarrow.solveLP`` accepts a standard LP struct:
-
-.. list-table::
-   :header-rows: 1
-   :widths: 15 15 70
-
-   * - Field
-     - Type
-     - Meaning
-   * - ``A``
-     - sparse or dense matrix
-     - Constraint matrix (m × n)
-   * - ``b``
-     - double vector
-     - Right-hand side (length m)
-   * - ``c``
-     - double vector
-     - Objective coefficients (length n)
-   * - ``lb``
-     - double vector
-     - Variable lower bounds
-   * - ``ub``
-     - double vector
-     - Variable upper bounds
-   * - ``csense``
-     - char array or cell of chars
-     - Per-row sense: ``'E'`` (=), ``'L'`` (≤), ``'G'`` (≥)
-   * - ``osense``
-     - numeric or char
-     - ``-1`` or ``'max'`` to maximise; ``1`` or ``'min'`` to minimise
-
-Example — product-mix LP:
-
 .. code-block:: matlab
 
-   optarrow.setOptArrowConfig(struct( ...
-       'endpoint',      'http://127.0.0.1:8000/compute', ...
-       'backendSolver', 'HiGHS'));
+   LPproblem = struct();
+   LPproblem.A = sparse([20 10; 10 20; 10 30]);
+   LPproblem.b = [200; 120; 150];
+   LPproblem.c = [5; 12];
+   LPproblem.lb = [0; 0];
+   LPproblem.ub = [1000; 1000];
+   LPproblem.csense = ['L'; 'L'; 'L'];
+   LPproblem.osense = -1;  % -1=max, 1=min
 
-   LP = struct();
-   LP.A      = sparse([20 10; 10 20; 10 30]);
-   LP.b      = [200; 120; 150];
-   LP.c      = [5; 12];
-   LP.lb     = [0; 0];
-   LP.ub     = [1000; 1000];
-   LP.csense = ['L'; 'L'; 'L'];
-   LP.osense = -1;    % maximise
-
-   result = optarrow.solveLP(LP, struct('modelName', 'product_mix'));
-   fprintf('obj = %.4f\n', result.obj_val);
-   disp(result.solution)
+   result = optarrow.solveLP(LPproblem, struct('modelName', 'matlab_lp'));
+   disp(result)
 
 Solve a QP
 ----------
 
-``optarrow.solveQP`` extends the LP struct with a symmetric Hessian ``Q``:
-
 .. code-block:: matlab
 
-   QP        = struct();
-   QP.A      = sparse([1 1]);
-   QP.b      = 4;
-   QP.c      = [-1; -2];
-   QP.lb     = [0; 0];
-   QP.ub     = [10; 10];
-   QP.csense = 'L';
-   QP.osense = 1;                      % minimise
-   QP.Q      = sparse([2 0; 0 2]);     % ½ xᵀQx objective term
+   QPproblem = struct();
+   QPproblem.F = sparse([2 0; 0 2]);
+   QPproblem.c = [-2; -5];
+   QPproblem.A = sparse([1 1]);
+   QPproblem.b = 3;
+   QPproblem.lb = [0; 0];
+   QPproblem.csense = 'E';
+   QPproblem.osense = 1;
 
-   result = optarrow.solveQP(QP, struct('modelName', 'qp_demo'));
-   disp(result.solution)
-
-``Q`` is converted to upper-triangular COO triplets and sent alongside the
-LP fields in the same Arrow IPC record batch.
+   result = optarrow.solveQP(QPproblem, struct('modelName', 'matlab_qp'));
+   disp(result)
 
 Submit a Generic Payload
 ------------------------
 
-Use ``optarrow.compute`` directly when you want full control over the request:
+A direct ``optarrow.compute`` payload should include:
+
+- ``problem_type``: ``LP`` or ``QP``.
+- ``engine``: backend engine name, for example ``python`` or ``julia``.
+- ``solver_name``: backend solver name, for example ``HiGHS`` or ``Gurobi``.
+- ``model_name``: label used by the backend for logging/debugging.
+- ``time_limit``: solver time limit in seconds.
+- ``solver_params``: backend option struct.
+- ``model``: serialized LP/QP model struct.
+
+Example:
 
 .. code-block:: matlab
 
    payload = struct();
-   payload.problem_type  = 'LP';
-   payload.engine        = 'python';
-   payload.solver_name   = 'HiGHS';
-   payload.model_name    = 'my_lp';
-   payload.time_limit    = 300;
+   payload.problem_type = 'LP';
+   payload.engine = 'python';
+   payload.solver_name = 'HiGHS';
+   payload.model_name = 'my_lp';
+   payload.time_limit = 300;
    payload.solver_params = struct();
 
-   payload.model.A      = struct('row', int64([0;1]), 'col', int64([0;1]), ...
-                                 'val', [1.0;1.0], 'shape', int64([2,2]));
-   payload.model.b      = [1.0; 1.0];
-   payload.model.c      = [2.0; 3.0];
-   payload.model.lb     = [0.0; 0.0];
-   payload.model.ub     = [10.0; 10.0];
+   payload.model.A = struct( ...
+       'row', int64([0; 1]), ...
+       'col', int64([0; 1]), ...
+       'val', [1.0; 1.0], ...
+       'shape', int64([2, 2]));
+   payload.model.b = [1.0; 1.0];
+   payload.model.c = [2.0; 3.0];
+   payload.model.lb = [0.0; 0.0];
+   payload.model.ub = [10.0; 10.0];
    payload.model.csense = {'L'; 'L'};
    payload.model.osense = 'max';
 
@@ -268,72 +306,48 @@ Use ``optarrow.compute`` directly when you want full control over the request:
 Response Struct
 ---------------
 
-``optarrow.compute`` always returns a scalar struct with these fields:
+The decoded response is a MATLAB struct. Common fields include:
 
 .. list-table::
    :header-rows: 1
-   :widths: 20 15 65
+   :widths: 20 80
 
    * - Field
-     - Type
      - Meaning
    * - ``success``
-     - logical
-     - ``true`` when the solver found a solution
+     - Logical success flag
    * - ``status``
-     - char
-     - Solver termination string, e.g. ``'optimal'``
+     - Backend status text
    * - ``stat``
-     - double
-     - Numeric status code: ``1`` = optimal, ``0`` = infeasible,
-       ``2`` = unbounded, ``-1`` = error/other
+     - Normalized numeric status: ``1`` optimal, ``0`` infeasible,
+       ``2`` unbounded, ``-1`` error
    * - ``obj_val``
-     - double
-     - Optimal objective value
+     - Objective value
    * - ``solution``
-     - double vector
-     - Primal solution (length n)
+     - Primal solution vector
    * - ``dual``
-     - double vector
-     - Dual variables / shadow prices (length m)
+     - Constraint duals, when available
    * - ``rcost``
-     - double vector
-     - Reduced costs (length n)
+     - Reduced costs, when available
    * - ``slack``
-     - double vector
-     - Constraint slack ``b − A·x`` (length m)
+     - Constraint slack, when available
    * - ``method``
-     - char
-     - Solver algorithm used, when reported
+     - Backend method label, when available
    * - ``time``
-     - double
-     - Wall-clock solve time in seconds, when reported
+     - Backend solve time, when available
 
-Configuration Reference
------------------------
+Troubleshooting
+---------------
 
-``optarrow.setOptArrowConfig`` accepts a struct with any of these fields:
-
-.. csv-table::
-   :header: "Field", "Default", "Meaning"
-   :widths: 25, 30, 45
-
-   "``endpoint``", "``http://127.0.0.1:8000/compute``", "Gateway URL"
-   "``engine``", "``python``", "Backend engine (``python`` or ``julia``)"
-   "``backendSolver``", "``''``", "Solver name (``HiGHS``, ``Gurobi``, …)"
-   "``backendSolverType``", "``''``", "Problem class (``LP`` or ``QP``)"
-   "``backendOptions``", "``struct()``", "Key-value solver parameters"
-   "``timeoutSec``", "``120``", "HTTP connect + response timeout (seconds)"
-   "``transport``", "``arrow``", "Must be ``arrow``"
-
-All fields have defaults, so passing a partial struct is fine.
-
-Notes
------
-
-- All functions use MATLAB package namespace syntax (``optarrow.compute``,
-  not object method dispatch). They live inside the ``+optarrow`` folder.
-- The ``transport`` field must always be ``'arrow'``; there is no JSON
-  transport path in the MATLAB client.
-- The gateway engine ``'python'`` routes to the in-process Python solver;
-  no separate gRPC process is required.
+- If MATLAB cannot find ``arrow.recordBatch``, run
+  ``scripts/setupMATLABArrow.m``.
+- If the bundled Arrow build fails with ``GLIBCXX_*``, build Arrow locally
+  with ``./scripts/buildMATLABArrow.sh``.
+- If Arrow is not available and you only need a compatibility path, configure
+  ``transport`` as ``auto`` or ``json``.
+- If HTTP requests fail, confirm the Gateway is running and the configured
+  ``endpoint`` matches the server route.
+- If a sparse model gives incorrect dimensions, include ``shape`` in the COO
+  matrix struct or use ``optarrow.solveLP`` / ``optarrow.solveQP`` to build it.
+- If ``optarrow.*`` functions are not found, confirm the installed MATLAB
+  client is on the path as a ``+optarrow`` package.
