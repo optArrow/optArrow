@@ -116,41 +116,17 @@ tf = exist('arrow.recordBatch', 'file') == 2;
 end
 
 function result = localComputeJSON(payload, cfg)
-import matlab.net.http.*
-import matlab.net.http.field.*
-import matlab.net.http.io.*
-
 jsonPayload = localJsonPayload(payload, cfg);
 endpoint = localJsonEndpoint(cfg.endpoint);
 
+opts = weboptions( ...
+    'MediaType', 'application/json', ...
+    'RequestMethod', 'post', ...
+    'Timeout', double(cfg.timeoutSec));
+
 try
-    request = RequestMessage( ...
-        RequestMethod.POST, ...
-        ContentTypeField('application/json'), ...
-        JSONProvider(jsonPayload));
-    opts = matlab.net.http.HTTPOptions( ...
-        'ConnectTimeout', double(cfg.timeoutSec), ...
-        'ResponseTimeout', double(cfg.timeoutSec));
-
-    response = request.send(matlab.net.URI(endpoint), opts);
-    result = response.Body.Data;
-    if isempty(result)
-        result = struct();
-    end
-
-    statusCode = double(response.StatusCode);
-    if statusCode < 200 || statusCode >= 300
-        msg = sprintf('HTTP %d from %s.', statusCode, endpoint);
-        if isstruct(result) && isfield(result, 'error_message')
-            msg = sprintf('%s Server error: %s', msg, result.error_message);
-        end
-        err = struct('identifier', 'optarrow:computeJSONError', 'message', msg);
-        error(err);
-    end
+    result = webwrite(endpoint, jsonPayload, opts);
 catch ME
-    if strcmp(ME.identifier, 'optarrow:computeJSONError')
-        rethrow(ME);
-    end
     err = struct( ...
         'identifier', 'optarrow:computeJSONError', ...
         'message', sprintf('JSON request to %s failed: %s', endpoint, ME.message));
