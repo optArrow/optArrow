@@ -289,59 +289,47 @@ Once the add-on is installed:
 
 3. Continue with the full guide in :doc:`../tutorials/matlab_interface`.
 
-After services are running and communicating, run the following Python example to solve a simple LP problem:
+After services are running and communicating, run the following Python example to solve a simple LP problem via the JSON endpoint:
 
 .. code-block:: python
 
-    import pyarrow as pa
     import requests
 
-    ipc_dict = {
-         "model": {
-              "A": {
-                    "row": [0, 0, 1, 1, 2, 2],
-                    "col": [0, 1, 0, 1, 0, 1],
-                    "val": [20, 10, 10, 20, 10, 30]
-              },
-              "b": [200, 120, 150],
-              "c": [5, 12],
-              "lb": [0, 0],
-              "csense": ["L", "L", "L"],
-              "osense": "max"
-         },
-         "model_name": "product_mix_lp",
-         "engine": "julia",
-         "solver": {
-              "solver_name": "HiGHS",
-              "solver_type": "LP",
-              "solver_params": {}
-         }
+    payload = {
+        "model": {
+            "A": {
+                "row": [0, 0, 1, 1, 2, 2],
+                "col": [0, 1, 0, 1, 0, 1],
+                "val": [20, 10, 10, 20, 10, 30]
+            },
+            "b": [200, 120, 150],
+            "c": [5, 12],
+            "lb": [0, 0],
+            "ub": [1000, 1000],
+            "csense": ["L", "L", "L"],
+            "osense": "max"
+        },
+        "model_name": "product_mix_lp",
+        "engine": "python",
+        "solver": {
+            "solver_name": "HiGHS",
+            "solver_type": "LP",
+            "solver_params": {}
+        }
     }
 
-    pa_arrays = [pa.array([value]) for value in ipc_dict.values()]
-    table = pa.Table.from_arrays(pa_arrays, names=list(ipc_dict.keys()))
+    response = requests.post(
+        "http://localhost:8000/computeJSON",
+        json=payload,
+        headers={"Content-Type": "application/json"}
+    )
+    print(response.json())
 
-    sink = pa.BufferOutputStream()
-    with pa.ipc.new_stream(sink, table.schema) as writer:
-         writer.write(table)
-    ipc_bytes = sink.getvalue().to_pybytes()
-
-    headers = {"Content-Type": "application/vnd.apache.arrow.stream"}
-    response = requests.post("http://localhost:8000/compute", data=ipc_bytes, headers=headers)
-
-    if response.status_code != 200:
-         print(f"Error: {response.status_code} - {response.text}")
-
-    reader = pa.ipc.open_stream(response.content)
-    result_table = reader.read_all()
-    result_dict = {name: result_table.column(name).to_pylist() for name in result_table.column_names}
-    print(result_dict)
-
-Expected output (example):
+Expected output:
 
 .. code-block:: text
 
-    {'success': [True], 'status': ['OPTIMAL'], 'obj_val': [66.0], 'solution': [[6.000000000000004, 2.9999999999999987]]}
+    {'success': True, 'solution': [6.0, 3.0], 'status': 'optimal', 'stat': 1, 'obj_val': 66.0}
 
 6. Alternative: Start services with Docker
 ------------------------------------------

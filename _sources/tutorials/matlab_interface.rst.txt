@@ -32,22 +32,24 @@ The MATLAB client source is under ``src/matlab``:
 
    * - File
      - Purpose
-   * - ``interface/setOptArrowConfig.m``
+   * - ``+optarrow/setOptArrowConfig.m``
      - Set global OptArrow runtime config
-   * - ``interface/getOptArrowConfig.m``
+   * - ``+optarrow/getOptArrowConfig.m``
      - Read global OptArrow runtime config
-   * - ``interface/compute.m``
+   * - ``+optarrow/checkSetup.m``
+     - Verify Gateway reachability and Arrow backend availability
+   * - ``+optarrow/compute.m``
      - Generic Arrow IPC or JSON request/response call
-   * - ``interface/solveLP.m``
+   * - ``+optarrow/solveLP.m``
      - LP convenience wrapper
-   * - ``interface/solveQP.m``
+   * - ``+optarrow/solveQP.m``
      - QP convenience wrapper
    * - ``vendor/apache-arrow/``
      - Optional bundled Apache Arrow MATLAB builds
 
-The MATLAB functions use the ``optarrow.*`` package namespace. In an installed
-copy, the files from ``interface/`` should be available on the MATLAB path as
-the ``+optarrow`` package folder.
+The MATLAB functions use the ``optarrow.*`` package namespace. Add the
+``src/matlab`` directory to the MATLAB path — MATLAB will automatically
+discover the ``+optarrow`` package folder inside it.
 
 Downstream integrations, such as COBRA Toolbox adapters, should keep
 toolbox-specific conversion and solver-dispatch logic outside this general
@@ -186,6 +188,45 @@ Most users should call ``optarrow.solveLP`` or ``optarrow.solveQP``; these
 wrappers build the serialized model payload. Use ``optarrow.compute`` directly
 only when you already have an OptArrow payload struct.
 
+Check Gateway Setup
+-------------------
+
+Before solving, verify the Gateway is reachable and that the correct Arrow
+backend is selected:
+
+.. code-block:: matlab
+
+   report = optarrow.checkSetup();
+   disp(report)
+
+Or with an explicit endpoint and a hard error on failure:
+
+.. code-block:: matlab
+
+   report = optarrow.checkSetup( ...
+       'http://127.0.0.1:8000/cobra/compute', ...
+       struct('throwOnError', true));
+
+The returned ``report`` struct includes:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Field
+     - Meaning
+   * - ``ok``
+     - ``true`` when all checks pass
+   * - ``endpoint``
+     - Resolved Gateway URL
+   * - ``httpStatus``
+     - HTTP status code returned by the Gateway (0 if unreachable)
+   * - ``arrowBackend``
+     - ``'native'`` when Apache Arrow MATLAB is installed and working,
+       ``'json'`` when falling back to the JSON route
+   * - ``failures``
+     - Cell array of error messages (empty when ``ok`` is true)
+
 Configure The MATLAB Client
 ---------------------------
 
@@ -232,36 +273,61 @@ For JSON fallback, ``optarrow.compute`` rewrites a configured ``/compute`` or
 Solve an LP
 -----------
 
+Maximise ``5x + 12y`` subject to three inequality constraints:
+
 .. code-block:: matlab
 
    LPproblem = struct();
-   LPproblem.A = sparse([20 10; 10 20; 10 30]);
-   LPproblem.b = [200; 120; 150];
-   LPproblem.c = [5; 12];
-   LPproblem.lb = [0; 0];
-   LPproblem.ub = [1000; 1000];
+   LPproblem.A      = sparse([20 10; 10 20; 10 30]);
+   LPproblem.b      = [200; 120; 150];
+   LPproblem.c      = [5; 12];
+   LPproblem.lb     = [0; 0];
+   LPproblem.ub     = [1000; 1000];
    LPproblem.csense = ['L'; 'L'; 'L'];
    LPproblem.osense = -1;  % -1=max, 1=min
 
    result = optarrow.solveLP(LPproblem, struct('modelName', 'matlab_lp'));
    disp(result)
 
+Expected output:
+
+.. code-block:: text
+
+      success: 1
+       status: 'optimal'
+         stat: 1
+      obj_val: 66
+     solution: [6 3]
+
 Solve a QP
 ----------
+
+Minimise ``x² + y² - 2x - 5y`` subject to ``x + y = 3``.  The ``ub``
+field is optional; ``optarrow.solveQP`` defaults it to ``1e30``.
 
 .. code-block:: matlab
 
    QPproblem = struct();
-   QPproblem.F = sparse([2 0; 0 2]);
-   QPproblem.c = [-2; -5];
-   QPproblem.A = sparse([1 1]);
-   QPproblem.b = 3;
-   QPproblem.lb = [0; 0];
+   QPproblem.F      = sparse([2 0; 0 2]);
+   QPproblem.c      = [-2; -5];
+   QPproblem.A      = sparse([1 1]);
+   QPproblem.b      = 3;
+   QPproblem.lb     = [0; 0];
    QPproblem.csense = 'E';
-   QPproblem.osense = 1;
+   QPproblem.osense = 1;  % minimise
 
    result = optarrow.solveQP(QPproblem, struct('modelName', 'matlab_qp'));
    disp(result)
+
+Expected output:
+
+.. code-block:: text
+
+      success: 1
+       status: 'optimal'
+         stat: 1
+      obj_val: -7.125
+     solution: [0.75 2.25]
 
 Submit a Generic Payload
 ------------------------
