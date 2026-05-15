@@ -104,9 +104,10 @@ So:
    \end{bmatrix}
 
 where:
-- $Q$ is a symmetric matrix representing the quadratic coefficients.
-- $c$ is a vector representing the linear coefficients.
-- $A$, $G$, $lb$, and $ub$ are defined as per the problem constraints.
+
+- :math:`Q` is a symmetric matrix representing the quadratic coefficients.
+- :math:`c` is a vector representing the linear coefficients.
+- :math:`A`, :math:`G`, :math:`lb`, and :math:`ub` are defined as per the problem constraints.
 
 .. code-block:: python
 

@@ -45,7 +45,7 @@ Maximize profit
 
    Z = 5x + 12y
 
-where $x$ is the number of Product X produced and $y$ is the number of Product Y produced.
+where :math:`x` is the number of Product X produced and :math:`y` is the number of Product Y produced.
 **Subject to**:
 
 .. math::
@@ -62,8 +62,8 @@ General LP Formulation
 
 The LP problem should be structured as:
 
-**Objective**: Maximize $c^T x$
-where $c$ is the profit vector and $x$ is the production vector.
+**Objective**: Maximize :math:`c^T x`
+where :math:`c` is the profit vector and :math:`x` is the production vector.
 
 **Subject to**:
 
@@ -71,7 +71,7 @@ where $c$ is the profit vector and $x$ is the production vector.
 
    Ax = b; \quad lb \leq x \leq ub
 
-where $A$ is the resource usage matrix, $b$ is the resource availability vector, and $lb$, $ub$ are the lower and upper bounds on the production quantities.
+where :math:`A` is the resource usage matrix, :math:`b` is the resource availability vector, and :math:`lb`, :math:`ub` are the lower and upper bounds on the production quantities.
 
 .. math::
 
