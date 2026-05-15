@@ -253,7 +253,4 @@ at boundaries: client to Arrow, Arrow to Gateway, Gateway to Python or Julia,
 and solver status back to a normalized response. When changing one boundary,
 write down the contract and test both sides of it.
 
-If you are unsure where a feature belongs, ask whether it is general OptArrow
-behavior or a downstream domain adaptation. General transport, schemas, and
-solver behavior belong here. Domain-specific integration details belong in the
-downstream project.
+A core value of OptArrow is decoupling the client language from solver availability. A MATLAB user can reach a Julia-native solver (like Hypatia) or a Python-native solver configuration without any MATLAB binding for that solver existing. Adding new solver backends in Python or Julia therefore benefits all client languages simultaneously. Prioritise solvers that are: not readily accessible from MATLAB natively; significantly faster than MATLAB's native solvers for LP/QP at scale; or capable of problem types (e.g. conic, second-order cone) that most MATLAB solvers don't support.
