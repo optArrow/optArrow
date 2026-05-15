@@ -112,7 +112,9 @@ end
 end
 
 function tf = localArrowAvailable()
-tf = exist('arrow.recordBatch', 'file') == 2;
+% which() finds M-files, P-files, MEX files, and class methods — unlike
+% exist(...,'file')==2 which only matches plain M-files.
+tf = ~isempty(which('arrow.recordBatch'));
 end
 
 function result = localComputeJSON(payload, cfg)
