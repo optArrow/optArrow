@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="LP Example: FBA analysis for ecoli model" href="lp_example2.html" />
+    <link rel="next" title="Quadratic Programming (QP) Problems in OptArrow" href="qp_problem.html" />
     <link rel="prev" title="Linear Programming (LP) Problems in OptArrow" href="lp_problem.html" /> 
 </head>
 
@@ -64,13 +64,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#mathematical-formulation">Mathematical Formulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#general-lp-formulation">General LP Formulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#solving-with-optarrow">Solving with OptArrow</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#using-arrow-ipc-stream-bytes-format">Using Arrow IPC Stream Bytes Format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#using-json">Using JSON</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-json-via-computejson">Using JSON via <code class="docutils literal notranslate"><span class="pre">/computeJSON</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-apache-arrow-ipc-via-compute">Using Apache Arrow IPC via <code class="docutils literal notranslate"><span class="pre">/compute</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="lp_example2.html">LP Example: FBA analysis for ecoli model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="qp_problem.html">Quadratic Programming (QP) Problems in OptArrow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="qp_example.html">QP Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
@@ -107,7 +106,7 @@
              
   <section id="lp-example-production-optimization">
 <h1>LP Example: Production Optimization<a class="headerlink" href="#lp-example-production-optimization" title="Link to this heading"></a></h1>
-<p>This tutorial illustrates how to model and solve a real-world linear programming (LP) problem using the <strong>OptArrow</strong> optimization engine. The example is based on a classic production optimization problem where multiple products must be manufactured using limited resources to <strong>maximize profit</strong> while respecting <strong>resource</strong>, <strong>demand</strong>, and <strong>capacity</strong> constraints.</p>
+<p>This tutorial illustrates how to model and solve a linear programming (LP) problem using OptArrow. The example maximizes profit from two products given limited resources.</p>
 <section id="problem-overview">
 <h2>Problem Overview<a class="headerlink" href="#problem-overview" title="Link to this heading"></a></h2>
 <p>A factory has a limited stock of raw materials:</p>
@@ -147,13 +146,11 @@
 </section>
 <section id="mathematical-formulation">
 <h2>Mathematical Formulation<a class="headerlink" href="#mathematical-formulation" title="Link to this heading"></a></h2>
-<p>The LP problem can be formulated as follows:</p>
-<p><strong>Objective</strong>:
-Maximize profit</p>
+<p><strong>Objective</strong>: Maximize profit</p>
 <div class="math notranslate nohighlight">
 \[Z = 5x + 12y\]</div>
-<p>where <span class="math notranslate nohighlight">\(x\)</span> is the number of Product X produced and <span class="math notranslate nohighlight">\(y\)</span> is the number of Product Y produced.
-<strong>Subject to</strong>:</p>
+<p>where <span class="math notranslate nohighlight">\(x\)</span> is the number of Product X produced and <span class="math notranslate nohighlight">\(y\)</span> is the number of Product Y produced.</p>
+<p><strong>Subject to</strong>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{aligned}
 20x + 10y &amp;\leq 200 \quad &amp;\text{(Material A constraint)} \\
@@ -169,7 +166,7 @@ x, y &amp;\geq 0 \quad &amp;\text{(Non-negativity constraints)}
 where <span class="math notranslate nohighlight">\(c\)</span> is the profit vector and <span class="math notranslate nohighlight">\(x\)</span> is the production vector.</p>
 <p><strong>Subject to</strong>:</p>
 <div class="math notranslate nohighlight">
-\[Ax = b; \quad lb \leq x \leq ub\]</div>
+\[Ax \leq b; \quad lb \leq x \leq ub\]</div>
 <p>where <span class="math notranslate nohighlight">\(A\)</span> is the resource usage matrix, <span class="math notranslate nohighlight">\(b\)</span> is the resource availability vector, and <span class="math notranslate nohighlight">\(lb\)</span>, <span class="math notranslate nohighlight">\(ub\)</span> are the lower and upper bounds on the production quantities.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}c =
@@ -206,8 +203,8 @@ lb =
 </section>
 <section id="solving-with-optarrow">
 <h2>Solving with OptArrow<a class="headerlink" href="#solving-with-optarrow" title="Link to this heading"></a></h2>
-<p>The following code illustrates how this linear program can be defined and solved using <strong>OptArrow</strong> in Python:</p>
-<p>A is the matrix in Coordinate(COO) format, which is a sparse matrix format suitable for large matrices. The <cite>row</cite>, <cite>col</cite>, and <cite>val</cite> lists represent the non-zero entries of the matrix.</p>
+<p>The following code illustrates how this LP can be defined and solved using OptArrow in Python.</p>
+<p>The constraint matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is provided in Coordinate (COO) sparse format — the <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">col</span></code>, and <code class="docutils literal notranslate"><span class="pre">val</span></code> lists represent the non-zero entries of the matrix.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
   <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -218,54 +215,81 @@ lb =
     <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span>
     <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
     <span class="s2">&quot;lb&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-    <span class="s2">&quot;csense&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">],</span> <span class="c1"># &#39;L&#39; for less than or equal to constraints</span>
+    <span class="s2">&quot;ub&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
+    <span class="s2">&quot;csense&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">],</span>  <span class="c1"># L = &lt;=,  E = =,  G = &gt;=</span>
     <span class="s2">&quot;osense&quot;</span><span class="p">:</span> <span class="s2">&quot;max&quot;</span>
   <span class="p">},</span>
   <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="s2">&quot;product_mix_lp&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;julia&quot;</span><span class="p">,</span> <span class="c1"># Using Julia as the optimization engine, also supports Python</span>
+  <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span>  <span class="c1"># &quot;python&quot; or &quot;julia&quot;</span>
   <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;solver_name&quot;</span><span class="p">:</span> <span class="s2">&quot;HiGHS&quot;</span><span class="p">,</span> <span class="c1"># Using HiGHS solver for LP problems, also supports other solvers</span>
-    <span class="s2">&quot;solver_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LP&quot;</span><span class="p">,</span> <span class="c1"># Specify the solver type as LP</span>
-    <span class="s2">&quot;solver_params&quot;</span><span class="p">:</span> <span class="p">{}</span> <span class="c1"># Additional solver parameters can be added here</span>
+    <span class="s2">&quot;solver_name&quot;</span><span class="p">:</span> <span class="s2">&quot;HiGHS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;solver_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;solver_params&quot;</span><span class="p">:</span> <span class="p">{}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<section id="using-arrow-ipc-stream-bytes-format">
-<h3>Using Arrow IPC Stream Bytes Format<a class="headerlink" href="#using-arrow-ipc-stream-bytes-format" title="Link to this heading"></a></h3>
+<section id="using-json-via-computejson">
+<h3>Using JSON via <code class="docutils literal notranslate"><span class="pre">/computeJSON</span></code><a class="headerlink" href="#using-json-via-computejson" title="Link to this heading"></a></h3>
+<p>The simplest way to submit the problem. All values must be plain Python lists
+(not NumPy arrays); call <code class="docutils literal notranslate"><span class="pre">.tolist()</span></code> on any NumPy array before submitting.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/computeJSON&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="n">ipc_dict</span><span class="p">,</span>
+    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Objective value:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;obj_val&quot;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solution&quot;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Status:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;stat:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stat&quot;</span><span class="p">))</span>   <span class="c1"># 1=optimal, 0=infeasible, 2=unbounded</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Expected output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Objective value: 66.0
+Solution: [6.0, 3.0]
+Status: optimal
+stat: 1
+</pre></div>
+</div>
+</section>
+<section id="using-apache-arrow-ipc-via-compute">
+<h3>Using Apache Arrow IPC via <code class="docutils literal notranslate"><span class="pre">/compute</span></code><a class="headerlink" href="#using-apache-arrow-ipc-via-compute" title="Link to this heading"></a></h3>
+<p>The Arrow IPC path is more efficient for large sparse models. The model
+dictionary is serialized into an Arrow IPC stream before being posted.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
-<span class="c1"># Convert the dictionary to an Arrow table for IPC serialization</span>
+<span class="c1"># Serialize the model dictionary to an Arrow IPC stream</span>
 <span class="n">pa_arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ipc_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">pa_arrays</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">ipc_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
-<span class="c1"># Serialize the table to IPC stream bytes</span>
 <span class="n">sink</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">BufferOutputStream</span><span class="p">()</span>
 <span class="k">with</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">new_stream</span><span class="p">(</span><span class="n">sink</span><span class="p">,</span> <span class="n">table</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
     <span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
 <span class="n">ipc_bytes</span> <span class="o">=</span> <span class="n">sink</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">to_pybytes</span><span class="p">()</span>
 
-<span class="c1"># Send the IPC stream bytes to the server</span>
-<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/vnd.apache.arrow.stream&quot;</span><span class="p">}</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/compute&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ipc_bytes</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+<span class="c1"># Send the IPC stream to the Gateway</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/compute&quot;</span><span class="p">,</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">ipc_bytes</span><span class="p">,</span>
+    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/vnd.apache.arrow.stream&quot;</span><span class="p">}</span>
+<span class="p">)</span>
 
-<span class="c1"># Check if the response is successful</span>
-<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="c1"># response is ipc stream</span>
-<span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
-<span class="n">result_table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
-<span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">result_table</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">to_pylist</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">result_table</span><span class="o">.</span><span class="n">column_names</span><span class="p">}</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">result_dict</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="using-json">
-<h3>Using JSON<a class="headerlink" href="#using-json" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/computeJSON&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">ipc_dict</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+<span class="c1"># Decode the Arrow IPC response</span>
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+    <span class="n">result_table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Objective value:&quot;</span><span class="p">,</span> <span class="n">result_table</span><span class="p">[</span><span class="s2">&quot;obj_val&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Status:&quot;</span><span class="p">,</span> <span class="n">result_table</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution:&quot;</span><span class="p">,</span> <span class="n">result_table</span><span class="p">[</span><span class="s2">&quot;solution&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -277,7 +301,7 @@ lb =
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="lp_problem.html" class="btn btn-neutral float-left" title="Linear Programming (LP) Problems in OptArrow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="lp_example2.html" class="btn btn-neutral float-right" title="LP Example: FBA analysis for ecoli model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="qp_problem.html" class="btn btn-neutral float-right" title="Quadratic Programming (QP) Problems in OptArrow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

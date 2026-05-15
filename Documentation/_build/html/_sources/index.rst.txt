@@ -70,7 +70,6 @@ OptArrow introduces a streamlined, interoperable architecture with the following
 
    tutorials/lp_problem
    tutorials/lp_example1
-   tutorials/lp_example2
    tutorials/qp_problem
    tutorials/qp_example
    tutorials/conversion_dictionary_arrow_table
