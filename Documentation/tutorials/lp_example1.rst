@@ -1,7 +1,7 @@
 LP Example: Production Optimization
-===================================
+====================================
 
-This tutorial illustrates how to model and solve a real-world linear programming (LP) problem using the **OptArrow** optimization engine. The example is based on a classic production optimization problem where multiple products must be manufactured using limited resources to **maximize profit** while respecting **resource**, **demand**, and **capacity** constraints.
+This tutorial illustrates how to model and solve a linear programming (LP) problem using OptArrow. The example maximizes profit from two products given limited resources.
 
 Problem Overview
 ----------------
@@ -36,16 +36,14 @@ The factory produces two types of products: **Product X** and **Product Y**.
 Mathematical Formulation
 ------------------------
 
-The LP problem can be formulated as follows:
-
-**Objective**: 
-Maximize profit
+**Objective**: Maximize profit
 
 .. math::
 
    Z = 5x + 12y
 
 where :math:`x` is the number of Product X produced and :math:`y` is the number of Product Y produced.
+
 **Subject to**:
 
 .. math::
@@ -69,7 +67,7 @@ where :math:`c` is the profit vector and :math:`x` is the production vector.
 
 .. math::
 
-   Ax = b; \quad lb \leq x \leq ub
+   Ax \leq b; \quad lb \leq x \leq ub
 
 where :math:`A` is the resource usage matrix, :math:`b` is the resource availability vector, and :math:`lb`, :math:`ub` are the lower and upper bounds on the production quantities.
 
@@ -110,9 +108,9 @@ where :math:`A` is the resource usage matrix, :math:`b` is the resource availabi
 Solving with OptArrow
 ---------------------
 
-The following code illustrates how this linear program can be defined and solved using **OptArrow** in Python:
+The following code illustrates how this LP can be defined and solved using OptArrow in Python.
 
-A is the matrix in Coordinate(COO) format, which is a sparse matrix format suitable for large matrices. The `row`, `col`, and `val` lists represent the non-zero entries of the matrix.
+The constraint matrix ``A`` is provided in Coordinate (COO) sparse format — the ``row``, ``col``, and ``val`` lists represent the non-zero entries of the matrix.
 
 .. code-block:: python
 
@@ -126,54 +124,85 @@ A is the matrix in Coordinate(COO) format, which is a sparse matrix format suita
        "b": [200, 120, 150],
        "c": [5, 12],
        "lb": [0, 0],
-       "csense": ["L", "L", "L"], # 'L' for less than or equal to constraints
+       "ub": [1000, 1000],
+       "csense": ["L", "L", "L"],  # L = <=,  E = =,  G = >=
        "osense": "max"
      },
      "model_name": "product_mix_lp",
-     "engine": "julia", # Using Julia as the optimization engine, also supports Python
+     "engine": "python",  # "python" or "julia"
      "solver": {
-       "solver_name": "HiGHS", # Using HiGHS solver for LP problems, also supports other solvers
-       "solver_type": "LP", # Specify the solver type as LP
-       "solver_params": {} # Additional solver parameters can be added here
+       "solver_name": "HiGHS",
+       "solver_type": "LP",
+       "solver_params": {}
      }
    }
 
-Using Arrow IPC Stream Bytes Format
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using JSON via ``/computeJSON``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The simplest way to submit the problem. All values must be plain Python lists
+(not NumPy arrays); call ``.tolist()`` on any NumPy array before submitting.
+
+.. code-block:: python
+
+   import requests
+
+   response = requests.post(
+       "http://localhost:8000/computeJSON",
+       json=ipc_dict,
+       headers={"Content-Type": "application/json"}
+   )
+
+   if response.status_code == 200:
+       result = response.json()
+       print("Objective value:", result.get("obj_val"))
+       print("Solution:", result.get("solution"))
+       print("Status:", result.get("status"))
+       print("stat:", result.get("stat"))   # 1=optimal, 0=infeasible, 2=unbounded
+   else:
+       print("Error:", response.text)
+
+Expected output:
+
+.. code-block:: text
+
+   Objective value: 66.0
+   Solution: [6.0, 3.0]
+   Status: optimal
+   stat: 1
+
+Using Apache Arrow IPC via ``/compute``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The Arrow IPC path is more efficient for large sparse models. The model
+dictionary is serialized into an Arrow IPC stream before being posted.
 
 .. code-block:: python
 
    import pyarrow as pa
    import requests
-   
-   # Convert the dictionary to an Arrow table for IPC serialization
+
+   # Serialize the model dictionary to an Arrow IPC stream
    pa_arrays = [pa.array([v]) for v in ipc_dict.values()]
    table = pa.Table.from_arrays(pa_arrays, names=list(ipc_dict.keys()))
-   
-   # Serialize the table to IPC stream bytes
+
    sink = pa.BufferOutputStream()
    with pa.ipc.new_stream(sink, table.schema) as writer:
        writer.write(table)
    ipc_bytes = sink.getvalue().to_pybytes()
-   
-   # Send the IPC stream bytes to the server
-   headers = {"Content-Type": "application/vnd.apache.arrow.stream"}
-   response = requests.post("http://localhost:8000/compute", data=ipc_bytes, headers=headers)
-   
-   # Check if the response is successful
-   if response.status_code != 200:
-       print(f"Error: {response.status_code} - {response.text}")
-   # response is ipc stream
-   reader = pa.ipc.open_stream(response.content)
-   result_table = reader.read_all()
-   result_dict = {name: result_table.column(name).to_pylist() for name in result_table.column_names}
-   print(result_dict)
 
-Using JSON
-^^^^^^^^^^
+   # Send the IPC stream to the Gateway
+   response = requests.post(
+       "http://localhost:8000/compute",
+       data=ipc_bytes,
+       headers={"Content-Type": "application/vnd.apache.arrow.stream"}
+   )
 
-.. code-block:: python
-
-   headers = {"Content-Type": "application/json"}
-   response = requests.post("http://localhost:8000/computeJSON", json=ipc_dict, headers=headers)
-   print(response.json())
+   # Decode the Arrow IPC response
+   if response.status_code == 200:
+       result_table = pa.ipc.open_stream(response.content).read_all()
+       print("Objective value:", result_table["obj_val"][0])
+       print("Status:", result_table["status"][0])
+       print("Solution:", result_table["solution"][0])
+   else:
+       print("Error:", response.status_code, response.text)
