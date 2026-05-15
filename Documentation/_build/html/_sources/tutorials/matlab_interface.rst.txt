@@ -16,10 +16,11 @@ The preferred MATLAB transport is Apache Arrow IPC:
 No Python interpreter is involved on the MATLAB client side. Python and Julia
 are still used by the OptArrow services behind the Gateway.
 
-When Apache Arrow MATLAB is not installed, the client can fall back to the
-Gateway's JSON route, ``/computeJSON``. JSON fallback is intended for setup
-verification and compatibility. Arrow IPC remains the recommended path for
-large sparse models.
+When the `Apache Arrow MATLAB interface
+<https://github.com/apache/arrow/tree/main/matlab>`_ is not installed, the
+client can fall back to the Gateway's JSON route, ``/computeJSON``. JSON
+fallback is intended for setup verification and compatibility. Arrow IPC
+remains the recommended path for large sparse models.
 
 Files
 -----
@@ -61,7 +62,9 @@ Requirements
 - MATLAB R2023b or later.
 - A running OptArrow Gateway, usually at
   ``http://127.0.0.1:8000/compute``.
-- Apache Arrow MATLAB interface for the preferred Arrow IPC path.
+- `Apache Arrow MATLAB interface
+  <https://github.com/apache/arrow/tree/main/matlab>`_ for the preferred
+  Arrow IPC path.
 
 If Arrow is unavailable and ``transport`` is set to ``auto`` or ``json``, the
 client posts the same logical request to ``/computeJSON`` using MATLAB's native
@@ -69,6 +72,11 @@ JSON support.
 
 Set Up Apache Arrow for MATLAB
 ------------------------------
+
+The `Apache Arrow MATLAB interface
+<https://github.com/apache/arrow/tree/main/matlab>`_ provides native Arrow
+IPC serialization in MATLAB. OptArrow includes helper scripts to install it
+quickly on common platforms.
 
 These steps assume you are working from the OptArrow repository:
 
@@ -80,7 +88,8 @@ These steps assume you are working from the OptArrow repository:
 Try the Bundled Linux Build
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-On Linux x86_64, OptArrow includes an experimental bundled Apache Arrow MATLAB
+On Linux x86_64, OptArrow includes an experimental bundled
+`Apache Arrow MATLAB <https://github.com/apache/arrow/tree/main/matlab>`_
 build under:
 
 .. code-block:: text
@@ -109,8 +118,9 @@ Build Arrow If Needed
 ^^^^^^^^^^^^^^^^^^^^^
 
 If ``setupMATLABArrow`` cannot find a usable build, or if MATLAB reports a
-``GLIBCXX_*`` runtime error while loading the bundled MEX file, build Apache
-Arrow and the MATLAB interface locally.
+``GLIBCXX_*`` runtime error while loading the bundled MEX file, build the
+`Apache Arrow MATLAB interface
+<https://github.com/apache/arrow/tree/main/matlab>`_ locally.
 
 Install build prerequisites:
 
@@ -273,20 +283,24 @@ For JSON fallback, ``optarrow.compute`` rewrites a configured ``/compute`` or
 Solve an LP
 -----------
 
-Maximise ``5x + 12y`` subject to three inequality constraints:
+Maximise ``3x + 2y`` subject to two inequality constraints:
+
+.. math::
+
+   \max_{x,y} \; 3x + 2y \quad \text{s.t.} \quad
+   x + y \le 4, \; x + 3y \le 6, \; x,y \ge 0
 
 .. code-block:: matlab
 
-   LPproblem = struct();
-   LPproblem.A      = sparse([20 10; 10 20; 10 30]);
-   LPproblem.b      = [200; 120; 150];
-   LPproblem.c      = [5; 12];
-   LPproblem.lb     = [0; 0];
-   LPproblem.ub     = [1000; 1000];
-   LPproblem.csense = ['L'; 'L'; 'L'];
-   LPproblem.osense = -1;  % -1=max, 1=min
+   lp = struct();
+   lp.A      = sparse([1 1; 1 3]);
+   lp.b      = [4; 6];
+   lp.c      = [3; 2];
+   lp.lb     = [0; 0];
+   lp.csense = ['L'; 'L'];   % L = <=,  E = =,  G = >=
+   lp.osense = 'max';        % 'max' or 'min'  (ub defaults to 1e30 when omitted)
 
-   result = optarrow.solveLP(LPproblem, struct('modelName', 'matlab_lp'));
+   result = optarrow.solveLP(lp);
    disp(result)
 
 Expected output:
@@ -296,8 +310,8 @@ Expected output:
       success: 1
        status: 'optimal'
          stat: 1
-      obj_val: 66
-     solution: [6 3]
+      obj_val: 11
+     solution: [3 1]
 
 Solve a QP
 ----------

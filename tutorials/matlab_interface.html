@@ -17,6 +17,7 @@
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -126,10 +127,10 @@ and <code class="docutils literal notranslate"><span class="pre">shape</span></c
 </ol>
 <p>No Python interpreter is involved on the MATLAB client side. Python and Julia
 are still used by the OptArrow services behind the Gateway.</p>
-<p>When Apache Arrow MATLAB is not installed, the client can fall back to the
-Gateway’s JSON route, <code class="docutils literal notranslate"><span class="pre">/computeJSON</span></code>. JSON fallback is intended for setup
-verification and compatibility. Arrow IPC remains the recommended path for
-large sparse models.</p>
+<p>When the <a class="reference external" href="https://github.com/apache/arrow/tree/main/matlab">Apache Arrow MATLAB interface</a> is not installed, the
+client can fall back to the Gateway’s JSON route, <code class="docutils literal notranslate"><span class="pre">/computeJSON</span></code>. JSON
+fallback is intended for setup verification and compatibility. Arrow IPC
+remains the recommended path for large sparse models.</p>
 <section id="files">
 <h2>Files<a class="headerlink" href="#files" title="Link to this heading"></a></h2>
 <p>The MATLAB client source is under <code class="docutils literal notranslate"><span class="pre">src/matlab</span></code>:</p>
@@ -180,7 +181,8 @@ MATLAB client.</p>
 <li><p>MATLAB R2023b or later.</p></li>
 <li><p>A running OptArrow Gateway, usually at
 <code class="docutils literal notranslate"><span class="pre">http://127.0.0.1:8000/compute</span></code>.</p></li>
-<li><p>Apache Arrow MATLAB interface for the preferred Arrow IPC path.</p></li>
+<li><p><a class="reference external" href="https://github.com/apache/arrow/tree/main/matlab">Apache Arrow MATLAB interface</a> for the preferred
+Arrow IPC path.</p></li>
 </ul>
 <p>If Arrow is unavailable and <code class="docutils literal notranslate"><span class="pre">transport</span></code> is set to <code class="docutils literal notranslate"><span class="pre">auto</span></code> or <code class="docutils literal notranslate"><span class="pre">json</span></code>, the
 client posts the same logical request to <code class="docutils literal notranslate"><span class="pre">/computeJSON</span></code> using MATLAB’s native
@@ -188,6 +190,9 @@ JSON support.</p>
 </section>
 <section id="set-up-apache-arrow-for-matlab">
 <h2>Set Up Apache Arrow for MATLAB<a class="headerlink" href="#set-up-apache-arrow-for-matlab" title="Link to this heading"></a></h2>
+<p>The <a class="reference external" href="https://github.com/apache/arrow/tree/main/matlab">Apache Arrow MATLAB interface</a> provides native Arrow
+IPC serialization in MATLAB. OptArrow includes helper scripts to install it
+quickly on common platforms.</p>
 <p>These steps assume you are working from the OptArrow repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/optArrow/optArrow.git
 <span class="nb">cd</span><span class="w"> </span>optArrow
@@ -195,7 +200,8 @@ JSON support.</p>
 </div>
 <section id="try-the-bundled-linux-build">
 <h3>Try the Bundled Linux Build<a class="headerlink" href="#try-the-bundled-linux-build" title="Link to this heading"></a></h3>
-<p>On Linux x86_64, OptArrow includes an experimental bundled Apache Arrow MATLAB
+<p>On Linux x86_64, OptArrow includes an experimental bundled
+<a class="reference external" href="https://github.com/apache/arrow/tree/main/matlab">Apache Arrow MATLAB</a>
 build under:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>src/matlab/vendor/apache-arrow/linux-x86_64/arrow_matlab
 </pre></div>
@@ -216,8 +222,8 @@ and then saves the MATLAB path.</p>
 <section id="build-arrow-if-needed">
 <h3>Build Arrow If Needed<a class="headerlink" href="#build-arrow-if-needed" title="Link to this heading"></a></h3>
 <p>If <code class="docutils literal notranslate"><span class="pre">setupMATLABArrow</span></code> cannot find a usable build, or if MATLAB reports a
-<code class="docutils literal notranslate"><span class="pre">GLIBCXX_*</span></code> runtime error while loading the bundled MEX file, build Apache
-Arrow and the MATLAB interface locally.</p>
+<code class="docutils literal notranslate"><span class="pre">GLIBCXX_*</span></code> runtime error while loading the bundled MEX file, build the
+<a class="reference external" href="https://github.com/apache/arrow/tree/main/matlab">Apache Arrow MATLAB interface</a> locally.</p>
 <p>Install build prerequisites:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Debian/Ubuntu</span>
 sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>cmake<span class="w"> </span>build-essential
@@ -371,17 +377,19 @@ path is:</p>
 </section>
 <section id="solve-an-lp">
 <h2>Solve an LP<a class="headerlink" href="#solve-an-lp" title="Link to this heading"></a></h2>
-<p>Maximise <code class="docutils literal notranslate"><span class="pre">5x</span> <span class="pre">+</span> <span class="pre">12y</span></code> subject to three inequality constraints:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">LPproblem</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">();</span>
-<span class="n">LPproblem</span><span class="p">.</span><span class="n">A</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nb">sparse</span><span class="p">([</span><span class="mi">20</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="n">10</span><span class="w"> </span><span class="s">20</span><span class="p">;</span><span class="w"> </span><span class="n">10</span><span class="w"> </span><span class="s">30])</span><span class="p">;</span>
-<span class="n">LPproblem</span><span class="p">.</span><span class="n">b</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">200</span><span class="p">;</span><span class="w"> </span><span class="mi">120</span><span class="p">;</span><span class="w"> </span><span class="mi">150</span><span class="p">];</span>
-<span class="n">LPproblem</span><span class="p">.</span><span class="n">c</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="mi">12</span><span class="p">];</span>
-<span class="n">LPproblem</span><span class="p">.</span><span class="n">lb</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">0</span><span class="p">];</span>
-<span class="n">LPproblem</span><span class="p">.</span><span class="n">ub</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="mi">1000</span><span class="p">];</span>
-<span class="n">LPproblem</span><span class="p">.</span><span class="n">csense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s">&#39;L&#39;</span><span class="p">;</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="p">;</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="p">];</span>
-<span class="n">LPproblem</span><span class="p">.</span><span class="n">osense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="c">% -1=max, 1=min</span>
+<p>Maximise <code class="docutils literal notranslate"><span class="pre">3x</span> <span class="pre">+</span> <span class="pre">2y</span></code> subject to two inequality constraints:</p>
+<div class="math notranslate nohighlight">
+\[\max_{x,y} \; 3x + 2y \quad \text{s.t.} \quad
+x + y \le 4, \; x + 3y \le 6, \; x,y \ge 0\]</div>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">lp</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">();</span>
+<span class="n">lp</span><span class="p">.</span><span class="n">A</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nb">sparse</span><span class="p">([</span><span class="mi">1</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">1</span><span class="w"> </span><span class="s">3])</span><span class="p">;</span>
+<span class="n">lp</span><span class="p">.</span><span class="n">b</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="mi">6</span><span class="p">];</span>
+<span class="n">lp</span><span class="p">.</span><span class="n">c</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">];</span>
+<span class="n">lp</span><span class="p">.</span><span class="n">lb</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">0</span><span class="p">];</span>
+<span class="n">lp</span><span class="p">.</span><span class="n">csense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s">&#39;L&#39;</span><span class="p">;</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="p">];</span><span class="w">   </span><span class="c">% L = &lt;=,  E = =,  G = &gt;=</span>
+<span class="n">lp</span><span class="p">.</span><span class="n">osense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;max&#39;</span><span class="p">;</span><span class="w">        </span><span class="c">% &#39;max&#39; or &#39;min&#39;  (ub defaults to 1e30 when omitted)</span>
 
-<span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">optarrow</span><span class="p">.</span><span class="n">solveLP</span><span class="p">(</span><span class="n">LPproblem</span><span class="p">,</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="s">&#39;modelName&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;matlab_lp&#39;</span><span class="p">));</span>
+<span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">optarrow</span><span class="p">.</span><span class="n">solveLP</span><span class="p">(</span><span class="n">lp</span><span class="p">);</span>
 <span class="nb">disp</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -389,8 +397,8 @@ path is:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span> success: 1
   status: &#39;optimal&#39;
     stat: 1
- obj_val: 66
-solution: [6 3]
+ obj_val: 11
+solution: [3 1]
 </pre></div>
 </div>
 </section>
