@@ -36,4 +36,4 @@ contracts, and backend execution.
 
 These services can run independently, enabling flexible deployment and
 scaling. The Gateway serves as the central hub, coordinating requests and
-responses between clients and backend engines.
+responses between clients and backend engines. 
