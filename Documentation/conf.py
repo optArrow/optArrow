@@ -21,7 +21,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 html_css_files = ['custom-wide.css']
-html_extra_path = ['_static/robots.txt']
+html_extra_path = ['_static/robots.txt', '_static/google9f201d32fdf114dc.html']
 html_context = {
     "display_github": True,
     "github_user": "optArrow",
