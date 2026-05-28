@@ -22,6 +22,6 @@ html_context = {
     "display_github": True,
     "github_user": "optArrow",
     "github_repo": "optArrow",
-    "github_version": "main",
+    "github_version": "gh-pages",
     "conf_py_path": "/Documentation/",
 }
