@@ -72,7 +72,7 @@ A dictionary describing the LP model in the following format:
 `solver` (Required)
 ^^^^^^^^^^^^^^^^^^^
 
-A dictionary specifying the solver and optional parameters:
+A dictionary specifying the solver and optional parameters: 
 
 .. code-block:: python
 
