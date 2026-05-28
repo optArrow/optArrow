@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://optarrow.github.io/optArrow/sitemap.xml

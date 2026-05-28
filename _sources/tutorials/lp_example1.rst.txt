@@ -58,7 +58,7 @@ where :math:`x` is the number of Product X produced and :math:`y` is the number 
 General LP Formulation
 ----------------------
 
-The LP problem should be structured as:
+The LP problem should be structured as: 
 
 **Objective**: Maximize :math:`c^T x`
 where :math:`c` is the profit vector and :math:`x` is the production vector.
