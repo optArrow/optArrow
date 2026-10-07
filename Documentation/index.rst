@@ -73,6 +73,9 @@ OptArrow introduces a streamlined, interoperable architecture with the following
    :caption: Introduction
 
    intros/architecture
+   intros/Requirement_process_tec3_Document
+   intros/Architecture_process_tec4_Document
+   intros/Design_process_tec5_Document
 
 .. toctree::
    :maxdepth: 1
