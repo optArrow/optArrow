@@ -48,6 +48,9 @@
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../intros/architecture.html">Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Requirement_process_tec3_Document.html">System/Software Requirements Definition Process for OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Architecture_process_tec4_Document.html">OptArrow Architecture Definition Process Document</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Design_process_tec5_Document.html">OptArrow Design Definition Process</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul>
@@ -214,7 +217,7 @@ build under:</p>
 adds it to the MATLAB path, verifies it by constructing an Arrow record batch,
 and then saves the MATLAB path.</p>
 <p>Verify manually with:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">arrow</span><span class="p">.</span><span class="n">recordBatch</span><span class="p">(</span><span class="nb">table</span><span class="p">([</span><span class="s">&quot;A&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">]))</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">arrow</span><span class="p">.</span><span class="n">recordBatch</span><span class="p">(</span><span class="nb">table</span><span class="p">([</span><span class="s">"A"</span><span class="p">;</span><span class="w"> </span><span class="s">"B"</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">]))</span>
 </pre></div>
 </div>
 <p>If MATLAB prints a <code class="docutils literal notranslate"><span class="pre">RecordBatch</span></code>, Arrow is ready.</p>
@@ -248,9 +251,9 @@ $HOME/arrow_matlab
 </pre></div>
 </div>
 <p>Or add the source-built interface manually:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">addpath</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="nb">getenv</span><span class="p">(</span><span class="s">&#39;HOME&#39;</span><span class="p">),</span><span class="w"> </span><span class="s">&#39;arrow_matlab&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;arrow_matlab&#39;</span><span class="p">));</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">addpath</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="nb">getenv</span><span class="p">(</span><span class="s">'HOME'</span><span class="p">),</span><span class="w"> </span><span class="s">'arrow_matlab'</span><span class="p">,</span><span class="w"> </span><span class="s">'arrow_matlab'</span><span class="p">));</span>
 <span class="nb">savepath</span><span class="p">;</span>
-<span class="n">arrow</span><span class="p">.</span><span class="n">recordBatch</span><span class="p">(</span><span class="nb">table</span><span class="p">([</span><span class="s">&quot;A&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;B&quot;</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">]))</span>
+<span class="n">arrow</span><span class="p">.</span><span class="n">recordBatch</span><span class="p">(</span><span class="nb">table</span><span class="p">([</span><span class="s">"A"</span><span class="p">;</span><span class="w"> </span><span class="s">"B"</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">]))</span>
 </pre></div>
 </div>
 <p>Optional S3-enabled build:</p>
@@ -270,10 +273,10 @@ into Arrow-friendly columns.</p>
 <p>For sparse matrices, the interface uses COO form:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">row</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">find</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
 <span class="n">model</span><span class="p">.</span><span class="n">A</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;row&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">row</span><span class="p">(:)</span><span class="o">&#39;</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;col&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="p">(:)</span><span class="o">&#39;</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;val&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="p">(:)</span><span class="o">&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;shape&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="nb">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="nb">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)]);</span>
+<span class="w">    </span><span class="s">'row'</span><span class="p">,</span><span class="w"> </span><span class="n">row</span><span class="p">(:)</span><span class="o">'</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'col'</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="p">(:)</span><span class="o">'</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'val'</span><span class="p">,</span><span class="w"> </span><span class="n">val</span><span class="p">(:)</span><span class="o">'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'shape'</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="nb">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="nb">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)]);</span>
 </pre></div>
 </div>
 <p>Rows and columns are zero-based because the Gateway and Python/Julia engine
@@ -294,8 +297,8 @@ backend is selected:</p>
 </div>
 <p>Or with an explicit endpoint and a hard error on failure:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">report</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">optarrow</span><span class="p">.</span><span class="n">checkSetup</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;http://127.0.0.1:8000/cobra/compute&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="nb">struct</span><span class="p">(</span><span class="s">&#39;throwOnError&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">));</span>
+<span class="w">    </span><span class="s">'http://127.0.0.1:8000/cobra/compute'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="nb">struct</span><span class="p">(</span><span class="s">'throwOnError'</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">));</span>
 </pre></div>
 </div>
 <p>The returned <code class="docutils literal notranslate"><span class="pre">report</span></code> struct includes:</p>
@@ -338,13 +341,13 @@ path is:</p>
 </div>
 <p>Then configure MATLAB:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;engine&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;python&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;backendSolver&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;HiGHS&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;backendSolverType&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;LP&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;backendOptions&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">struct</span><span class="p">(),</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;endpoint&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;http://127.0.0.1:8000/compute&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;timeoutSec&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;transport&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;auto&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="s">'engine'</span><span class="p">,</span><span class="w"> </span><span class="s">'python'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'backendSolver'</span><span class="p">,</span><span class="w"> </span><span class="s">'HiGHS'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'backendSolverType'</span><span class="p">,</span><span class="w"> </span><span class="s">'LP'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'backendOptions'</span><span class="p">,</span><span class="w"> </span><span class="nb">struct</span><span class="p">(),</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'endpoint'</span><span class="p">,</span><span class="w"> </span><span class="s">'http://127.0.0.1:8000/compute'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'timeoutSec'</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'transport'</span><span class="p">,</span><span class="w"> </span><span class="s">'auto'</span><span class="p">);</span>
 
 <span class="n">optarrow</span><span class="p">.</span><span class="n">setOptArrowConfig</span><span class="p">(</span><span class="n">cfg</span><span class="p">);</span>
 </pre></div>
@@ -386,8 +389,8 @@ x + y \le 4, \; x + 3y \le 6, \; x,y \ge 0\]</div>
 <span class="n">lp</span><span class="p">.</span><span class="n">b</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="mi">6</span><span class="p">];</span>
 <span class="n">lp</span><span class="p">.</span><span class="n">c</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="p">];</span>
 <span class="n">lp</span><span class="p">.</span><span class="n">lb</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">0</span><span class="p">];</span>
-<span class="n">lp</span><span class="p">.</span><span class="n">csense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s">&#39;L&#39;</span><span class="p">;</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="p">];</span><span class="w">   </span><span class="c">% L = &lt;=,  E = =,  G = &gt;=</span>
-<span class="n">lp</span><span class="p">.</span><span class="n">osense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;max&#39;</span><span class="p">;</span><span class="w">        </span><span class="c">% &#39;max&#39; or &#39;min&#39;  (ub defaults to 1e30 when omitted)</span>
+<span class="n">lp</span><span class="p">.</span><span class="n">csense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s">'L'</span><span class="p">;</span><span class="w"> </span><span class="s">'L'</span><span class="p">];</span><span class="w">   </span><span class="c">% L = &lt;=,  E = =,  G = &gt;=</span>
+<span class="n">lp</span><span class="p">.</span><span class="n">osense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'max'</span><span class="p">;</span><span class="w">        </span><span class="c">% 'max' or 'min'  (ub defaults to 1e30 when omitted)</span>
 
 <span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">optarrow</span><span class="p">.</span><span class="n">solveLP</span><span class="p">(</span><span class="n">lp</span><span class="p">);</span>
 <span class="nb">disp</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
@@ -395,7 +398,7 @@ x + y \le 4, \; x + 3y \le 6, \; x,y \ge 0\]</div>
 </div>
 <p>Expected output:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span> success: 1
-  status: &#39;optimal&#39;
+  status: 'optimal'
     stat: 1
  obj_val: 11
 solution: [3 1]
@@ -412,16 +415,16 @@ field is optional; <code class="docutils literal notranslate"><span class="pre">
 <span class="n">QPproblem</span><span class="p">.</span><span class="n">A</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="nb">sparse</span><span class="p">([</span><span class="mi">1</span><span class="w"> </span><span class="mi">1</span><span class="p">]);</span>
 <span class="n">QPproblem</span><span class="p">.</span><span class="n">b</span><span class="w">      </span><span class="p">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 <span class="n">QPproblem</span><span class="p">.</span><span class="n">lb</span><span class="w">     </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">0</span><span class="p">];</span>
-<span class="n">QPproblem</span><span class="p">.</span><span class="n">csense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;E&#39;</span><span class="p">;</span>
+<span class="n">QPproblem</span><span class="p">.</span><span class="n">csense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'E'</span><span class="p">;</span>
 <span class="n">QPproblem</span><span class="p">.</span><span class="n">osense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="c">% minimise</span>
 
-<span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">optarrow</span><span class="p">.</span><span class="n">solveQP</span><span class="p">(</span><span class="n">QPproblem</span><span class="p">,</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="s">&#39;modelName&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;matlab_qp&#39;</span><span class="p">));</span>
+<span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">optarrow</span><span class="p">.</span><span class="n">solveQP</span><span class="p">(</span><span class="n">QPproblem</span><span class="p">,</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="s">'modelName'</span><span class="p">,</span><span class="w"> </span><span class="s">'matlab_qp'</span><span class="p">));</span>
 <span class="nb">disp</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Expected output:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span> success: 1
-  status: &#39;optimal&#39;
+  status: 'optimal'
     stat: 1
  obj_val: -7.125
 solution: [0.75 2.25]
@@ -442,24 +445,24 @@ solution: [0.75 2.25]
 </ul>
 <p>Example:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">payload</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">();</span>
-<span class="n">payload</span><span class="p">.</span><span class="n">problem_type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;LP&#39;</span><span class="p">;</span>
-<span class="n">payload</span><span class="p">.</span><span class="n">engine</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;python&#39;</span><span class="p">;</span>
-<span class="n">payload</span><span class="p">.</span><span class="n">solver_name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;HiGHS&#39;</span><span class="p">;</span>
-<span class="n">payload</span><span class="p">.</span><span class="n">model_name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;my_lp&#39;</span><span class="p">;</span>
+<span class="n">payload</span><span class="p">.</span><span class="n">problem_type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'LP'</span><span class="p">;</span>
+<span class="n">payload</span><span class="p">.</span><span class="n">engine</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'python'</span><span class="p">;</span>
+<span class="n">payload</span><span class="p">.</span><span class="n">solver_name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'HiGHS'</span><span class="p">;</span>
+<span class="n">payload</span><span class="p">.</span><span class="n">model_name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'my_lp'</span><span class="p">;</span>
 <span class="n">payload</span><span class="p">.</span><span class="n">time_limit</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">300</span><span class="p">;</span>
 <span class="n">payload</span><span class="p">.</span><span class="n">solver_params</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">();</span>
 
 <span class="n">payload</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">A</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;row&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">int64</span><span class="p">([</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">1</span><span class="p">]),</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;col&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">int64</span><span class="p">([</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">1</span><span class="p">]),</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;val&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">;</span><span class="w"> </span><span class="mf">1.0</span><span class="p">],</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;shape&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">int64</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]));</span>
+<span class="w">    </span><span class="s">'row'</span><span class="p">,</span><span class="w"> </span><span class="nb">int64</span><span class="p">([</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">1</span><span class="p">]),</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'col'</span><span class="p">,</span><span class="w"> </span><span class="nb">int64</span><span class="p">([</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">1</span><span class="p">]),</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'val'</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">;</span><span class="w"> </span><span class="mf">1.0</span><span class="p">],</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'shape'</span><span class="p">,</span><span class="w"> </span><span class="nb">int64</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]));</span>
 <span class="n">payload</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">b</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">;</span><span class="w"> </span><span class="mf">1.0</span><span class="p">];</span>
 <span class="n">payload</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">c</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mf">2.0</span><span class="p">;</span><span class="w"> </span><span class="mf">3.0</span><span class="p">];</span>
 <span class="n">payload</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">lb</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.0</span><span class="p">;</span><span class="w"> </span><span class="mf">0.0</span><span class="p">];</span>
 <span class="n">payload</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">ub</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="mf">10.0</span><span class="p">;</span><span class="w"> </span><span class="mf">10.0</span><span class="p">];</span>
-<span class="n">payload</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">csense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">{</span><span class="s">&#39;L&#39;</span><span class="p">;</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="p">};</span>
-<span class="n">payload</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">osense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">&#39;max&#39;</span><span class="p">;</span>
+<span class="n">payload</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">csense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">{</span><span class="s">'L'</span><span class="p">;</span><span class="w"> </span><span class="s">'L'</span><span class="p">};</span>
+<span class="n">payload</span><span class="p">.</span><span class="n">model</span><span class="p">.</span><span class="n">osense</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'max'</span><span class="p">;</span>
 
 <span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">optarrow</span><span class="p">.</span><span class="n">compute</span><span class="p">(</span><span class="n">payload</span><span class="p">);</span>
 <span class="nb">disp</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>

@@ -47,6 +47,9 @@
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../intros/architecture.html">Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Requirement_process_tec3_Document.html">System/Software Requirements Definition Process for OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Architecture_process_tec4_Document.html">OptArrow Architecture Definition Process Document</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Design_process_tec5_Document.html">OptArrow Design Definition Process</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul>
@@ -114,8 +117,8 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">arrow_table_dict_conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">dict_to_pa_table</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;col1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-    <span class="s2">&quot;col2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]</span>
+    <span class="s2">"col1"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="s2">"col2"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">]</span>
 <span class="p">}</span>
 
 <span class="n">table</span> <span class="o">=</span> <span class="n">dict_to_pa_table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -127,8 +130,8 @@
 
 <span class="c1"># Create an example Arrow table</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;col1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-    <span class="s2">&quot;col2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]</span>
+    <span class="s2">"col1"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="s2">"col2"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">]</span>
 <span class="p">}</span>
 <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="c1"># Convert Arrow table back to dict</span>

@@ -1,0 +1,342 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OptArrow Architecture Definition Process Document &mdash; OptArrow  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom-wide.css?v=4d4a401b" />
+
+  
+    <link rel="canonical" href="https://optarrow.github.io/optArrow/intros/Architecture_process_tec4_Document.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="OptArrow Design Definition Process" href="Design_process_tec5_Document.html" />
+    <link rel="prev" title="System/Software Requirements Definition Process for OptArrow" href="Requirement_process_tec3_Document.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OptArrow
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Requirement_process_tec3_Document.html">System/Software Requirements Definition Process for OptArrow</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OptArrow Architecture Definition Process Document</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#system-context">1. System Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#components-responsibilities">2. Components &amp; Responsibilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#python-and-julia-integration">2.1 Python and Julia Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#solver-backends">2.2 Solver Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transport-layer">2.3 Transport Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-gateways">2.4 API Gateways</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interfaces-data-flow">3. Interfaces &amp; Data Flow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cross-language-compatibility">3.1 Cross-Language Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-interchange-via-apache-arrow">3.2 Data Interchange via Apache Arrow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#runtime-interactions-sequence">4. Runtime Interactions &amp; Sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#technology-decisions-rationale">5. Technology Decisions &amp; Rationale</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#apache-arrow-selection-justification">5.1 Apache Arrow Selection Justification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#principal-investigator-influence">5.2 Principal-Investigator Influence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#deployment-topology-constraints">6. Deployment Topology &amp; Constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#local-in-memory-architecture">6.1 Local In-Memory Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#non-network-deployment-constraints">6.2 Non-Network Deployment Constraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#architecture-governance-known-gaps">7. Architecture Governance &amp; Known Gaps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lack-of-formal-governance">7.1 Lack of Formal Governance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iterative-development-approach-known-process-gaps">7.2 Iterative Development Approach &amp; Known Process Gaps</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Design_process_tec5_Document.html">OptArrow Design Definition Process</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start (10 Minutes)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Overall Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="julia_setup.html">OptimizationServer (Julia)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_engine_setup.html">OptimizationServer (Python)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarking.html">Benchmark testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/lp_problem.html">Linear Programming (LP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/lp_example1.html">LP Example: Production Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_problem.html">Quadratic Programming (QP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_example.html">QP Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB Interface for OptArrow</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to OptArrow</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OptArrow</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">OptArrow Architecture Definition Process Document</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/optArrow/optArrow/blob/gh-pages/Documentation/intros/Architecture_process_tec4_Document.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="optarrow-architecture-definition-process-document">
+<h1>OptArrow Architecture Definition Process Document<a class="headerlink" href="#optarrow-architecture-definition-process-document" title="Link to this heading"></a></h1>
+<section id="system-context">
+<h2>1. System Context<a class="headerlink" href="#system-context" title="Link to this heading"></a></h2>
+<p>OptArrow stands as an optimization integration framework, devised to
+amalgamate optimization clients with solver backends using a robust,
+high-performance transport layer. The operational domain of OptArrow
+lies fundamentally in solving Linear Programming (LP) and Quadratic
+Programming (QP) problems. This feature vividly highlights its
+dedication to mathematical problem-solving, anchoring its architecture
+around reliable solver backends like HiGHS, which benefit from
+open-source accessibility and widespread usability among scientific
+communities.</p>
+<p>The system orchestrates a sophisticated communication paradigm,
+harmonizing Python and Julia runtime environments using Apache Arrow’s
+in-memory data interchange capabilities. This choice reflects a design
+intent to prioritize cross-language compatibility and improve
+computational performance, mitigating the overhead of serialization and
+deserialization between heterogeneous programming contexts.</p>
+<p>While the high-performance transport layer forms the bedrock of
+OptArrow, its design ambition acknowledges its role as a dedicated
+middleware that alleviates the complexities of optimization problem
+formulation across varied architectural environments. By operating
+entirely within in-memory data structures, OptArrow circumvents
+potential I/O bottlenecks, establishing a swift bi-directional conduit
+between users and solver backends.</p>
+</section>
+<section id="components-responsibilities">
+<h2>2. Components &amp; Responsibilities<a class="headerlink" href="#components-responsibilities" title="Link to this heading"></a></h2>
+<p>OptArrow’s architecture is delineated into precise components each of
+which is engineered to perform specific tasks that collectively
+facilitate seamless optimization:</p>
+<section id="python-and-julia-integration">
+<h3>2.1 Python and Julia Integration<a class="headerlink" href="#python-and-julia-integration" title="Link to this heading"></a></h3>
+<p>The Python and Julia integration layer in OptArrow is achieved through
+namespace bridging and data structure interoperability. This integration
+layer acts as the initial springboard, receiving optimization problems
+from the user and translating them into a common intermediate format
+that Apache Arrow can efficiently manipulate.</p>
+</section>
+<section id="solver-backends">
+<h3>2.2 Solver Backends<a class="headerlink" href="#solver-backends" title="Link to this heading"></a></h3>
+<p>At the core of the computational operations are the solver backends,
+which encompass solvers specialized in LP and QP problem domains. HiGHS
+serves as the primary solver for delivering efficient solutions to
+optimization problems, chosen specifically for its robust open-source
+community and versatile application in scholarly and practical
+optimization tasks.</p>
+</section>
+<section id="transport-layer">
+<h3>2.3 Transport Layer<a class="headerlink" href="#transport-layer" title="Link to this heading"></a></h3>
+<p>The choice of Apache Arrow as the transport layer is significant.
+OptArrow leverages Arrow’s columnar memory layout to realize in-memory
+data transfer free from redundant data marshaling typically associated
+with cross-language operations. By consolidating problem data within
+Arrow IPC protocols, OptArrow minimizes latency and maximizes throughput
+between Python to Julia backend operations.</p>
+</section>
+<section id="api-gateways">
+<h3>2.4 API Gateways<a class="headerlink" href="#api-gateways" title="Link to this heading"></a></h3>
+<p>API gateways facilitate the interaction between the client applications
+and backend services. These gateways primarily operate to streamline the
+communication flow, ensuring that requests and responses maintain
+integrity and adhere to established data interchange protocols.</p>
+</section>
+</section>
+<section id="interfaces-data-flow">
+<h2>3. Interfaces &amp; Data Flow<a class="headerlink" href="#interfaces-data-flow" title="Link to this heading"></a></h2>
+<p>In the OptArrow system, interfaces are meticulously crafted to support
+seamless interaction and data flow between the components:</p>
+<section id="cross-language-compatibility">
+<h3>3.1 Cross-Language Compatibility<a class="headerlink" href="#cross-language-compatibility" title="Link to this heading"></a></h3>
+<p>Central to OptArrow’s promise is its cross-language functionality, which
+is accomplished through an integration plan that employs Python, Julia,
+and potentially MATLAB interfaces. This is actualized through the
+conversion of Python dictionaries into Arrow-compatible data structures,
+which can be smoothly accessed and manipulated within Julia without a
+loss of fidelity or performance.</p>
+</section>
+<section id="data-interchange-via-apache-arrow">
+<h3>3.2 Data Interchange via Apache Arrow<a class="headerlink" href="#data-interchange-via-apache-arrow" title="Link to this heading"></a></h3>
+<p>Apache Arrow’s in-memory columnar format is a game-changer for the
+architecture, enabling the maintenance of data alignment across
+languages. Functioning as the data interchange medium, Arrow’s IPC
+format supports a zero-copy data transfer model which ensures that
+problem specifications and computation results move expediently between
+the client and solver modules with minimal overhead.</p>
+</section>
+</section>
+<section id="runtime-interactions-sequence">
+<h2>4. Runtime Interactions &amp; Sequence<a class="headerlink" href="#runtime-interactions-sequence" title="Link to this heading"></a></h2>
+<p>OptArrow’s runtime sequence outlines how optimization problems
+transition through its architecture:</p>
+<ol class="arabic simple">
+<li><p><strong>Problem Inception:</strong> The process begins with the user-formulating
+an optimization problem, typically within a Python or Julia scripting
+environment.</p></li>
+<li><p><strong>Data Transformation:</strong> The problem definition, originally in a
+Python dictionary format, is transformed into Apache Arrow’s IPC
+format, leveraging Arrow’s adaptability to support cross-language
+integration.</p></li>
+<li><p><strong>Routing to Solver Backends:</strong> Based on the origin language and
+predetermined routing logic, the optimization request is assigned to
+the appropriate solver backend, with specific emphasis on sending
+LP/QP problems to HiGHS.</p></li>
+<li><p><strong>Solver Execution:</strong> The solver engages in computational routines to
+derive solutions, functioning within its native ecosystem while
+ensuring data pathway continuity.</p></li>
+<li><p><strong>Results Translation:</strong> Post-computation, results are translated
+from the Julia ecosystem back into the originating language, being
+transformed back from Arrow IPC to native data structures, ready for
+user consumption without additional translational steps required.</p></li>
+</ol>
+</section>
+<section id="technology-decisions-rationale">
+<h2>5. Technology Decisions &amp; Rationale<a class="headerlink" href="#technology-decisions-rationale" title="Link to this heading"></a></h2>
+<section id="apache-arrow-selection-justification">
+<h3>5.1 Apache Arrow Selection Justification<a class="headerlink" href="#apache-arrow-selection-justification" title="Link to this heading"></a></h3>
+<p>The decision to integrate Apache Arrow as the transport layer within
+OptArrow finds its roots in the necessity for a high-performance,
+cross-language compatible framework, adept at handling intricate
+in-memory data transfers. Its design is tailored for interoperability
+across multiple programming environments, providing a seamless data flow
+that matches the precision and speed of OptArrow’s optimization
+operations.</p>
+</section>
+<section id="principal-investigator-influence">
+<h3>5.2 Principal-Investigator Influence<a class="headerlink" href="#principal-investigator-influence" title="Link to this heading"></a></h3>
+<p>The OptArrow architecture’s evolution has been substantially guided by
+principal investigator decisions rather than through an extensively
+deliberated process framework. Strategic architectural decisions were
+steered by overarching goals to enhance cross-language execution, laying
+robust pathways for future expansions.</p>
+</section>
+</section>
+<section id="deployment-topology-constraints">
+<h2>6. Deployment Topology &amp; Constraints<a class="headerlink" href="#deployment-topology-constraints" title="Link to this heading"></a></h2>
+<p>OptArrow adopts a local, in-memory execution model that eschews
+network-centric deployment constraints:</p>
+<section id="local-in-memory-architecture">
+<h3>6.1 Local In-Memory Architecture<a class="headerlink" href="#local-in-memory-architecture" title="Link to this heading"></a></h3>
+<p>By leveraging an in-memory architecture approach, OptArrow enhances its
+performance metrics, allowing it to circumvent traditional overheads
+associated with network latency, thus improving solver efficiency.</p>
+</section>
+<section id="non-network-deployment-constraints">
+<h3>6.2 Non-Network Deployment Constraints<a class="headerlink" href="#non-network-deployment-constraints" title="Link to this heading"></a></h3>
+<p>OptArrow’s architecture is devoid of external networking constraints,
+intensified by a development stance that favors a focused, local
+deployment model fit for research-intended experimentation and immediate
+problem-solving.</p>
+</section>
+</section>
+<section id="architecture-governance-known-gaps">
+<h2>7. Architecture Governance &amp; Known Gaps<a class="headerlink" href="#architecture-governance-known-gaps" title="Link to this heading"></a></h2>
+<section id="lack-of-formal-governance">
+<h3>7.1 Lack of Formal Governance<a class="headerlink" href="#lack-of-formal-governance" title="Link to this heading"></a></h3>
+<p>The OptArrow project evidences a gap in formal governance mechanisms—a
+consequence of its iterative development focus. This necessitates an
+established governance protocol to align its architecture with precise
+developmental and operational visions—an area ripe for structuring and
+automation in future roadmap efforts.</p>
+</section>
+<section id="iterative-development-approach-known-process-gaps">
+<h3>7.2 Iterative Development Approach &amp; Known Process Gaps<a class="headerlink" href="#iterative-development-approach-known-process-gaps" title="Link to this heading"></a></h3>
+<p>The architecture evolved through experimentation and adaptation to
+immediate project requirements, eschewing a predefined architectural
+blueprint. As a result, OptArrow’s process includes unaddressed gaps in
+requirements traceability and decision documentation, indicative of its
+research-driven nature.</p>
+<p>In conclusion, while OptArrow displays a highly capable architecture
+design centered on optimization and cross-language competency, its
+growth trajectory urges enhancements in governance, traceability, and
+formalized process development to elevate from its current
+scholarly-driven modus operandi to a more formally structured
+architectural powerhouse.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Requirement_process_tec3_Document.html" class="btn btn-neutral float-left" title="System/Software Requirements Definition Process for OptArrow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Design_process_tec5_Document.html" class="btn btn-neutral float-right" title="OptArrow Design Definition Process" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, OptArrow Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Installation and Overall Setup" href="installation.html" />
-    <link rel="prev" title="Architecture Overview" href="architecture.html" /> 
+    <link rel="prev" title="OptArrow Design Definition Process" href="Design_process_tec5_Document.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,6 +47,9 @@
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Requirement_process_tec3_Document.html">System/Software Requirements Definition Process for OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Architecture_process_tec4_Document.html">OptArrow Architecture Definition Process Document</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Design_process_tec5_Document.html">OptArrow Design Definition Process</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul class="current">
@@ -117,7 +120,7 @@ git<span class="w"> </span>checkout<span class="w"> </span>main
 <h2>2) Install dependencies<a class="headerlink" href="#install-dependencies" title="Link to this heading"></a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pipx<span class="w"> </span>install<span class="w"> </span>poetry
 poetry<span class="w"> </span>install<span class="w"> </span>--no-root
-julia<span class="w"> </span>--project<span class="o">=</span>./src/service/optimization_service/julia<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;import Pkg; Pkg.instantiate()&quot;</span>
+julia<span class="w"> </span>--project<span class="o">=</span>./src/service/optimization_service/julia<span class="w"> </span>-e<span class="w"> </span><span class="s2">"import Pkg; Pkg.instantiate()"</span>
 </pre></div>
 </div>
 </section>
@@ -145,8 +148,8 @@ the gateway from MATLAB</p></li>
 <h2>5) Verify success<a class="headerlink" href="#verify-success" title="Link to this heading"></a></h2>
 <p>Run a minimal JSON smoke test:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-i<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/computeJSON<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;model&quot;:{&quot;A&quot;:{&quot;row&quot;:[0],&quot;col&quot;:[0],&quot;val&quot;:[1.0]},&quot;b&quot;:[1.0],&quot;c&quot;:[1.0],&quot;lb&quot;:[0.0],&quot;csense&quot;:[&quot;E&quot;],&quot;osense&quot;:&quot;max&quot;},&quot;model_name&quot;:&quot;smoke_test&quot;,&quot;engine&quot;:&quot;julia&quot;,&quot;solver&quot;:{&quot;solver_name&quot;:&quot;HiGHS&quot;,&quot;solver_type&quot;:&quot;LP&quot;,&quot;solver_params&quot;:{}}}&#39;</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"model":{"A":{"row":[0],"col":[0],"val":[1.0]},"b":[1.0],"c":[1.0],"lb":[0.0],"csense":["E"],"osense":"max"},"model_name":"smoke_test","engine":"julia","solver":{"solver_name":"HiGHS","solver_type":"LP","solver_params":{}}}'</span>
 </pre></div>
 </div>
 <p>Expected output:</p>
@@ -160,10 +163,10 @@ smoke test is to:</p>
 <li><p>Build and install the <strong>MATLAB Interface to Apache Arrow</strong> — see
 <span class="xref std std-ref">native-addon</span> in the MATLAB Interface guide. This is a one-time step.</p></li>
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">src/matlab</span></code> to the MATLAB path and configure the client:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">addpath</span><span class="p">(</span><span class="nb">genpath</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="s">&#39;&lt;repo_root&gt;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;src&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;matlab&#39;</span><span class="p">)));</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">addpath</span><span class="p">(</span><span class="nb">genpath</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="s">'&lt;repo_root&gt;'</span><span class="p">,</span><span class="w"> </span><span class="s">'src'</span><span class="p">,</span><span class="w"> </span><span class="s">'matlab'</span><span class="p">)));</span>
 <span class="n">optarrow</span><span class="p">.</span><span class="n">setOptArrowConfig</span><span class="p">(</span><span class="nb">struct</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;endpoint&#39;</span><span class="p">,</span><span class="w">      </span><span class="s">&#39;http://127.0.0.1:8000/compute&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;backendSolver&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;HiGHS&#39;</span><span class="p">));</span>
+<span class="w">    </span><span class="s">'endpoint'</span><span class="p">,</span><span class="w">      </span><span class="s">'http://127.0.0.1:8000/compute'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'backendSolver'</span><span class="p">,</span><span class="w"> </span><span class="s">'HiGHS'</span><span class="p">));</span>
 </pre></div>
 </div>
 </li>
@@ -175,13 +178,13 @@ full configuration reference.</p></li>
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
 <p>If startup fails, verify dependencies and listening ports:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>install<span class="w"> </span>--no-root
-julia<span class="w"> </span>--project<span class="o">=</span>./src/service/optimization_service/julia<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;import Pkg; Pkg.instantiate()&quot;</span>
-ss<span class="w"> </span>-ltnp<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;:8000|:8101|:65432&#39;</span>
+julia<span class="w"> </span>--project<span class="o">=</span>./src/service/optimization_service/julia<span class="w"> </span>-e<span class="w"> </span><span class="s2">"import Pkg; Pkg.instantiate()"</span>
+ss<span class="w"> </span>-ltnp<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">':8000|:8101|:65432'</span>
 </pre></div>
 </div>
 <p>If request fails, confirm endpoint and content type:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-i<span class="w"> </span>http://127.0.0.1:8000/
-curl<span class="w"> </span>-i<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/computeJSON<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{}&#39;</span>
+curl<span class="w"> </span>-i<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:8000/computeJSON<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{}'</span>
 </pre></div>
 </div>
 </section>
@@ -191,7 +194,7 @@ curl<span class="w"> </span>-i<span class="w"> </span>-X<span class="w"> </span>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="architecture.html" class="btn btn-neutral float-left" title="Architecture Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Design_process_tec5_Document.html" class="btn btn-neutral float-left" title="OptArrow Design Definition Process" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="installation.html" class="btn btn-neutral float-right" title="Installation and Overall Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

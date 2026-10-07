@@ -48,6 +48,9 @@
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../intros/architecture.html">Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Requirement_process_tec3_Document.html">System/Software Requirements Definition Process for OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Architecture_process_tec4_Document.html">OptArrow Architecture Definition Process Document</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Design_process_tec5_Document.html">OptArrow Design Definition Process</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul>
@@ -207,25 +210,25 @@ lb =
 <p>The following code illustrates how this LP can be defined and solved using OptArrow in Python.</p>
 <p>The constraint matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> is provided in Coordinate (COO) sparse format — the <code class="docutils literal notranslate"><span class="pre">row</span></code>, <code class="docutils literal notranslate"><span class="pre">col</span></code>, and <code class="docutils literal notranslate"><span class="pre">val</span></code> lists represent the non-zero entries of the matrix.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-      <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-      <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+  <span class="s2">"model"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"A"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">"row"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+      <span class="s2">"col"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+      <span class="s2">"val"</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
     <span class="p">},</span>
-    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span>
-    <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
-    <span class="s2">&quot;lb&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-    <span class="s2">&quot;ub&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
-    <span class="s2">&quot;csense&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">],</span>  <span class="c1"># L = &lt;=,  E = =,  G = &gt;=</span>
-    <span class="s2">&quot;osense&quot;</span><span class="p">:</span> <span class="s2">&quot;max&quot;</span>
+    <span class="s2">"b"</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span>
+    <span class="s2">"c"</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
+    <span class="s2">"lb"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="s2">"ub"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
+    <span class="s2">"csense"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"L"</span><span class="p">,</span> <span class="s2">"L"</span><span class="p">,</span> <span class="s2">"L"</span><span class="p">],</span>  <span class="c1"># L = &lt;=,  E = =,  G = &gt;=</span>
+    <span class="s2">"osense"</span><span class="p">:</span> <span class="s2">"max"</span>
   <span class="p">},</span>
-  <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="s2">&quot;product_mix_lp&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span>  <span class="c1"># &quot;python&quot; or &quot;julia&quot;</span>
-  <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;solver_name&quot;</span><span class="p">:</span> <span class="s2">&quot;HiGHS&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;solver_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LP&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;solver_params&quot;</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="s2">"model_name"</span><span class="p">:</span> <span class="s2">"product_mix_lp"</span><span class="p">,</span>
+  <span class="s2">"engine"</span><span class="p">:</span> <span class="s2">"python"</span><span class="p">,</span>  <span class="c1"># "python" or "julia"</span>
+  <span class="s2">"solver"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"solver_name"</span><span class="p">:</span> <span class="s2">"HiGHS"</span><span class="p">,</span>
+    <span class="s2">"solver_type"</span><span class="p">:</span> <span class="s2">"LP"</span><span class="p">,</span>
+    <span class="s2">"solver_params"</span><span class="p">:</span> <span class="p">{}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -237,19 +240,19 @@ lb =
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-    <span class="s2">&quot;http://localhost:8000/computeJSON&quot;</span><span class="p">,</span>
+    <span class="s2">"http://localhost:8000/computeJSON"</span><span class="p">,</span>
     <span class="n">json</span><span class="o">=</span><span class="n">ipc_dict</span><span class="p">,</span>
-    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
+    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">}</span>
 <span class="p">)</span>
 
 <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Objective value:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;obj_val&quot;</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solution&quot;</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Status:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;stat:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stat&quot;</span><span class="p">))</span>   <span class="c1"># 1=optimal, 0=infeasible, 2=unbounded</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Objective value:"</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"obj_val"</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Solution:"</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"solution"</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Status:"</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"stat:"</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"stat"</span><span class="p">))</span>   <span class="c1"># 1=optimal, 0=infeasible, 2=unbounded</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Error:"</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Expected output:</p>
@@ -278,19 +281,19 @@ dictionary is serialized into an Arrow IPC stream before being posted.</p>
 
 <span class="c1"># Send the IPC stream to the Gateway</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-    <span class="s2">&quot;http://localhost:8000/compute&quot;</span><span class="p">,</span>
+    <span class="s2">"http://localhost:8000/compute"</span><span class="p">,</span>
     <span class="n">data</span><span class="o">=</span><span class="n">ipc_bytes</span><span class="p">,</span>
-    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/vnd.apache.arrow.stream&quot;</span><span class="p">}</span>
+    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/vnd.apache.arrow.stream"</span><span class="p">}</span>
 <span class="p">)</span>
 
 <span class="c1"># Decode the Arrow IPC response</span>
 <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
     <span class="n">result_table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Objective value:&quot;</span><span class="p">,</span> <span class="n">result_table</span><span class="p">[</span><span class="s2">&quot;obj_val&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Status:&quot;</span><span class="p">,</span> <span class="n">result_table</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution:&quot;</span><span class="p">,</span> <span class="n">result_table</span><span class="p">[</span><span class="s2">&quot;solution&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Objective value:"</span><span class="p">,</span> <span class="n">result_table</span><span class="p">[</span><span class="s2">"obj_val"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Status:"</span><span class="p">,</span> <span class="n">result_table</span><span class="p">[</span><span class="s2">"status"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Solution:"</span><span class="p">,</span> <span class="n">result_table</span><span class="p">[</span><span class="s2">"solution"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Error:"</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

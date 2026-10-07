@@ -48,6 +48,9 @@
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../intros/architecture.html">Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Requirement_process_tec3_Document.html">System/Software Requirements Definition Process for OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Architecture_process_tec4_Document.html">OptArrow Architecture Definition Process Document</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intros/Design_process_tec5_Document.html">OptArrow Design Definition Process</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul>
@@ -142,11 +145,11 @@
 <h2>IPC Request Structure (<cite>ipc_dict</cite>)<a class="headerlink" href="#ipc-request-structure-ipc-dict" title="Link to this heading"></a></h2>
 <p>The message sent to OptArrow should be a Python dictionary structured as follows before being serialized to Arrow IPC format:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ipc_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">model_data</span><span class="p">,</span>       <span class="c1"># The LP model specification (see below)</span>
-    <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="s2">&quot;test_lp&quot;</span><span class="p">,</span>   <span class="c1"># Optional: name or tag for the model</span>
-    <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;julia&quot;</span><span class="p">,</span>         <span class="c1"># The backend engine used for solving (e.g., &quot;julia&quot;)</span>
-    <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="n">solver_config</span>    <span class="c1"># Solver configuration (see below)</span>
-    <span class="s2">&quot;time_limit&quot;</span><span class="p">:</span> <span class="mi">60</span>           <span class="c1"># Optional: time limit in seconds</span>
+    <span class="s2">"model"</span><span class="p">:</span> <span class="n">model_data</span><span class="p">,</span>       <span class="c1"># The LP model specification (see below)</span>
+    <span class="s2">"model_name"</span><span class="p">:</span> <span class="s2">"test_lp"</span><span class="p">,</span>   <span class="c1"># Optional: name or tag for the model</span>
+    <span class="s2">"engine"</span><span class="p">:</span> <span class="s2">"julia"</span><span class="p">,</span>         <span class="c1"># The backend engine used for solving (e.g., "julia")</span>
+    <span class="s2">"solver"</span><span class="p">:</span> <span class="n">solver_config</span>    <span class="c1"># Solver configuration (see below)</span>
+    <span class="s2">"time_limit"</span><span class="p">:</span> <span class="mi">60</span>           <span class="c1"># Optional: time limit in seconds</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -154,17 +157,17 @@
 <h3><cite>model</cite> (Required)<a class="headerlink" href="#model-required" title="Link to this heading"></a></h3>
 <p>A dictionary describing the LP model in the following format:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model_data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>      <span class="c1"># List of row indices (0-based) for the sparse constraint matrix</span>
-        <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>      <span class="c1"># List of column indices (0-based)</span>
-        <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>       <span class="c1"># List of corresponding values for each (row, col) pair</span>
+    <span class="s2">"A"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"row"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>      <span class="c1"># List of row indices (0-based) for the sparse constraint matrix</span>
+        <span class="s2">"col"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>      <span class="c1"># List of column indices (0-based)</span>
+        <span class="s2">"val"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>       <span class="c1"># List of corresponding values for each (row, col) pair</span>
     <span class="p">},</span>
-    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>            <span class="c1"># RHS vector</span>
-    <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>            <span class="c1"># Objective function coefficients</span>
-    <span class="s2">&quot;lb&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># (Optional) Lower bounds for each variable</span>
-    <span class="s2">&quot;ub&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># (Optional) Upper bounds for each variable</span>
-    <span class="s2">&quot;osense&quot;</span><span class="p">:</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span>       <span class="c1"># (Optional) Objective sense: &quot;min&quot; or &quot;max&quot; (default: &quot;min&quot;)</span>
-    <span class="s2">&quot;csense&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>        <span class="c1"># (Optional) List of constraint senses: &quot;E&quot;, &quot;L&quot;, &quot;G&quot;</span>
+    <span class="s2">"b"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>            <span class="c1"># RHS vector</span>
+    <span class="s2">"c"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>            <span class="c1"># Objective function coefficients</span>
+    <span class="s2">"lb"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># (Optional) Lower bounds for each variable</span>
+    <span class="s2">"ub"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>           <span class="c1"># (Optional) Upper bounds for each variable</span>
+    <span class="s2">"osense"</span><span class="p">:</span> <span class="s2">"min"</span><span class="p">,</span>       <span class="c1"># (Optional) Objective sense: "min" or "max" (default: "min")</span>
+    <span class="s2">"csense"</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>        <span class="c1"># (Optional) List of constraint senses: "E", "L", "G"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -173,10 +176,10 @@
 <h3><cite>solver</cite> (Required)<a class="headerlink" href="#solver-required" title="Link to this heading"></a></h3>
 <p>A dictionary specifying the solver and optional parameters:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;solver_name&quot;</span><span class="p">:</span> <span class="s2">&quot;HiGHS&quot;</span><span class="p">,</span>     <span class="c1"># Name of the solver</span>
-    <span class="s2">&quot;solver_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LP&quot;</span><span class="p">,</span>        <span class="c1"># Type of solver (e.g., LP, QP)</span>
-    <span class="s2">&quot;solver_params&quot;</span><span class="p">:</span> <span class="p">{</span>          <span class="c1"># (Optional) Solver-specific parameters</span>
-        <span class="s2">&quot;primal_feasibility_tolerance&quot;</span><span class="p">:</span> <span class="mf">1e-06</span>
+    <span class="s2">"solver_name"</span><span class="p">:</span> <span class="s2">"HiGHS"</span><span class="p">,</span>     <span class="c1"># Name of the solver</span>
+    <span class="s2">"solver_type"</span><span class="p">:</span> <span class="s2">"LP"</span><span class="p">,</span>        <span class="c1"># Type of solver (e.g., LP, QP)</span>
+    <span class="s2">"solver_params"</span><span class="p">:</span> <span class="p">{</span>          <span class="c1"># (Optional) Solver-specific parameters</span>
+        <span class="s2">"primal_feasibility_tolerance"</span><span class="p">:</span> <span class="mf">1e-06</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -215,7 +218,7 @@ If no feasible solution is found before the time limit, the solver may still ret
 <h2>Sending the Request<a class="headerlink" href="#sending-the-request" title="Link to this heading"></a></h2>
 <p>Send the encoded model as an HTTP POST request with the appropriate content type:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/vnd.apache.arrow.stream&quot;</span>
+    <span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/vnd.apache.arrow.stream"</span>
 <span class="p">}</span>
 
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ipc_bytes</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>

@@ -47,6 +47,9 @@
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Requirement_process_tec3_Document.html">System/Software Requirements Definition Process for OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Architecture_process_tec4_Document.html">OptArrow Architecture Definition Process Document</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Design_process_tec5_Document.html">OptArrow Design Definition Process</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
 <ul class="current">
@@ -299,7 +302,7 @@ python3<span class="w"> </span>-m<span class="w"> </span>pipx<span class="w"> </
 sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3.12<span class="w"> </span>python3.12-venv<span class="w"> </span>python3-pip
 python3.12<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>pipx
 python3.12<span class="w"> </span>-m<span class="w"> </span>pipx<span class="w"> </span>ensurepath
-<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=$PATH:~/.local/bin&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<span class="nb">echo</span><span class="w"> </span><span class="s1">'export PATH=$PATH:~/.local/bin'</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
 <span class="nb">source</span><span class="w"> </span>~/.bashrc
 pipx<span class="w"> </span>--version
 </pre></div>
@@ -372,16 +375,16 @@ instructions in <a class="reference internal" href="../tutorials/matlab_interfac
 <p>Once the add-on is installed:</p>
 <ol class="arabic">
 <li><p>Add the MATLAB client to your path:</p>
-<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">addpath</span><span class="p">(</span><span class="nb">genpath</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="n">repoRoot</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;src&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;matlab&#39;</span><span class="p">)));</span>
+<div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="nb">addpath</span><span class="p">(</span><span class="nb">genpath</span><span class="p">(</span><span class="nb">fullfile</span><span class="p">(</span><span class="n">repoRoot</span><span class="p">,</span><span class="w"> </span><span class="s">'src'</span><span class="p">,</span><span class="w"> </span><span class="s">'matlab'</span><span class="p">)));</span>
 </pre></div>
 </div>
 </li>
 <li><p>Configure the OptArrow client:</p>
 <div class="highlight-matlab notranslate"><div class="highlight"><pre><span></span><span class="n">cfg</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">struct</span><span class="p">(</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;endpoint&#39;</span><span class="p">,</span><span class="w">      </span><span class="s">&#39;http://127.0.0.1:8000/compute&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;engine&#39;</span><span class="p">,</span><span class="w">        </span><span class="s">&#39;python&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;backendSolver&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;HiGHS&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
-<span class="w">    </span><span class="s">&#39;timeoutSec&#39;</span><span class="p">,</span><span class="w">    </span><span class="mi">120</span><span class="p">);</span>
+<span class="w">    </span><span class="s">'endpoint'</span><span class="p">,</span><span class="w">      </span><span class="s">'http://127.0.0.1:8000/compute'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'engine'</span><span class="p">,</span><span class="w">        </span><span class="s">'python'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'backendSolver'</span><span class="p">,</span><span class="w"> </span><span class="s">'HiGHS'</span><span class="p">,</span><span class="w"> </span><span class="k">...</span>
+<span class="w">    </span><span class="s">'timeoutSec'</span><span class="p">,</span><span class="w">    </span><span class="mi">120</span><span class="p">);</span>
 <span class="n">optarrow</span><span class="p">.</span><span class="n">setOptArrowConfig</span><span class="p">(</span><span class="n">cfg</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -392,38 +395,38 @@ instructions in <a class="reference internal" href="../tutorials/matlab_interfac
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;row&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-            <span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-            <span class="s2">&quot;val&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+    <span class="s2">"model"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"A"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"row"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">"col"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">"val"</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
         <span class="p">},</span>
-        <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span>
-        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
-        <span class="s2">&quot;lb&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-        <span class="s2">&quot;ub&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
-        <span class="s2">&quot;csense&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;osense&quot;</span><span class="p">:</span> <span class="s2">&quot;max&quot;</span>
+        <span class="s2">"b"</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span>
+        <span class="s2">"c"</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
+        <span class="s2">"lb"</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="s2">"ub"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
+        <span class="s2">"csense"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"L"</span><span class="p">,</span> <span class="s2">"L"</span><span class="p">,</span> <span class="s2">"L"</span><span class="p">],</span>
+        <span class="s2">"osense"</span><span class="p">:</span> <span class="s2">"max"</span>
     <span class="p">},</span>
-    <span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="s2">&quot;product_mix_lp&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;solver_name&quot;</span><span class="p">:</span> <span class="s2">&quot;HiGHS&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;solver_type&quot;</span><span class="p">:</span> <span class="s2">&quot;LP&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;solver_params&quot;</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="s2">"model_name"</span><span class="p">:</span> <span class="s2">"product_mix_lp"</span><span class="p">,</span>
+    <span class="s2">"engine"</span><span class="p">:</span> <span class="s2">"python"</span><span class="p">,</span>
+    <span class="s2">"solver"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"solver_name"</span><span class="p">:</span> <span class="s2">"HiGHS"</span><span class="p">,</span>
+        <span class="s2">"solver_type"</span><span class="p">:</span> <span class="s2">"LP"</span><span class="p">,</span>
+        <span class="s2">"solver_params"</span><span class="p">:</span> <span class="p">{}</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-    <span class="s2">&quot;http://localhost:8000/computeJSON&quot;</span><span class="p">,</span>
+    <span class="s2">"http://localhost:8000/computeJSON"</span><span class="p">,</span>
     <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span>
-    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">}</span>
+    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">}</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>Expected output:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;success&#39;: True, &#39;solution&#39;: [6.0, 3.0], &#39;status&#39;: &#39;optimal&#39;, &#39;stat&#39;: 1, &#39;obj_val&#39;: 66.0}
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{'success': True, 'solution': [6.0, 3.0], 'status': 'optimal', 'stat': 1, 'obj_val': 66.0}
 </pre></div>
 </div>
 </section>

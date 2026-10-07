@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System/Software Requirements Definition Process for OptArrow &mdash; OptArrow  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom-wide.css?v=4d4a401b" />
+
+  
+    <link rel="canonical" href="https://optarrow.github.io/optArrow/intros/Requirement_process_tec3_Document.html" />
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="OptArrow Architecture Definition Process Document" href="Architecture_process_tec4_Document.html" />
+    <link rel="prev" title="Architecture Overview" href="architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OptArrow
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">System/Software Requirements Definition Process for OptArrow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#system-context-overview">1. System Context &amp; Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview-of-optarrows-architecture">1.1 Overview of OptArrow’s Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#core-system-logic-and-functionality">1.2 Core System Logic and Functionality</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#stakeholder-needs-feedback-mechanisms">2. Stakeholder Needs &amp; Feedback Mechanisms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#stakeholder-identification">2.1 Stakeholder Identification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#feedback-collection-mechanisms">2.2 Feedback Collection Mechanisms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#functional-requirements">3. Functional Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#functional-requirement-specifications">3.1 Functional Requirement Specifications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unique-identifiers-for-each-requirement">3.2 Unique Identifiers for Each Requirement</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#non-functional-requirements">4. Non-Functional Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#performance-indicators">4.1 Performance Indicators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compatibility-requirements">4.2 Compatibility Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#requirements-traceability-governance">5. Requirements Traceability &amp; Governance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#traceability-mechanisms">5.1 Traceability Mechanisms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#governance-models-for-requirements-changes">5.2 Governance Models for Requirements Changes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Architecture_process_tec4_Document.html">OptArrow Architecture Definition Process Document</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Design_process_tec5_Document.html">OptArrow Design Definition Process</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Setup and Installation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start (10 Minutes)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Overall Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="julia_setup.html">OptimizationServer (Julia)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_engine_setup.html">OptimizationServer (Python)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarking.html">Benchmark testing</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/lp_problem.html">Linear Programming (LP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/lp_example1.html">LP Example: Production Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_problem.html">Quadratic Programming (QP) Problems in OptArrow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/qp_example.html">QP Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/conversion_dictionary_arrow_table.html">Arrow table dict conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/matlab_interface.html">MATLAB Interface for OptArrow</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Maintenance and Contribution</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to OptArrow</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OptArrow</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">System/Software Requirements Definition Process for OptArrow</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/optArrow/optArrow/blob/gh-pages/Documentation/intros/Requirement_process_tec3_Document.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="system-software-requirements-definition-process-for-optarrow">
+<h1>System/Software Requirements Definition Process for OptArrow<a class="headerlink" href="#system-software-requirements-definition-process-for-optarrow" title="Link to this heading"></a></h1>
+<section id="system-context-overview">
+<h2>1. System Context &amp; Overview<a class="headerlink" href="#system-context-overview" title="Link to this heading"></a></h2>
+<section id="overview-of-optarrows-architecture">
+<h3>1.1 Overview of OptArrow’s Architecture<a class="headerlink" href="#overview-of-optarrows-architecture" title="Link to this heading"></a></h3>
+<p>OptArrow serves as an optimization integration engine meticulously
+designed to facilitate communication between optimization clients and
+solver backends, emphasizing the need for high-performance and stable
+transport layers. The architecture primarily supports Linear Programming
+(LP) and Quadratic Programming (QP) optimization problems, restricting
+its operational scope to these mathematical realms.</p>
+<p>The OptArrow architecture thrives on the in-memory data transfer
+capabilities provided by Apache Arrow, promoting seamless cross-language
+compatibility which is a crucial requirement given the diverse
+environments from which OptArrow can be invoked, including Python,
+Julia, and MATLAB. The use of Apache Arrow enables smooth and efficient
+data interchange between languages, thereby reducing overheads, ensuring
+that optimization tasks are performed efficiently across different
+computational platforms.</p>
+</section>
+<section id="core-system-logic-and-functionality">
+<h3>1.2 Core System Logic and Functionality<a class="headerlink" href="#core-system-logic-and-functionality" title="Link to this heading"></a></h3>
+<p>At its core, OptArrow receives optimization problems primarily coded in
+Python or Julia. The architecture is structured to discern the language
+of origin and accordingly route the problem through the appropriate
+computational pathway. Such precise routing pathways are essential to
+ensure that the solver backend employed is inline with the problem’s
+origin. Upon completion of the optimization task, the solver outputs the
+results in the language originally used by the coder, facilitating
+smooth integration and reducing the need for any additional data
+handling by the user.</p>
+<p>This routing mechanism involves a transformation of data representation
+from Python dictionaries to Arrow IPC (Inter-Process Communication)
+format followed by potential conversion to Julia structures,
+highlighting the efficiency and extensibility of the system
+architecture.</p>
+</section>
+</section>
+<section id="stakeholder-needs-feedback-mechanisms">
+<h2>2. Stakeholder Needs &amp; Feedback Mechanisms<a class="headerlink" href="#stakeholder-needs-feedback-mechanisms" title="Link to this heading"></a></h2>
+<section id="stakeholder-identification">
+<h3>2.1 Stakeholder Identification<a class="headerlink" href="#stakeholder-identification" title="Link to this heading"></a></h3>
+<p>OptArrow prioritizes a wide array of stakeholders including Software
+Engineers, Researchers, Data Scientists, and Optimization Specialists.
+These stakeholders are instrumental in augmenting the functionality of
+OptArrow as they bring forth diverse requirements and use cases that
+steer the ongoing evolution of the platform.</p>
+</section>
+<section id="feedback-collection-mechanisms">
+<h3>2.2 Feedback Collection Mechanisms<a class="headerlink" href="#feedback-collection-mechanisms" title="Link to this heading"></a></h3>
+<p>The process of collecting feedback from stakeholders is currently
+managed via the GitHub Issues mechanism. This channel allows
+stakeholders to submit their feedback, which is invaluable for capturing
+real-time user experiences and requirements. However, the integration of
+this feedback into the formal requirements and design processes
+currently lacks an established traceability framework. While feedback is
+diligently recorded, the absence of a structured path linking
+stakeholder feedback directly to implemented decisions is a noted gap,
+denoting a forward-looking area for improvement.</p>
+</section>
+</section>
+<section id="functional-requirements">
+<h2>3. Functional Requirements<a class="headerlink" href="#functional-requirements" title="Link to this heading"></a></h2>
+<section id="functional-requirement-specifications">
+<h3>3.1 Functional Requirement Specifications<a class="headerlink" href="#functional-requirement-specifications" title="Link to this heading"></a></h3>
+<p>OptArrow’s core functional requirements are centered on its ability to
+accurately solve LP and QP optimization problems using trusted solver
+backends. The following encapsulates the system’s key functional
+requirements:</p>
+<ul class="simple">
+<li><p><strong>FR-01:</strong> The system shall accept LP and QP optimization problems as
+input.</p></li>
+<li><p><strong>FR-02:</strong> The system shall interpret the language of origin (Python
+or Julia) and appropriately route the optimization problem to the
+corresponding solver backend.</p></li>
+<li><p><strong>FR-03:</strong> The system shall utilize Apache Arrow to facilitate
+cross-language data exchange between Python and Julia environments
+efficiently.</p></li>
+<li><p><strong>FR-04:</strong> The system shall output the optimization results in the
+same language as the input problem, preserving the original data
+structures wherever feasible.</p></li>
+</ul>
+</section>
+<section id="unique-identifiers-for-each-requirement">
+<h3>3.2 Unique Identifiers for Each Requirement<a class="headerlink" href="#unique-identifiers-for-each-requirement" title="Link to this heading"></a></h3>
+<p>Each functional requirement is uniquely identified to delineate its
+specific role within the broader system design. The identifiers FR-01 to
+FR-04 serve as a reference for mapping individual capabilities back to
+the documented architectural objectives.</p>
+</section>
+</section>
+<section id="non-functional-requirements">
+<h2>4. Non-Functional Requirements<a class="headerlink" href="#non-functional-requirements" title="Link to this heading"></a></h2>
+<section id="performance-indicators">
+<h3>4.1 Performance Indicators<a class="headerlink" href="#performance-indicators" title="Link to this heading"></a></h3>
+<p>OptArrow’s performance is defined by its ability to process optimization
+problems with minimal latency, maintaining both accuracy and
+computational efficiency. Measurable performance targets, however, are
+yet to be firmly established within the current documentation.</p>
+<ul class="simple">
+<li><p><strong>NFR-01:</strong> The data transfer throughput via Apache Arrow shall
+support high-performance, low-latency communication between Python and
+Julia processes.</p></li>
+<li><p><strong>NFR-02:</strong> The optimization solver shall operate within acceptable
+performance benchmarks to be established upon further development.</p></li>
+</ul>
+</section>
+<section id="compatibility-requirements">
+<h3>4.2 Compatibility Requirements<a class="headerlink" href="#compatibility-requirements" title="Link to this heading"></a></h3>
+<p>Given its function as a cross-language engine, OptArrow’s compatibility
+requirements are integral to its operation. The adoption of Apache Arrow
+significantly contributes to achieving the desired levels of
+cross-language compatibility, ensuring OptArrow can seamlessly function
+within diverse development environments and infrastructures.</p>
+<ul class="simple">
+<li><p><strong>NFR-03:</strong> The system shall maintain compatibility across Python,
+Julia, and MATLAB environments, allowing for straightforward
+invocation from each environment without necessitating amendment to
+the core system logic.</p></li>
+</ul>
+<p>Each non-functional requirement, identified by unique identifiers
+(NFR-01 to NFR-03), serves to reinforce the system’s operational
+integrity and adaptability within the specified operational contexts.</p>
+</section>
+</section>
+<section id="requirements-traceability-governance">
+<h2>5. Requirements Traceability &amp; Governance<a class="headerlink" href="#requirements-traceability-governance" title="Link to this heading"></a></h2>
+<section id="traceability-mechanisms">
+<h3>5.1 Traceability Mechanisms<a class="headerlink" href="#traceability-mechanisms" title="Link to this heading"></a></h3>
+<p>Despite the evident use of GitHub Issues for stakeholder feedback
+collection, there exists a confirmed gap in the formal traceability
+between the feedback collected and the requirements that subsequently
+guide system development. Future system enhancements must integrate a
+robust governance model designed to link each feedback/comment directly
+to implemented features/decisions.</p>
+<p>The lack of this traceability presents an area ripe for development and
+improvement. Contemporary best practices recommend adopting
+comprehensive traceability matrices or utilizing automated tools to
+bridge this distance effectively.</p>
+</section>
+<section id="governance-models-for-requirements-changes">
+<h3>5.2 Governance Models for Requirements Changes<a class="headerlink" href="#governance-models-for-requirements-changes" title="Link to this heading"></a></h3>
+<p>Currently, a formal governance framework for effecting changes to
+OptArrow’s architectural or functional requirements is yet to be
+documented. The absence of such governance formalities further underpins
+the criticality of developing structured, comprehensive governance
+protocols. Emphasis on the establishment of a documented change
+management process should be prioritized, encapsulating decision-making
+frameworks, accountability structures, and regular review cycles to
+ensure systematic evolution and maturation of system capabilities.</p>
+<hr class="docutils" />
+<p>In summary, the OptArrow system specification document provides a robust
+outline of its existing functional and non-functional requirements,
+considering all verified gaps and areas for future innovation. Attention
+is focused on refining these processes further, guided by validated
+claims and industry-best practices to bolster OptArrow towards achieving
+greater optimization efficacy and stakeholder satisfaction.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="architecture.html" class="btn btn-neutral float-left" title="Architecture Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Architecture_process_tec4_Document.html" class="btn btn-neutral float-right" title="OptArrow Architecture Definition Process Document" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, OptArrow Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
