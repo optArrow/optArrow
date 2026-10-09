@@ -100,6 +100,15 @@ OptArrow introduces a streamlined, interoperable architecture with the following
 
 .. toctree::
    :maxdepth: 1
+   :caption: SDLC Process Documentation (V6.3)
+
+   sdlc_process/V6.3_01_Requirements_Document.md
+   sdlc_process/V6.3_01_Requirements_Audit.md
+   sdlc_process/V6.3_02_Architecture_Document.md
+   sdlc_process/V6.3_02_Architecture_Audit.md
+
+.. toctree::
+   :maxdepth: 1
    :caption: Maintenance and Contribution
 
    intros/contributing

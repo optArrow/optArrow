@@ -11,6 +11,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',
     'sphinx_sitemap',
+    'myst_parser',
 ]
 
 html_baseurl = 'https://optarrow.github.io/optArrow/'
